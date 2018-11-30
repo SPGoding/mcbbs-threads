@@ -1131,7 +1131,7 @@ data/spgoding/loot_tables/bar.json
 
 语法：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]fish <战利品表 ID> <方块 X Y Z 坐标> <mainhand|offhand|<物品>>[/font][/backcolor]
 
-假设：执行这条命令的玩家，使用指定工具（[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]mainhand[/font][/backcolor] 为使用玩家主手的工具；[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]offhand[/font][/backcolor] 为使用玩家副手内的工具；[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]<物品>[/font][/backcolor] 的语法与 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]/give[/font][/backcolor] 命令一致，为使用指定的物品。这一工具可以被 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:match_tool[/font][/backcolor] 条件匹配到），将[b]钓鱼竿浮标[/b]抛到了 <方块 X Y Z 坐标>，并钓到了 <战利品表 ID>。
+假设：执行这条命令的实体，使用指定工具（[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]mainhand[/font][/backcolor] 为使用实体主手的工具；[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]offhand[/font][/backcolor] 为使用实体副手内的工具；[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]<物品>[/font][/backcolor] 的语法与 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]/give[/font][/backcolor] 命令一致，为使用指定的物品。这一工具可以被 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:match_tool[/font][/backcolor] 条件匹配到），将[b]钓鱼竿浮标[/b]抛到了 <方块 X Y Z 坐标>，并钓到了 <战利品表 ID>。
 
 由于该假设，当指定了 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]mainhand[/font][/backcolor] 或 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]offhand[/font][/backcolor] 时，这条命令必须由拥有 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]HandItems[/font][/backcolor] 标签的实体执行，不能被数据包命令函数、命令方块、告示牌等执行（可以使用 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]/execute as[/font][/backcolor] 更改命令执行者）。
 
@@ -1141,9 +1141,9 @@ data/spgoding/loot_tables/bar.json
 
 语法：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]kill <实体选择器>[/font][/backcolor]
 
-假设：执行这条命令的玩家，使用其主手中握着的工具，杀死了 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]<实体选择器>[/font][/backcolor] 所选择到的实体。
+假设：执行这条命令的实体杀死了 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]<实体选择器>[/font][/backcolor] 所选择到的实体。
 
-由于该假设，当指定了 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]mainhand[/font][/backcolor] 或 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]offhand[/font][/backcolor] 时，这条命令必须由拥有 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]HandItems[/font][/backcolor] 标签的实体执行，不能被数据包命令函数、命令方块、告示牌等执行（可以使用 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]/execute as[/font][/backcolor] 更改命令执行者）；[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]<实体选择器>[/font][/backcolor] 必须只能选择到一个实体，需要显式指定 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]limit=1[/font][/backcolor]。
+由于该假设，[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]<实体选择器>[/font][/backcolor] 必须只能选择到一个实体，需要显式指定 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]limit=1[/font][/backcolor]。
 
 在该假设下，战利品表所返回的物品即为该命令返回的物品。
 
@@ -1151,7 +1151,7 @@ data/spgoding/loot_tables/bar.json
 
 语法：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]mine <方块 X Y Z 坐标> <mainhand|offhand|<物品>>[/font][/backcolor]
 
-假设：执行这条命令的玩家，使用指定工具（[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]mainhand[/font][/backcolor] 为使用玩家主手的工具；[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]offhand[/font][/backcolor] 为使用玩家副手内的工具；[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]<物品>[/font][/backcolor] 的语法与 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]/give[/font][/backcolor] 命令一致，为使用指定的物品。这一工具可以被 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:match_tool[/font][/backcolor] 条件匹配到），挖掘了 <方块 X Y Z 坐标> 这一位置的方块。
+假设：执行这条命令的实体，使用指定工具（[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]mainhand[/font][/backcolor] 为使用实体主手的工具；[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]offhand[/font][/backcolor] 为使用实体副手内的工具；[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]<物品>[/font][/backcolor] 的语法与 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]/give[/font][/backcolor] 命令一致，为使用指定的物品。这一工具可以被 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:match_tool[/font][/backcolor] 条件匹配到），挖掘了 <方块 X Y Z 坐标> 这一位置的方块。
 
 由于该假设，当指定了 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]mainhand[/font][/backcolor] 或 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]offhand[/font][/backcolor] 时，这条命令必须由拥有 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]HandItems[/font][/backcolor] 标签的实体执行，不能被数据包命令函数、命令方块、告示牌等执行（可以使用 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]/execute as[/font][/backcolor] 更改命令执行者）。
 
