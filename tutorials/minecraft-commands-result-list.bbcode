@@ -12,7 +12,8 @@ http://www.mcbbs.net/thread-808124-1-1.html
 [size=3][b]命令返回值[/b]，直观来看是命令在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]execute store result[/font][/backcolor] 命令中可被存储的值。
 该值为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]Int32[/font][/backcolor] 类型，取值范围从 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]-2,147,483,648[/font][/backcolor] 到 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]2,147,483,647[/font][/backcolor]，因此有部分命令的返回值会发生溢出，本文会对有可能溢出的命令进行标记。[/size]
 
-[size=3]在 Minecraft 中，部分命令的返回值是反直觉的。因此本人使用 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]/execute store result score @s result run[/font][/backcolor] 在 Minecraft 1.13 下对所有命令进行了测试，整理出本文。[/size]
+[size=3]在 Minecraft 中，部分命令的返回值是反直觉的。因此本人使用 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]/execute store result score @s result run[/font][/backcolor] 在 Minecraft 18w48b 下对所有命令进行了测试，整理出本文。[/size]
+
 [size=5][b]advancement[/b][/size]
 [spoiler][size=4][b]grant[/b][/size]
 
