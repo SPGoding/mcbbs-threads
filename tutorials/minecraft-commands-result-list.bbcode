@@ -1,0 +1,454 @@
+http://www.mcbbs.net/thread-808124-1-1.html
+
+[size=3]由于是手动整理加推测，难免有理解错误 / 遗漏，请务必指出，感谢！
+
+使用 Ctrl + F 可以快速找到你需要的命令。[/size]
+
+[hr]
+[size=6][b]Minecraft：Java 版 命令返回值列表。[/b][/size]
+
+[size=6][b]正文[/b][/size]
+
+[size=3][b]命令返回值[/b]，直观来看是命令在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]execute store result[/font][/backcolor] 命令中可被存储的值。
+该值为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]Int32[/font][/backcolor] 类型，取值范围从 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]-2,147,483,648[/font][/backcolor] 到 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]2,147,483,647[/font][/backcolor]，因此有部分命令的返回值会发生溢出，本文会对有可能溢出的命令进行标记。[/size]
+
+[size=3]在 Minecraft 中，部分命令的返回值是反直觉的。因此本人使用 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]/execute store result score @s result run[/font][/backcolor] 在 Minecraft 1.13 下对所有命令进行了测试，整理出本文。[/size]
+[size=5][b]advancement[/b][/size]
+[spoiler][size=4][b]grant[/b][/size]
+
+[size=3]返回：实际给予的进度的个数。
+如果玩家被给予某个已经达成的进度，该进度不会被算入返回值。
+特别地，当实际给予的进度数量为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor] 时，没有返回值（即 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]execute store[/font][/backcolor] 命令不会引起任何改变）。[/size]
+
+[size=4][b]revoke[/b][/size]
+
+[size=3]返回：实际剥夺的进度的个数。
+如果玩家被给予某个已经达成的进度，该进度不会被算入返回值。
+特别地，当实际剥夺的进度数量为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor] 时，没有返回值（即 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]execute store[/font][/backcolor] 命令不会引起任何改变）。[/size][/spoiler]
+[size=5][b]bossbar[/b][/size]
+[spoiler][size=4][b]add[/b][/size]
+
+[size=3]返回：在命令执行以后，存在的自定义 bossbar 的数量。
+由游戏创建的 bossbar（如末影龙的血条）不会被计入。
+特别地，如果尝试创建了一个已经存在的 bossbar，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size]
+
+[size=4][b]get[/b][/size]
+
+[align=center][table=98%]
+[tr][td][b]参数[/b][/td][td][b]返回值[/b][/td][/tr]
+[tr][td]max[/td][td]该 bossbar 的最大值。[/td][/tr]
+[tr][td]players[/td][td]可以见到该 bossbar 的玩家个数（也许会溢出，本人没有那么多玩家进行测试，相信你们也没有）。[/td][/tr]
+[tr][td]value[/td][td]该 bossbar 的值。[/td][/tr]
+[tr][td]visible[/td][td]若该 bossbar 可见，则返回 1；否则返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/td][/tr]
+[/table][/align]
+[size=4][b]list[/b][/size]
+
+[size=3]返回：存在的自定义 bossbar 的数量。
+由游戏创建的 bossbar（如末影龙的血条）不会被计入。[/size]
+
+[size=4][b]remove[/b][/size]
+
+[size=3]返回：在命令执行以后，存在的自定义 bossbar 的数量。
+由游戏创建的 bossbar（如末影龙的血条）不会被计入。
+特别地，如果尝试删除了一个不存在的 bossbar，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size]
+
+[size=4][b]set[/b][/size]
+
+[align=center][table=98%]
+[tr][td][b]参数[/b][/td][td][b]返回值[/b][/td][/tr]
+[tr][td]color[/td][td]永远的 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/td][/tr]
+[tr][td]max[/td][td]修改后的 bossbar 的最大值。特别地，如果修改后的值与原先值相同，返回 0。[/td][/tr]
+[tr][td]name[/td][td]永远的 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/td][/tr]
+[tr][td]players[/td][td]修改后的可以见到 bossbar 的玩家个数。特别地，如果修改后的[b]玩家[/b]与原先[b]玩家[/b]相同，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/td][/tr]
+[tr][td]style[/td][td]永远的 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/td][/tr]
+[tr][td]value[/td][td]修改后的 bossbar 的值。特别地，如果修改后的值与原先值相同，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/td][/tr]
+[tr][td]visible[/td][td]永远的 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/td][/tr]
+[/table][/align]
+[size=5][b]clear[/b][/size]
+
+[size=3]返回：实际清除的物品个数。[/size][/spoiler]
+[size=5][b]clone[/b][/size]
+[spoiler][size=3]返回：被复制的方块个数。[/size]
+
+[align=center][table=98%]
+[tr][td][b]模式[/b][/td][td][b]返回值[/b][/td][/tr]
+[tr][td]replace[/td][td]该区域包含的所有方块的个数[/td][/tr]
+[tr][td]masked[/td][td]该区域包含的非空气方块的个数[/td][/tr]
+[tr][td]filtered[/td][td]该区域包含的满足指定条件的方块的个数[/td][/tr]
+[/table][/align]
+[size=3]特别地，当复制失败（非 force 模式且区域重叠），返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size][/spoiler]
+[size=5][b]data[/b][/size]
+[spoiler][size=4][b]get[/b][/size]
+
+[size=3]当指定的方块没有 NBT 时，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size]
+
+[size=3][b]当指定的为实体/方块实体时[/b][/size]
+
+[size=3]下表为乘上倍数（scale）前的数据。[/size]
+
+[align=center][table=98%]
+[tr][td][b]路径[/b][/td][td][b]返回值[/b][/td][/tr]
+[tr][td]未指定[/td][td]永远为 1[/td][/tr]
+[tr][td]Compound[/td][td]该 Compound 包含的 键-值对 个数。特别地，对于根 Compound，返回值是[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]（可能溢出）[/td][/tr]
+[tr][td]List[/td][td]该 列表 包含的 项 个数（可能溢出）[/td][/tr]
+[tr][td]xx Array[/td][td]该 数组 包含的 项 个数（可能溢出）[/td][/tr]
+[tr][td]String[/td][td]该 字符串 包含的 字符 个数，其中转义字符算上转义符号为一位（即[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]\\[/font][/backcolor] [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]\"[/font][/backcolor]的位数是[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]1[/font][/backcolor]），中文字符的位数是[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]1[/font][/backcolor]（可能溢出）[/td][/tr]
+[tr][td]Byte Short Int[/td][td]该 数字 的值[/td][/tr]
+[tr][td]Long[/td][td]该 数字 的值（极有可能溢出）[/td][/tr]
+[tr][td]Float Double[/td][td]该 数字 直接舍弃小数位的值（可能溢出）[/td][/tr]
+[/table][/align]
+[size=4][b]merge[/b][/size]
+
+[size=3]当指定的 NBT 与原先 NBT 不同，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]1[/font][/backcolor]；
+当指定的 NBT 与原先 NBT 完全相同，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size]
+
+[size=4][b]remove[/b][/size]
+
+[size=3]当尝试移除不存在的路径，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]；
+当移除存在的路径，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]1[/font][/backcolor]。[/size][/spoiler]
+[size=5][b]datapack[/b][/size]
+[spoiler][size=4][b]disable[/b][/size]
+
+[size=3]返回：命令执行后启用的数据包个数。
+特别地，当尝试启用不存在的数据包或已经启用的数据包，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size]
+
+[size=4][b]enable[/b][/size]
+
+[size=3]返回：命令执行后启用的数据包个数。
+特别地，当尝试启用不存在的数据包或已经启用的数据包，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size]
+
+[size=4][b]list[/b][/size]
+
+[size=3]返回：命令指定类型（[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]available[/font][/backcolor] 或 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]enabled[/font][/backcolor]）的数据包的个数。[/size][/spoiler]
+[size=5][b]debug[/b][/size]
+[spoiler][size=4][b]start[/b][/size]
+
+[size=3]返回：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size]
+
+[size=4][b]stop[/b][/size]
+
+[size=3]返回：自 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]debug start[/font][/backcolor] 后到现在的 tps（ticks per second）（直接舍弃末位小数）。
+特别地，如果没有执行过 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]debug start[/font][/backcolor]，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size][/spoiler]
+[size=5][b]defaultgamemode[/b][/size]
+[spoiler][size=3]返回：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size][/spoiler]
+[size=5][b]difficulty[/b][/size]
+[spoiler][size=3]若在参数中指定了难度，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]；
+若没有指定参数，返回当前难度的数字 ID，下表是一个对应关系。[/size]
+
+[align=center][table=98%]
+[tr][td][b]难度[/b][/td][td][b]英文ID[/b][/td][td][b]数字ID[/b][/td][/tr]
+[tr][td]和平[/td][td]peaceful[/td][td]0[/td][/tr]
+[tr][td]简单[/td][td]easy[/td][td]1[/td][/tr]
+[tr][td]普通[/td][td]normal[/td][td]2[/td][/tr]
+[tr][td]困难[/td][td]hard[/td][td]3[/td][/tr]
+[/table][/align]
+[size=5][b]effect[/b][/size]
+
+[size=4][b]give[/b][/size]
+
+[size=3]返回：实际被给予效果的实体个数。
+例如，即使指定了给 2 个实体效果，但其中有 1 个实体不支持状态效果，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]1[/font][/backcolor] 而不是 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]2[/font][/backcolor]。[/size]
+
+[size=4][b]clear[/b][/size]
+
+[size=3]返回：实际被清除效果的实体个数。
+例如，即使指定清除 2 个实体的效果，但其中有 1 个实体没有这个效果或不支持状态效果，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]1[/font][/backcolor] 而不是 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]2[/font][/backcolor]。[/size][/spoiler]
+[size=5][b]enchant[/b][/size]
+[spoiler][size=3]返回：实际的手中物品被给予附魔魔咒的实体个数。
+例如，即使指定给予 2 个实体手中物品附魔魔咒，但其中有 1 个实体手中没有物品、手中物品已附魔或手中物品不支持附魔，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]1[/font][/backcolor] 而不是 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]2[/font][/backcolor]。[/size][/spoiler]
+[size=5][b]execute[/b][/size]
+[spoiler][size=3]若没有接 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]run[/font][/backcolor]，且没有 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]if|unless[/font][/backcolor]，没有返回值（即 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]execute store[/font][/backcolor] 命令不会引起任何改变）；
+若没有接 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]run[/font][/backcolor] 但有 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]if|unless[/font][/backcolor]，按下表返回：  [/size]
+
+[align=center][table=98%]
+[tr][td][b]子命令[/b][/td][td][b]返回值[/b][/td][/tr]
+[tr][td]block[/td][td]若方块匹配，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]1[/font][/backcolor]；否则返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/td][/tr]
+[tr][td]blocks[/td][td]若方块匹配，[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]all[/font][/backcolor] 模式返回原区域方块个数，[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]masked[/font][/backcolor] 模式返回原区域非空气方块个数；否则返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/td][/tr]
+[tr][td]entity[/td][td]返回匹配的实体个数。[/td][/tr]
+[tr][td]score[/td][td]若分数匹配，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]1[/font][/backcolor]；否则返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/td][/tr]
+[/table][/align]
+[size=3]若 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]run[/font][/backcolor] 后命令在该 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]execute[/font][/backcolor] 指定的命令执行者（们）执行后，每个执行者得到的返回值相同，则返回该返回值；若任一返回值不同，则返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size][/spoiler]
+[size=5][b]experience[/b][/size]
+[spoiler][size=4][b]add[/b][/size]
+
+[size=3]返回：被加（或减）经验的玩家的个数。[/size]
+
+[size=4][b]query[/b][/size]
+
+[size=3]返回：指定玩家的经验等级/经验点数。
+注意：点数为在当前等级下的点数，并非玩家的全部点数。[/size]
+
+[size=4][b]set[/b][/size]
+
+[size=3]返回：被设置经验的玩家的个数。 特别地，当设定的经验点数大于玩家当前等级能容纳的最大点数时，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size][/spoiler]
+[size=5][b]fill[/b][/size]
+[spoiler][size=3]返回：实际被填充的方块的个数。
+在非 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]destroy[/font][/backcolor] 模式下，指定区域内与指定方块相同的方块不会被算入个数中；
+在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]destroy[/font][/backcolor] 模式下，返回值即为指定区域内的方块数量。特别地，在空气中填充空气，即使是 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]destroy[/font][/backcolor] 模式也不会被计入，这一点和 [url=#setblock]setblock[/url] 命令不同。[/size][/spoiler]
+[size=5][b]forceload[/b][/size]
+[spoiler][size=4][b]add[/b][/size]
+
+[size=3]返回：命令执行后新增的强制加载区块的个数。[/size]
+
+[size=4][b]query[/b][/size]
+
+[size=3]若指定 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]<pos>[/font][/backcolor] 参数，当指定坐标所在的区块已被强制加载时，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]1[/font][/backcolor]，否则返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。
+若没有指定 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]<pos>[/font][/backcolor] 参数，则返回当前世界中被强制加载的区块的个数。[/size]
+
+[size=4][b]remove[/b][/size]
+
+[size=3]若指定的参数为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]all[/font][/backcolor] 时，永远返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。
+否则，返回命令执行后减少的强制加载区块的数量。[/size][/spoiler]
+[size=5][b]function[/b][/size]
+[spoiler][size=3]返回：执行该函数后聊天栏显示的“已执行命令个数”。
+（事实上，没人知道这个数字是使用怎样弱智的手法计算出来的。在函数递归、互相调用的情况下，这个返回的数字简直令人作呕。作为普通玩家，我们也不需要知道这些没用的东西。就让 MJ 自己 S[size=0px]*[/size]B 去吧！）[/size][/spoiler]
+[size=5][b]gamemode[/b][/size]
+[spoiler][size=3]返回：实际被改变模式的玩家个数。
+如果某个玩家本身就是指定模式，它不会被算入返回值。[/size][/spoiler]
+[size=5][b]gamerule[/b][/size]
+[spoiler][size=3]当不指定值（即查询指定规则的值）时，按下表返回该规则的值。 当指定值（即设置制定规则的值）时，按下表返回你指定的值。[/size]
+
+[align=center][table=98%]
+[tr][td][b]规则类型[/b][/td][td][b]返回值[/b][/td][/tr]
+[tr][td]Boolean[/td][td][backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]true[/font][/backcolor] 返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]1[/font][/backcolor]，[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]false[/font][/backcolor] 返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/td][/tr]
+[tr][td]Int[/td][td]返回该数字的值[/td][/tr]
+[/table][/align]
+[size=5][b]give[/b][/size]
+
+[size=3]返回：被给予物品的玩家个数。[/size][/spoiler]
+[size=5][b]help[/b][/size]
+[spoiler][size=3]返回：手动执行该命令后，输出的内容行数。[/size][/spoiler]
+[size=5][b]kick[/b][/size]
+[spoiler][size=3]返回：被踢出的玩家数量。[/size][/spoiler]
+[size=5][b]kill[/b][/size]
+[spoiler][size=3]返回：被杀死的实体个数。[/size][/spoiler]
+[size=5][b]list[/b][/size]
+[spoiler][size=3]返回：在线的玩家个数。[/size][/spoiler]
+[size=5][b]loot[/b][/size]
+[spoiler][size=3]返回：掉落的物品种数。
+
+e.g. 掉落了「1 个骨头」或「2 个骨头」，返回值均为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]1[/font][/backcolor]；掉落了「2 个骨头和 3 支箭」，返回值则为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]2[/font][/backcolor]。[/size][/spoiler]
+[size=5][b]locate[/b][/size]
+[spoiler][size=3]返回：当前坐标距离指定结构坐标的水平距离。 特别地，当指定结构不存在，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size][/spoiler]
+[size=5][b]me[/b][/size]
+[spoiler][size=3]返回：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]1[/font][/backcolor]。[/size][/spoiler]
+[size=5][b]msg[/b][/size]
+[spoiler][size=3]返回：被私信的玩家个数。[/size][/spoiler]
+[size=5][b]particle[/b][/size]
+[spoiler][size=3]返回：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]1[/font][/backcolor]。[/size][/spoiler]
+[size=5][b]playsound[/b][/size]
+[spoiler][size=3]返回：被播放音乐的玩家个数。[/size][/spoiler]
+[size=5][b]publish[/b][/size]
+[spoiler][size=3]返回：该局域网世界被分配的端口数。 特别地，如果该世界已经被开向局域网，或尝试在服务器内执行该命令，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size][/spoiler]
+[size=5][b]recipe[/b][/size]
+[spoiler][size=3]返回：实际解锁/剥夺的配方个数。[/size][/spoiler]
+[size=5][b]reload[/b][/size]
+[spoiler][size=3]返回：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size][/spoiler]
+[size=5][b]replaceitem[/b][/size]
+[spoiler][size=3]返回：被替换物品的实体/方块个数。[/size][/spoiler]
+[size=5][b]say[/b][/size]
+[spoiler][size=3]返回：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]1[/font][/backcolor]。[/size][/spoiler]
+[size=5][b]schedule[/b][/size]
+[spoiler][size=3]返回：函数被计划执行的游戏时间（即手动执行命令时，提示「即游戏时间 xxx 时执行」的「xxx」）。[/size][/spoiler]
+[size=5][b]scoreboard[/b][/size]
+[spoiler][size=4][b]objectives add[/b][/size]
+
+[size=3]返回：命令执行后的计分项个数。 特别地，当尝试创建一个已经存在的计分项时，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size]
+
+[size=4][b]objectives list[/b][/size]
+
+[size=3]返回：当前计分项个数。[/size]
+
+[size=4][b]objectives modify[/b][/size]
+
+[size=3]返回：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size]
+
+[size=4][b]objectives remove[/b][/size]
+
+[size=3]返回：命令执行后的计分项个数。 特别地，当尝试移除一个并不存在的计分项时，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size]
+
+[size=4][b]objectives setdisplay[/b][/size]
+
+[size=3]返回：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size]
+
+[size=4][b]players add[/b][/size]
+
+[size=3]返回：命令执行后，指定目标指定计分项的分数。 特别地，当尝试为不存在的计分项添加分数时，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size]
+
+[size=4][b]players enable[/b][/size]
+
+[size=3]返回：被激活指定计分项的目标个数。 特别地，当尝试激活非 trigger 计分项时，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size]
+
+[size=4][b]players get[/b][/size]
+
+[size=3]返回：指定目标指定计分项的分数。 特别地，当尝试获取不存在的计分项的分数时，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size]
+
+[size=4][b]players list[/b][/size]
+
+[size=3]返回：指定目标所拥有的分数个数。[/size]
+
+[size=4][b]players operation[/b][/size]
+
+[size=3]返回：运算结束后，第一组参数指定的目标在指定计分项上的分数。[/size]
+
+[size=4][b]players remove[/b][/size]
+
+[size=3]没有返回值（即 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]execute store[/font][/backcolor] 命令不会引起任何改变）。[/size]
+
+[size=4][b]players reset[/b][/size]
+
+[size=3]返回：被重置的目标个数。[/size]
+
+[size=4][b]players set[/b][/size]
+
+[size=3]返回：命令执行后，指定目标指定计分项的分数。[/size][/spoiler]
+[size=5][b]seed[/b][/size]
+[spoiler][size=3]返回：当前地图的种子。（极有可能溢出）[/size][/spoiler]
+[size=5][b]setblock[/b][/size]
+[spoiler][size=3]返回：实际放置的方块个数。
+在非 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]destroy[/font][/backcolor] 模式下，原位置的方块与放置的方块不同时，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]1[/font][/backcolor]，否则返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。
+在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]destroy[/font][/backcolor] 模式下，永远返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]1[/font][/backcolor]，这一点和 [url=#fill]fill[/url] 命令不同，请注意。[/size][/spoiler]
+[size=5][b]setworldspawn[/b][/size]
+[spoiler][size=3]返回：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]1[/font][/backcolor]。[/size][/spoiler]
+[size=5][b]spawnpoint[/b][/size]
+[spoiler][size=3]返回：被设置出生点的玩家个数。[/size][/spoiler]
+[size=5][b]spreadplayers[/b][/size]
+[spoiler][size=3]返回：被分散的实体个数。[/size][/spoiler]
+[size=5][b]stopsound[/b][/size]
+[spoiler][size=3]返回：被停止音效的玩家个数。[/size][/spoiler]
+[size=5][b]summon[/b][/size]
+[spoiler][size=3]返回：如果召唤成功，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]1[/font][/backcolor]；否则返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size][/spoiler]
+[size=5][b]tag[/b][/size]
+[spoiler][size=4][b]add[/b][/size]
+
+[size=3]返回：实际被加上 tag 的实体个数。
+如果某个实体已经有了该 tag，则返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size]
+
+[size=4][b]list[/b][/size]
+
+[size=3]返回：指定实体的 tag 个数。[/size]
+
+[size=4][b]remove[/b][/size]
+
+[size=3]返回：实际被移除 tag 的实体个数。
+如果某个实体并没有该 tag，则返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size][/spoiler]
+[size=5][b]team[/b][/size]
+[spoiler][size=4][b]add[/b][/size]
+
+[size=3]返回：命令执行后，存在的队伍个数。 特别地，如果队伍已经存在，则返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size]
+
+[size=4][b]empty[/b][/size]
+
+[size=3]返回：从指定队伍中移出的实体个数。[/size]
+
+[size=4][b]join[/b][/size]
+
+[size=3]返回：新加入指定队伍的实体个数。
+即使该实体已经在指定队伍内，也会被计入。[/size]
+
+[size=4][b]leave[/b][/size]
+
+[size=3]返回：退出队伍的实体个数。
+即使该实体没有参加任何队伍，也会被计入。[/size]
+
+[size=4][b]list[/b][/size]
+
+[size=3]返回：存在的队伍个数。[/size]
+
+[size=4][b]modify[/b][/size]
+
+[size=3]返回：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size]
+
+[size=4][b]remove[/b][/size]
+
+[size=3]返回：命令执行后，存在的队伍个数。
+ 特别地，如果指定队伍并不存在，则返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size][/spoiler]
+[size=5][b]teleport[/b][/size]
+[spoiler][size=3]返回：被传送的实体个数。[/size][/spoiler]
+[size=5][b]tell[/b][/size]
+[spoiler][size=3]参见 [url=#msg]msg 命令[/url]。[/size][/spoiler]
+[size=5][b]tellraw[/b][/size]
+[spoiler][size=3]返回：被显示文本的玩家个数。[/size][/spoiler]
+[size=5][b]time[/b][/size]
+[spoiler][size=4][b]add[/b][/size]
+
+[size=3]返回：命令执行后的 Minecraft 中自破晓后的时间（单位：刻）。[/size]
+
+[size=4][b]query day[/b][/size]
+
+[size=3]返回：Minecraft 中度过的游戏内天数（单位：天）。[/size]
+
+[size=4][b]query daytime[/b][/size]
+
+[size=3]返回： Minecraft 中自破晓后的时间（单位：刻）。[/size]
+
+[size=4][b]query gametime[/b][/size]
+
+[size=3]返回：玩家游玩 当前 Minecraft 存档 的总时长（单位：刻）。[/size][/spoiler]
+[size=5][b]title[/b][/size]
+[spoiler][size=4][b]actionbar[/b][/size]
+
+[size=3]返回：被设置 actionbar 的玩家个数。[/size]
+
+[size=4][b]clear[/b][/size]
+
+[size=3]返回：被清除标题的玩家个数。[/size]
+
+[size=4][b]reset[/b][/size]
+
+[size=3]返回：被重置数据的玩家个数。[/size]
+
+[size=4][b]subtitle[/b][/size]
+
+[size=3]返回：被设置副标题的玩家个数。[/size]
+
+[size=4][b]times[/b][/size]
+
+[size=3]返回：被设置时间的玩家个数。[/size]
+
+[size=4][b]title[/b][/size]
+
+[size=3]返回：被标题的玩家个数。[/size][/spoiler]
+[size=5][b]tp[/b][/size]
+[spoiler][size=3]参见 [url=#teleport]teleport 命令[/url]。[/size][/spoiler]
+[size=5][b]trigger[/b][/size]
+[spoiler][size=3]返回：在命令执行以后，指定计分项在当前目标上的分数。 特别地，当指定目标没有权限修改指定计分项时，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size][/spoiler]
+[size=5][b]w[/b][/size]
+[spoiler][size=3]参见 [url=#msg]msg 命令[/url]。[/size][/spoiler]
+[size=5][b]weather[/b][/size]
+[spoiler][size=3]返回：指定天气状态的持续时间（单位为刻，命令中的参数单位为秒）。[/size][/spoiler]
+[size=5][b]worldborder[/b][/size]
+[spoiler][size=4][b]add[/b][/size]
+
+[size=3]返回：世界边界变化的宽度（正数为增加，负数为减小）。[/size]
+
+[size=4][b]center[/b][/size]
+
+[size=3]返回：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size]
+
+[size=4][b]damage[/b][/size]
+
+[size=3]返回：命令中设定的伤害的值。
+特别地，如果伤害值没有任何改变，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size]
+
+[size=4][b]get[/b][/size]
+
+[size=3]返回：世界边界的宽度。[/size]
+
+[size=4][b]set[/b][/size]
+
+[size=3]返回：世界边界变化的宽度（正数为增加，负数为减小）。[/size]
+
+[size=4][b]warning distance[/b][/size]
+
+[size=3]返回：开始警告的距离。[/size]
+
+[size=4][b]warning time[/b][/size]
+
+[size=3]返回：开始警告的时间。[/size][/spoiler]
+[size=5][b]xp[/b][/size]
+[spoiler][size=3]参见 [url=#experience]experience 命令[/url]。[/size][/spoiler]
+
+[spoiler]点开了就要给钱啊【不是[afd]SPGoding[/afd][/spoiler]
+
+
