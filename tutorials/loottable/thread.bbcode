@@ -286,7 +286,7 @@ data/spgoding/loot_tables/bar.json
     "type": "minecraft:tag",
     "name": "spgoding:foo",
     "expand": false
-}[/code]当该 entry 被执行时，会返回一个蓝色羊毛、一个黄色羊毛和一个红色羊毛。如果把 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]expand[/font][/backcolor] 改为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]false[/font][/backcolor]，将从这三种羊毛中随机返回一种。
+}[/code]当该 entry 被执行时，会返回一个蓝色羊毛、一个黄色羊毛和一个红色羊毛。如果把 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]expand[/font][/backcolor] 改为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]true[/font][/backcolor]，将从这三种羊毛中随机返回一种。
 
 本节完。点击论坛界面右侧的粉色「书签」可以快速回到上方目录。
 
@@ -1143,7 +1143,7 @@ data/spgoding/loot_tables/bar.json
 
 假设：执行这条命令的实体杀死了 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]<实体选择器>[/font][/backcolor] 所选择到的实体。
 
-由于该假设，[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]<实体选择器>[/font][/backcolor] 必须只能选择到一个实体，需要显式指定 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]limit=1[/font][/backcolor]。
+由于该假设，这条命令必须由实体执行，不能被数据包命令函数、命令方块、告示牌等执行（可以使用 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]/execute as[/font][/backcolor] 更改命令执行者）；[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]<实体选择器>[/font][/backcolor] 必须只能选择到一个实体，需要显式指定 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]limit=1[/font][/backcolor]。
 
 在该假设下，战利品表所返回的物品即为该命令返回的物品。
 
@@ -1168,7 +1168,7 @@ data/spgoding/loot_tables/bar.json
 下面所有例子均能在数据包命令函数中执行。
 
 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]/execute as @p run loot give @s fish minecraft:gameplay/fishing/fish 0 16 0 mainhand[/font][/backcolor] 给予玩家：其使用主手的工具，将浮标抛到 (0, 16, 0) 这一位置钓到的鱼。
-[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]/execute as @p run loot replace entity @s hotbar.0 mine 0 16 0 minecraft:diamond_pickaxe{isFoo:1b}[/font][/backcolor] 在玩家快捷栏第一栏放置：其使用拥有 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]isFoo[/font][/backcolor] 自定义 NBT 标签的钻石镐，挖掘 (0, 16, 0) 位置的方块所得到的战利品。
+[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]/loot replace entity @p hotbar.0 mine 0 16 0 minecraft:diamond_pickaxe{isFoo:1b}[/font][/backcolor] 在玩家快捷栏第一栏放置：其使用拥有 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]isFoo[/font][/backcolor] 自定义 NBT 标签的钻石镐，挖掘 (0, 16, 0) 位置的方块所得到的战利品。
 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]/execute as @p run loot spawn 2 4 8 kill @e[limit=1,tag=dead][/font][/backcolor] 在 (2, 4, 8) 生成物品实体：玩家杀死 @e[limit=1,tag=dead] 这一实体所获得的战利品。
 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]/loot insert 16 8 4 loot minecraft:entities/cat_morning_gift[/font][/backcolor] 在 (16, 8, 4) 的方块实体中插入：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:entities/cat_morning_gift[/font][/backcolor] 战利品表返回的的物品。
 
