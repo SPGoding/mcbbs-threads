@@ -880,12 +880,12 @@ data/spgoding/loot_tables/bar.json
 
 将[ruby=source][b]复制源[/b][/ruby]的指定 NBT 路径的值复制到物品的指定 NBT 路径下。
 
--（字符串）source：复制源。可选值：项目[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]this[/font][/backcolor]（死亡实体）、项目[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]killer[/font][/backcolor]（击杀者实体）、项目[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]killer_player[/font][/backcolor]（击杀者玩家）和 项目[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]block_entity[/font][/backcolor]（被破坏的方块实体）。[b]前三者只能在 项目[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:entity[/font][/backcolor] 类型的战利品表中使用，后者只能在 项目[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:block[/font][/backcolor] 类型的战利品表中使用[/b]。
+-（字符串）source：复制源。可选值：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]this[/font][/backcolor]（死亡实体）、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]killer[/font][/backcolor]（击杀者实体）、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]killer_player[/font][/backcolor]（击杀者玩家）和 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]block_entity[/font][/backcolor]（被破坏的方块实体）。[b]前三者只能在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:entity[/font][/backcolor] 类型的战利品表中使用，后者只能在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:block[/font][/backcolor] 类型的战利品表中使用[/b]。
 -（数组）所有要进行的复制操作。
     -[i]（对象）一个复制操作。[/i]
-        -（字符串）source：源 NBT 路径。如果值为 项目[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]""[/font][/backcolor]，将会复制[b]复制源[/b]的所有 NBT。如果该路径无法匹配到复制源的任何 NBT，将不会进行此项复制操作。
+        -（字符串）source：源 NBT 路径。如果值为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]""[/font][/backcolor]，将会复制[b]复制源[/b]的所有 NBT。如果该路径无法匹配到复制源的任何 NBT，将不会进行此项复制操作。
         -（字符串）target：目标 NBT 路径。
-        -（字符串）op：复制方式。可选值：项目[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]replace[/font][/backcolor]（直接替换物品的目标路径下原有的值）、项目[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]append[/font][/backcolor]（将内容追加到物品目标路径下原有的值中。仅对数组和列表类型的值有效）和 项目[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]merge[/font][/backcolor]（将内容和物品目标路径下原有的值合并。仅对 compound 类型的值有效）。
+        -（字符串）op：复制方式。可选值：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]replace[/font][/backcolor]（直接替换物品的目标路径下原有的值）、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]append[/font][/backcolor]（将内容追加到物品目标路径下原有的值中。仅对数组和列表类型的值有效）和 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]merge[/font][/backcolor]（将内容和物品目标路径下原有的值合并。仅对 compound 类型的值有效）。
 
 例子：
 一、原版旗帜[code]{
