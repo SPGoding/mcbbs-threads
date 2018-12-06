@@ -201,7 +201,7 @@ else:
 
 动态返回。其返回内容由执行它的方块所决定。[s]需要再定义一个 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]name[/font][/backcolor]（字符串）字段，指出返回的内容类别，值为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:self[/font][/backcolor] 或 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:contents[/font][/backcolor]：前者被玩家头颅、旗帜执行时，会返回与其样式相同的物品；后者被潜影盒执行时，会返回其内容物。经过尝试，该类型的项目在其他方块/生物上使用没有效果。[/s]
 
-自 18w49a 起，只有十七种潜影盒的战利品表中使用到了此类型的项目，其功能完全可以被 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:copy_nbt[/font][/backcolor] 函数代替，使用还更加直观，不知为何 Mojang 仍要采用 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:dynamic[/font][/backcolor] 这个废物东西。
+自 18w49a 起，只有十七种潜影盒的战利品表中使用到了此类型的项目，其功能完全可以被 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:copy_nbt[/font][/backcolor] 函数代替，使用还更加直观，不知为何 Mojang 仍要采用 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:dynamic[/font][/backcolor] 这个鸡肋东西。
 
 
 [size=3][b]minecraft:group[/b][/size]
@@ -898,7 +898,7 @@ data/spgoding/loot_tables/bar.json
             "op": "replace"
         }
     ]
-}[/code]二、项目[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:copy_name[/font][/backcolor] 函数的等效写法[code]{
+}[/code]二、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:copy_name[/font][/backcolor] 函数的等效写法[code]{
     "function": "minecraft:copy_nbt",
     "source": "block_entity",
     "ops": [
