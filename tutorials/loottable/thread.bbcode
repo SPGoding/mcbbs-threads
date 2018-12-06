@@ -5,7 +5,7 @@ http://www.mcbbs.net/thread-831542-1-1.html
 [index]
 [#1]简介
 [#2]格式（工作流程概述）
-*[#3]事物 - entry
+*[#3]项目 - entry
 *[#4]条件 - condition
 *[#5]函数 - function
 [#6]例子
@@ -13,7 +13,6 @@ http://www.mcbbs.net/thread-831542-1-1.html
 *[#8]沙砾
 [#9]LootTable 与 DeathLootTable 标签
 [#10]loot 命令
-点击论坛界面右侧的粉色「书签」可以快速回到本目录。
 [/index]
 
 [size=5][b]简介[/b][/size]
@@ -40,15 +39,15 @@ http://www.mcbbs.net/thread-831542-1-1.html
 
 在战利品表的 JSON 文件内的 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]type[/font][/backcolor] 字段中，可以定义该战利品表的类型为上述六种之一。通过定义该字段，在战利品表内使用了其不能使用的函数或条件时（比如，在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:block[/font][/backcolor] 类型的战利品表内检测了「被击杀者」。有关函数/条件的具体内容，会在后文进行讲解），游戏会进行报错；如果不指定该字段，则对函数/条件的使用没有限制，但是，游戏会在调用战利品表时根据调用它的情景来决定它的类型，你无法使用的函数/条件仍然无法使用（例如，一个叫 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]foo:bar[/font][/backcolor] 的战利品表没有指定类型，但是在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:gameplay/fishing[/font][/backcolor] 里调用了它，游戏则会认为它是 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:fishing[/font][/backcolor] 类型的战利品表，无法使用该类型不支持的函数/进度），而且在加载时不会有任何报错，[color=Red]除非特殊需求，十分不建议省略该字段[/color]。
 
-战利品表内定义了许多的[ruby=pool][b]奖池[/b][/ruby]（或称[b]随机池[/b]），这些奖池里面又定义了一些 [ruby=entry][b]事物[/b][/ruby]（具体的介绍见「事物」章节，为了避免歧义，后文以英文 entry 称呼）。游戏会在每个奖池中，随机抽取一定数量的 entry（这个数量即为[ruby=rolls][b]抽取次数[/b][/ruby]）。被抽出的 entry 会返回数个[ruby=item][b]物品[/b][/ruby]，最终呈现在玩家面前。
+战利品表内定义了许多的[ruby=pool][b]奖池[/b][/ruby]（或称[b]随机池[/b]），这些奖池里面又定义了一些 [ruby=entry][b]项目[/b][/ruby]（具体的介绍见「项目」章节）。游戏会在每个奖池中，随机抽取一定数量的项目（这个数量即为[ruby=rolls][b]抽取次数[/b][/ruby]）。被抽出的项目会返回数个[ruby=item][b]物品[/b][/ruby]，最终呈现在玩家面前。
 
 文件结构[spoiler]-（字符串）type：该战利品表的类型。
 -（数组）pools：所有的奖池。
     -[i]（对象）一个奖池。[/i]
         -（整型）rolls：该奖池的抽取次数。
-        -（数组）entries：所有的 entry。
-            -[i]（对象）一个 entry。[/i]
-                -（字符串）type：该 entry 的类型。[/spoiler]
+        -（数组）entries：所有的项目。
+            -[i]（对象）一个项目。[/i]
+                -（字符串）type：该项目的类型。[/spoiler]
 
 以上所述只是战利品表工作流程的主要部分。在一个奖池内，[ruby=抽取次数][b]rolls[/b][/ruby] 除了可以设置为一个确切的数字，还可以设置为一个随机数的范围。具体格式为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]{ "min": <最小值>, "max": <最大值> }[/font][/backcolor]，包含最大值和最小值。例如 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]"rolls": { "min": 1, "max": 3 }[/font][/backcolor] 将会对该奖池抽取 1 次至 3 次。
 此外，还可以通过设置 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]bonus_rolls[/font][/backcolor] 来指定每一级幸运属性增加的抽取次数（或随机范围），最终结果向下取整。例如 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]"bonus_rolls": 0.5 [/font][/backcolor]在玩家每有 2 级幸运属性时会增加 1 次抽取次数。[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]"bonus_rolls": { "min": 0.1, "max": 0.5 }[/font][/backcolor] 这种随机范围的写法也是同样可行的。
@@ -58,24 +57,24 @@ http://www.mcbbs.net/thread-831542-1-1.html
     -[i]（对象）一个奖池。[/i]
         [color=Red]-（整型或对象）rolls：该奖池的抽取次数（或范围）。
         -（浮点型或对象）bonus_rolls：每一级幸运属性增加的抽取次数（或范围）。[/color]
-        -（数组）entries：所有的 entry。
-            -[i]（对象）一个 entry。[/i]
-                -（字符串）type：该 entry 的类型。[/spoiler]
+        -（数组）entries：所有的项目。
+            -[i]（对象）一个项目。[/i]
+                -（字符串）type：该项目的类型。[/spoiler]
 
-在一个 entry 内，可以设置 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]weight[/font][/backcolor] 定义该 entry 被抽取到的基础权重，[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]quality[/font][/backcolor] 定义每一级幸运属性增加的权重。一个奖池内，每个entry被抽到的几率为：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]该 entry 的权重 / 奖池内所有 entry 的权重之和[/font][/backcolor]。
+在一个项目内，可以设置 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]weight[/font][/backcolor] 定义该项目被抽取到的基础权重，[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]quality[/font][/backcolor] 定义每一级幸运属性增加的权重。一个奖池内，每个entry被抽到的几率为：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]该项目的权重 / 奖池内所有项目的权重之和[/font][/backcolor]。
 
 进一步完善的文件结构[spoiler]-（字符串）type：该战利品表的类型。
 -（数组）pools：所有的奖池。
     -[i]（对象）一个奖池。[/i]
         -（整型或对象）rolls：该奖池的抽取次数（或范围）。
         -（浮点型或对象）bonus_rolls：每一级幸运属性增加的抽取次数（或范围）。
-        -（数组）entries：所有的 entry。
-            -[i]（对象）一个 entry。[/i]
-                -（字符串）type：该 entry 的类型。
-                [color=Red]-（整型）weight：该 entry 的基础权重。
+        -（数组）entries：所有的项目。
+            -[i]（对象）一个项目。[/i]
+                -（字符串）type：该项目的类型。
+                [color=Red]-（整型）weight：该项目的基础权重。
                 -（整形）quality：每级幸运属性对权重的影响。[/color][/spoiler]
 
-此外，整个战利品表、每一个奖池、每一个 entry 内，都可以定义[ruby=function][b]函数[/b][/ruby]（这里所提到的函数与数据包内定义的命令函数无关）。我们可以将函数理解为对 entry 的操作，具体的介绍见「函数」章节。在每一个奖池、每一个 entry 、每一个函数内，又可以定义[ruby=condition][b]条件[/b][/ruby]，只有在某些信息满足该条件时，该条件所属的奖池/entry/函数才会被执行，具体的介绍见「条件」章节。
+此外，整个战利品表、每一个奖池、每一个项目内，都可以定义[ruby=function][b]函数[/b][/ruby]（这里所提到的函数与数据包内定义的命令函数无关）。我们可以将函数理解为对项目的操作，具体的介绍见「函数」章节。在每一个奖池、每一个项目、每一个函数内，又可以定义[ruby=condition][b]条件[/b][/ruby]，只有在某些信息满足该条件时，该条件所属的奖池/entry/函数才会被执行，具体的介绍见「条件」章节。
 
 [size=3][b]文件结构[/b][/size]
 -（字符串）type：该战利品表的类型。
@@ -103,9 +102,9 @@ http://www.mcbbs.net/thread-831542-1-1.html
                 -[i]条件参数[/i][/color]
         -（整型或对象）rolls：该奖池的抽取次数（或范围）。
         -（浮点型或对象）bonus_rolls：每一级幸运属性增加的抽取次数（或范围）。
-        -（数组）entries：所有的 entry。
-            -[i]（对象）一个 entry。[/i]
-                [color=Red]-（数组）functions：对该 entry 执行的所有函数。
+        -（数组）entries：所有的项目。
+            -[i]（对象）一个项目。[/i]
+                [color=Red]-（数组）functions：对该项目执行的所有函数。
                     -[i]（对象）一个函数。[/i]
                         -（字符串）function：函数名。
                         -（数组）conditions：执行该函数需满足的所有条件。
@@ -113,22 +112,22 @@ http://www.mcbbs.net/thread-831542-1-1.html
                                 -（字符串）condition：条件名。
                                 -[i]条件参数[/i]
                         -[i]函数参数[/i]
-                -（数组）conditions：抽取该 entry 的所有条件。
+                -（数组）conditions：抽取该项目的所有条件。
                     -[i]（对象）一个条件[/i]
                         -（字符串）condition：条件名。
                         -[i]条件参数[/i][/color]
-                -（字符串）type：该 entry 的类型。
-                -（整型）weight：该 entry 的基础权重。
+                -（字符串）type：该项目的类型。
+                -（整型）weight：该项目的基础权重。
                 -（整形）quality：每级幸运属性对权重的影响。
 
 本节完。点击论坛界面右侧的粉色「书签」可以快速回到上方目录。
 
 [page]
 [size=5][b]格式[/b][/size]
-[size=4][b]事物 - entry[/b][/size]
-事物（Entry），即定义在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]entries[/font][/backcolor] 下的对象。由上章结尾可知，其格式如下：
+[size=4][b]项目 - entry[/b][/size]
+项目（Entry），即定义在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]entries[/font][/backcolor] 下的对象。由上章结尾可知，其格式如下：
 
--（数组）functions：对该 entry 执行的所有函数。
+-（数组）functions：对该项目执行的所有函数。
     -[i]（对象）一个函数。[/i]
         -（字符串）function：函数名。
         -（数组）conditions：执行该函数需满足的所有条件。
@@ -136,19 +135,19 @@ http://www.mcbbs.net/thread-831542-1-1.html
                 -（字符串）condition：条件名。
                 -[i]条件参数[/i]
         -[i]函数参数[/i]
--（数组）conditions：抽取该 entry 的所有条件。
+-（数组）conditions：抽取该项目的所有条件。
     -[i]（对象）一个条件[/i]
         -（字符串）condition：条件名。
         -[i]条件参数[/i]
-[color=Red]-（字符串）type：该 entry 的类型。[/color]
--（整型）weight：该 entry 的基础权重。
+[color=Red]-（字符串）type：该项目的类型。[/color]
+-（整型）weight：该项目的基础权重。
 -（整形）quality：每级幸运属性对权重的影响。
 
-本节中，我们主要讲解 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]type[/font][/backcolor]，它定义了这个 entry 的类型，下面将分别介绍这 8 种类型。
+本节中，我们主要讲解 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]type[/font][/backcolor]，它定义了这个项目的类型，下面将分别介绍这 8 种类型。
 
 [size=3][b]minecraft:item[/b][/size]
 
-定义该 entry 直接是一个物品。需要再定义一个 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]name[/font][/backcolor]（字符串）字段，指出该物品的 ID。例如：[code]{
+定义该项目直接是一个物品。需要再定义一个 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]name[/font][/backcolor]（字符串）字段，指出该物品的 ID。例如：[code]{
     "type": "minecraft:item",
     "name": "minecraft:stone"
 }[/code]定义了一个石头物品。
@@ -156,7 +155,7 @@ http://www.mcbbs.net/thread-831542-1-1.html
 
 [size=3][b]minecraft:loot_table[/b][/size]
 
-引用另一个战利品表。需要再定义一个 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]name[/font][/backcolor]（字符串）字段，指出引用的战利品表的[ruby=resource location][b]资源路径[/b][/ruby]。当抽取到该 entry 时，会从指定的战利品表中获得物品，将这些物品作为该 entry 的返回值。例如：[code]{
+引用另一个战利品表。需要再定义一个 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]name[/font][/backcolor]（字符串）字段，指出引用的战利品表的[ruby=resource location][b]资源路径[/b][/ruby]。当抽取到该项目时，会从指定的战利品表中获得物品，将这些物品作为该项目的返回值。例如：[code]{
     "type": "minecraft:loot_table",
     "name": "minecraft:gameplay/fishing"
 }[/code]会从战利品表 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:gameplay/fishing[/font][/backcolor] 获取物品并返回。
@@ -164,12 +163,12 @@ http://www.mcbbs.net/thread-831542-1-1.html
 
 [size=3][b]minecraft:empty[/b][/size]
 
-空。该类型的 entry 不会返回任何物品。
+空。该类型的项目不会返回任何物品。
 
 
 [size=3][b]minecraft:alternatives[/b][/size]
 
-从多个 [ruby=子事物][b]sub-entry[/b][/ruby] 中选择一个。需要再定义一个 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]children[/font][/backcolor]（数组）字段，内含多个 [b]sub-entry[/b]，游戏会返回[b]第一个条件满足的 sub-entry [/b]所返回的物品。例如：[code]{
+从多个[b]子项目[/b]中选择一个。需要再定义一个 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]children[/font][/backcolor]（数组）字段，内含多个[b]子项目[/b]，游戏会返回[b]第一个条件满足的子项目[/b]所返回的物品。例如：[code]{
     "type": "minecraft:alternatives",
     "children": [
         {
@@ -187,10 +186,10 @@ http://www.mcbbs.net/thread-831542-1-1.html
             "name": "丙"
         }
     ]
-}[/code]对于这样写的一个 entry，游戏的执行流程如下图：
+}[/code]对于这样写的一个项目，游戏的执行流程如下图：
 [img=361,571]http://wx2.sinaimg.cn/large/0065mBHhly1fxj84gokfyj30a10fvdg7.jpg[/img]
 
-可以发现，当返回了一个 sub-entry 后，alternatives 类型的 entry 直接结束，不会继续执行。如果学习过编程，你会发现这很像一系列的 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]if-else[/font][/backcolor]语句（伪代码）：[code]if A:
+可以发现，当返回了一个子项目后，alternatives 类型的项目直接结束，不会继续执行。如果学习过编程，你会发现这很像一系列的 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]if-else[/font][/backcolor]语句（伪代码）：[code]if A:
     return 甲
 elif B:
     return 乙
@@ -200,12 +199,14 @@ else:
 
 [size=3][b]minecraft:dynamic[/b][/size]
 
-动态返回。其返回内容由执行它的方块所决定。需要再定义一个 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]name[/font][/backcolor]（字符串）字段，指出返回的内容类别，值为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:self[/font][/backcolor] 或 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:contents[/font][/backcolor]：前者被玩家头颅、旗帜执行时，会返回与其样式相同的物品；后者被潜影盒执行时，会返回其内容物。经过尝试，该类型的 entry 在其他方块/生物上使用没有效果。
+动态返回。其返回内容由执行它的方块所决定。[s]需要再定义一个 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]name[/font][/backcolor]（字符串）字段，指出返回的内容类别，值为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:self[/font][/backcolor] 或 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:contents[/font][/backcolor]：前者被玩家头颅、旗帜执行时，会返回与其样式相同的物品；后者被潜影盒执行时，会返回其内容物。经过尝试，该类型的项目在其他方块/生物上使用没有效果。[/s]
+
+自 18w49a 起，只有十七种潜影盒的战利品表中使用到了此类型的项目，其功能完全可以被 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:copy_nbt[/font][/backcolor] 函数代替，使用还更加直观，不知为何 Mojang 仍要采用 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:dynamic[/font][/backcolor] 这个废物东西。
 
 
 [size=3][b]minecraft:group[/b][/size]
 
-从所有满足条件的 [ruby=子事物][b]sub-entry[/b][/ruby] 中随机抽取，其表现和 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]pools[/font][/backcolor] 十分相似。需要再定义一个 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]children[/font][/backcolor]（数组）字段，内含多个 sub-entry，游戏会从[b]所有满足条件的 sub-entry [/b]中随机抽取一个 entry。例如：[code]{
+从所有满足条件的[b]子项目[/b]中随机抽取，其表现和 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]pools[/font][/backcolor] 十分相似。需要再定义一个 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]children[/font][/backcolor]（数组）字段，内含多个子项目，游戏会从[b]所有满足条件的子项目[/b]中随机抽取一个项目。例如：[code]{
     "type": "minecraft:group",
     "children": [
         {
@@ -238,7 +239,7 @@ else:
 
 [size=3][b]minecraft:sequence[/b][/size]
 
-从前半部分满足条件的 [ruby=子事物][b]sub-entry[/b][/ruby] 中随机抽取。需要再定义一个 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]children[/font][/backcolor]（数组）字段，内含多个 [b]sub-entry[/b]，游戏会从[b]第一个条件不满足的 sub-entry 以前的[/b]所有 sub-entry 中随机抽取物品。例如：[code]{
+从前半部分满足条件的[b]子项目[/b]中随机抽取。需要再定义一个 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]children[/font][/backcolor]（数组）字段，内含多个[b]子项目[/b]，游戏会从[b]第一个条件不满足的子项目以前的[/b]所有子项目中随机抽取物品。例如：[code]{
     "type": "minecraft:sequence",
     "children": [
         {
@@ -286,7 +287,7 @@ data/spgoding/loot_tables/bar.json
     "type": "minecraft:tag",
     "name": "spgoding:foo",
     "expand": false
-}[/code]当该 entry 被执行时，会返回一个蓝色羊毛、一个黄色羊毛和一个红色羊毛。如果把 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]expand[/font][/backcolor] 改为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]true[/font][/backcolor]，将从这三种羊毛中随机返回一种。
+}[/code]当该项目被执行时，会返回一个蓝色羊毛、一个黄色羊毛和一个红色羊毛。如果把 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]expand[/font][/backcolor] 改为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]true[/font][/backcolor]，将从这三种羊毛中随机返回一种。
 
 本节完。点击论坛界面右侧的粉色「书签」可以快速回到上方目录。
 
@@ -300,7 +301,7 @@ data/spgoding/loot_tables/bar.json
 -（数字）min：最小值（含）。
 -（数字）max：最大值（含）。
 
-条件，能够决定某个奖池/entry/函数是否被执行。下面将分别介绍所有的条件，包括它们的参数和它们在什么情况下通过。
+条件，能够决定某个奖池/项目/函数是否被执行。下面将分别介绍所有的条件，包括它们的参数和它们在什么情况下通过。
 
 [size=3][b]minecraft:entity_properties[/b][/size]
 
@@ -620,7 +621,7 @@ data/spgoding/loot_tables/bar.json
 -（数字）max：随机数的最大值（含）。
 -（字符串）type：随机数的生成方式。可以为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:constant[/font][/backcolor]（常数）、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:uniform[/font][/backcolor]（均匀分布）或 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:binomial[/font][/backcolor]（二项分布）。默认为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:uniform[/font][/backcolor]（均匀分布）。
 
-函数，能够对该战利品表/奖池/entry 返回的物品进行操作。下面将分别介绍所有的函数以及它们的参数。
+函数，能够对该战利品表/奖池/项目返回的物品进行操作。下面将分别介绍所有的函数以及它们的参数。
 
 
 [size=3][b]minecraft:enchant_randomly[/b][/size]
@@ -873,6 +874,53 @@ data/spgoding/loot_tables/bar.json
 }[/code]
 
 
+[size=3][b]minecraft:copy_nbt[/b][/size]
+
+[b]本函数只能在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:block[/font][/backcolor] 和 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:entity[/font][/backcolor] 类型的战利品表中使用。[/b]
+
+将[ruby=source][b]复制源[/b][/ruby]的指定 NBT 路径的值复制到物品的指定 NBT 路径下。
+
+-（字符串）source：复制源。可选值：项目[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]this[/font][/backcolor]（死亡实体）、项目[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]killer[/font][/backcolor]（击杀者实体）、项目[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]killer_player[/font][/backcolor]（击杀者玩家）和 项目[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]block_entity[/font][/backcolor]（被破坏的方块实体）。[b]前三者只能在 项目[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:entity[/font][/backcolor] 类型的战利品表中使用，后者只能在 项目[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:block[/font][/backcolor] 类型的战利品表中使用[/b]。
+-（数组）所有要进行的复制操作。
+    -[i]（对象）一个复制操作。[/i]
+        -（字符串）source：源 NBT 路径。如果值为 项目[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]""[/font][/backcolor]，将会复制[b]复制源[/b]的所有 NBT。如果该路径无法匹配到复制源的任何 NBT，将不会进行此项复制操作。
+        -（字符串）target：目标 NBT 路径。
+        -（字符串）op：复制方式。可选值：项目[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]replace[/font][/backcolor]（直接替换物品的目标路径下原有的值）、项目[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]append[/font][/backcolor]（将内容追加到物品目标路径下原有的值中。仅对数组和列表类型的值有效）和 项目[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]merge[/font][/backcolor]（将内容和物品目标路径下原有的值合并。仅对 compound 类型的值有效）。
+
+例子：
+一、原版旗帜[code]{
+    "function": "minecraft:copy_nbt",
+    "source": "block_entity",
+    "ops": [
+        {
+            "source": "Patterns",
+            "target": "BlockEntityTag.Patterns",
+            "op": "replace"
+        }
+    ]
+}[/code]二、项目[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:copy_name[/font][/backcolor] 函数的等效写法[code]{
+    "function": "minecraft:copy_nbt",
+    "source": "block_entity",
+    "ops": [
+        {
+            "source": "CustomName",
+            "target": "display.Name",
+            "op": "replace"
+        }
+    ]
+}[/code]三、将死亡实体的所有信息存到刷怪蛋之中[code]{
+    "function": "minecraft:copy_nbt",
+    "source": "this",
+    "ops": [
+        {
+            "source": "",
+            "target": "EntityTag",
+            "op": "replace"
+        }
+    ]
+}[/code]
+
+
 [size=3][b]minecraft:explosion_decay[/b][/size]
 
 [b]本函数只能在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:block[/font][/backcolor] 类型的战利品表中使用。[/b]
@@ -1101,7 +1149,7 @@ data/spgoding/loot_tables/bar.json
 
 语法：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]give <实体选择器>[/font][/backcolor]
 
-战利品表产生的物品会被给予 <实体选择器> 中指定的玩家。其效果与 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]/give[/font][/backcolor] 命令类似，即当物品栏里已有相同的物品且没有达到堆叠上限时，产生的物品会被并入已有的物品组；当物品栏中没有相同物品，或物品栏中相同物品的组已经达到堆叠上限时，产生的物品会按照栏位 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]Slot[/font][/backcolor] 值大小的顺序填入。
+战利品表产生的物品会被给予 <实体选择器> 中指定的玩家。其效果与 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]/give[/font][/backcolor] 命令类似，即当物品栏里已有相同的物品且没有达到堆叠上限时，产生的物品会被并入已有的物品组；当物品栏中没有相同物品，或物品栏中相同物品的组已经达到堆叠上限时，产生的物品会按照栏位 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]Slot[/font][/backcolor] 值大小的顺序填入。与 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]/give[/font][/backcolor] 命令不同的是，当玩家背包已满时，战利品表产生的物品会被直接舍弃。
 
 [b]填入方块[/b]
 
