@@ -1,0 +1,109 @@
+[index]
+[#1]前言
+*[#2]blocks.json解析
+*[#785747,12768084]commands.json解析
+*[#3]items.json解析
+[#4]骚操作：一键获得所有data的id
+[/index]
+MJSB在[url=http://www.mcbbs.net/thread-774052-1-3.html]18w01a的更新内容[/url]中加入了[b]数据生成器[/b]([b]data generators[/b]，以下简称[b]dg[/b])，可以在不打开游戏的情况下获取游戏内所有命令、进度、配方、物品、方块等。
+有关这个东西的教程十分稀少，甚至在en wiki上也没有提到如何使用这个东西的文章。以下教程全部是自己瞎摸索出来的…
+
+[size=5]如何使用[/size]
+dg可以在服务端和客户端上使用。(感谢@玄素 @u.s.knowledge 指出)
+服务端你需要写一串批处理(bat)来使用dg。假设服务端的名称为“[b]server.jar[/b]”，你只需要在服务端的同级目录下新建一个文件“foo.bat”，其中内容写为：
+[code]java -classpath server.jar net.minecraft.data.Main --all
+PAUSE[/code]
+而客户端略微复杂，需要使用
+[code]#!/bin/bash
+# ${minecraft_path} 代表你的 Minecraft 安装路径，根据启动器的使用有所差异。
+# 请根据需要自行更改本脚本。本脚本使用 18w06a 测试通过。
+# 依赖项目的版本可能需要根据实际情况作适当调整。
+java -classpath \
+minecraft-18w06a-client.jar\
+:${minecraft_path}/libraries/net/sf/jopt-simple/jopt-simple/5.0.3/jopt-simple-5.0.3.jar\
+:${minecraft_path}/libraries/commons-io/commons-io/2.5/commons-io-2.5.jar\
+:${minecraft_path}/libraries/org/apache/logging/log4j/log4j-core/2.8.1/log4j-core-2.8.1.jar\
+:${minecraft_path}/libraries/org/apache/logging/log4j/log4j-api/2.8.1/log4j-api-2.8.1.jar\
+:${minecraft_path}/libraries/org/apache/commons/commons-lang3/3.5/commons-lang3-3.5.jar\
+:${minecraft_path}/libraries/com/google/guava/guava/21.0/guava-21.0.jar\
+:${minecraft_path}/libraries/it/unimi/dsi/fastutil/7.1.0/fastutil-7.1.0.jar\
+:${minecraft_path}/libraries/io/netty/netty-all/4.1.9.Final/netty-all-4.1.9.Final.jar\
+:${minecraft_path}/libraries/com/google/code/gson/gson/2.8.0/gson-2.8.0.jar\
+:${minecraft_path}/libraries/com/mojang/authlib/1.5.25/authlib-1.5.25.jar\
+:${minecraft_path}/libraries/com/mojang/brigadier/0.1.24/brigadier-0.1.24.jar \
+net.minecraft.data.Main --all[/code]
+其中“[b]net.minecraft.data.Main[/b]”就是dg的主类，而后面的“[b]--all[/b]”则是dg的参数。下面是部分参数详解：
+[table=98%]
+[tr][td]参数[/td][td]用途[/td][/tr]
+[tr][td]--output <String>[/td][td]指定输出文件夹，就是说生成的东西它会放到哪里。默认是同级目录的generated文件夹下[/td][/tr]
+[tr][td]--help[/td][td]显示帮助，它的帮助很简略，不如看我写的hhh[/td][/tr]
+[tr][td]--dev[/td][td]包括开发者工具，什么文件都不会生成，只是显示一下已有的工具，很皮[/td][/tr]
+[tr][td]--reports[/td][td]包括数据报告，效果是[b]生成出reports文件夹(包含blocks, commands和items，即方块、命令和物品)[/b][/td][/tr]
+[tr][td]--server[/td][td]包括服务端，效果是会[b]生成出data文件夹(包含advancements, recipes和tags，即进度、配方和标签)[/b][/td][/tr]
+[tr][td]--all[/td][td]包括所有，即[b]生成出reports文件夹和data文件夹[/b][/td][/tr]
+[/table]
+在“data”文件夹中，就像数据包那样，放有“advancements”“recipes”“tags”，相信大家并不陌生，就不作过多介绍啦。
+而“reports”文件夹中则有“blocks.json”“commands.json”“items.json”三个陌生的文件，接下来将一一分析它们的格式。
+
+
+[page]
+[size=5]blocks.json解析[/size]
+blocks.json中存放的是所有的方块。其格式为：
+[code]{
+    "<命名空间>:<方块ID>": {
+        "properties": {
+            "<属性名>": [
+                <属性值列表...>
+            ]
+        }
+        "states": [
+            {
+                "properties": {
+                    "<属性名>": "<属性值>"
+                },
+                "id": "<一个数字>",
+                "default": <是否默认>
+            }
+        ]
+    }
+}[/code]，例如：
+[code]  "minecraft:grass_block": {
+    "properties": {
+      "snowy": [
+        "true",
+        "false"
+      ]
+    },
+    "states": [
+      {
+        "properties": {
+          "snowy": "true"
+        },
+        "id": 8
+      },
+      {
+        "properties": {
+          "snowy": "false"
+        },
+        "id": 9,
+        "default": true
+      }
+    ]
+  },
+[/code]上面这一串Json，定义了“minecraft:grass_block”（草方块）有一个属性“snowy”（其实就是方块状态），它有“true”和“false”两个值。下面的“states”定义了id分别为8、9的两种状态的草方块，一种是被雪覆盖的；一种是默认的、没被雪覆盖的。
+
+
+[page]
+[size=5]items.json解析[/size]
+items.json中存放的是所有的物品。其格式为：
+[code]  "<命名空间>:<物品id>": {
+    "protocol_id": <一个整数>
+  }[/code]我并没有偷懒，整个items.json都是这个的不断重复…
+
+
+[page]
+[size=5]骚[size=0px].[/size]操作：一键获得所有data的id[/size]
+使用dg生成出来的"data"文件夹中，是所有的进度、配方和标签，但它们都是一个个文件，如果想整理很不方便。因此我们可以使用"dir"命令把所有文件名输出：
+[code]dir/s/b >list.txt[/code]把该bat放在"generated/data"下，就可以得到list.txt文件，里面是全部配方、进度和标签的文件路径。删掉几个文件夹，然后用正则批量替换什么的骚操作，最后你就可以获得一系列"<命名空间>:<文件路径>"这样的骚东西了！
+
+
