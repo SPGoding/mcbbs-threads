@@ -364,12 +364,12 @@ data/spgoding/loot_tables/bar.json
 
 例子：[code]{
     "entity": "killer_player",
-    "scores": [
+    "scores": {
         "foo": {
             "min": 10
         },
         "bar": 15
-    ]
+    }
 }[/code]在击杀该实体的玩家 foo 分数大于 10，且 bar 分数等于 15 时，条件通过。
 
 
@@ -793,7 +793,7 @@ data/spgoding/loot_tables/bar.json
 
 [size=3][b]minecraft:set_lore[/b][/size]
 
-设置该物品的下标
+设置该物品的下标。
 
 -（数组）lore ：要添加的所有下标。
     -[i]（字符串）一个下标。[/i]
