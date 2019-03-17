@@ -103,7 +103,12 @@ http://www.mcbbs.net/thread-808124-1-1.html
 [size=4][b]merge[/b][/size]
 
 [size=3]当指定的 NBT 与原先 NBT 不同，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]1[/font][/backcolor]；
-当指定的 NBT 与原先 NBT 完全相同，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size]
+当指定的 NBT 与原先 NBT 完全相同时，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size]
+
+[size=4][b]modify[/b][/size]
+
+[size=3]当成功编辑时，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]1[/font][/backcolor]；
+当编辑失败，或是编辑后的值和之前完全一致时，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]。[/size]
 
 [size=4][b]remove[/b][/size]
 
@@ -152,8 +157,7 @@ http://www.mcbbs.net/thread-808124-1-1.html
 [size=3]返回：实际被给予效果的实体个数。
 例如，即使指定了给 2 个实体效果，但其中有 1 个实体不支持状态效果，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]1[/font][/backcolor] 而不是 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]2[/font][/backcolor]。[/size]
 
-[size=4][b]clear[/b][/size]
-
+[size=4][b]clear[/b][/size] 
 [size=3]返回：实际被清除效果的实体个数。
 例如，即使指定清除 2 个实体的效果，但其中有 1 个实体没有这个效果或不支持状态效果，返回 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]1[/font][/backcolor] 而不是 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]2[/font][/backcolor]。[/size][/spoiler]
 [size=5][b]enchant[/b][/size]
