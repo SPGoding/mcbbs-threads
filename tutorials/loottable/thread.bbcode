@@ -1,6 +1,9 @@
-http://www.mcbbs.net/thread-831542-1-1.html
+本文标题：【CBL｜SPG】［1.14］战利品表：从入门到重新入门
 
-【CBL｜SPG】［1.14］战利品表：从入门到重新入门
+本文链接：http://www.mcbbs.net/thread-831542-1-1.html
+
+作　　者：@SPGoding（Command Block Logic）
+
 
 [index]
 [#1]简介
@@ -626,214 +629,6 @@ data/spgoding/loot_tables/bar.json
 函数，能够对该战利品表/奖池/项目返回的物品进行操作。下面将分别介绍所有的函数以及它们的参数。
 
 
-[size=3][b]minecraft:enchant_randomly[/b][/size]
-
-从指定的魔咒中随机抽取并附给该物品。
-
--（数组）enchantments：随机魔咒的抽取范围。如果不指定，所有适用于该物品的魔咒都有可能被抽取。
-    -[i]（字符串）一个魔咒 ID。[/i]
-
-例子：[code]{
-    "function": "minecraft:enchant_randomly",
-    "enchantments": [
-        "minecraft:silk_touch",
-        "minecraft:fortune
-    ]
-}[/code]该物品会被随机附上精准采集或时运。
-
-
-[size=3][b]minecraft:enchant_with_levels[/b][/size]
-
-将等价于经验等级的魔咒附给该物品。
-
--（数字或随机数）levels：经验等级。和使用附魔台消耗的经验等级一样。
--（布尔）treasure：是否允许宝藏魔咒。
-
-例子：[code]{
-    "function": "minecraft:enchant_with_levels",
-    "levels": 30,
-    "treasure": true
-}[/code]将会给予该物品等价于 30 级经验等级的宝藏魔咒。
-
-
-[size=3][b]minecraft:exploration_map[/b][/size]
-
-将普通的地图物品变为一个指引到某个结构的探险地图。
-
--（字符串）destination：目标结构的 ID。和 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]/locate[/font][/backcolor] 命令中的参数一样，但应改为全小写。
--（字符串）decoration：该结构在地图中显示的图标。如果设置为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]mansion[/font][/backcolor] 或 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]monument[/font][/backcolor]，地图物品的图标将会改变。可以是[url=https://minecraft.gamepedia.com/Map#Map_icons]这些值[/url]，大小写敏感。
--（整数）zoom：地图缩放等级。默认为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]2[/font][/backcolor]。
--（整数）search_radius：搜寻的区块半径。搜寻的区域是方形，不是圆形。设置为 0 将只在当前区块搜寻，设置为 1 将会搜寻当前区块和周围的 8 个区块，以此类推。默认为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]50[/font][/backcolor]。
--（布尔）skip_existing_chunks：是否不在已经生成过的区块搜寻。默认为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]true[/font][/backcolor]。
-
-例子：[code]{
-    "function": "minecraft:exploration_map",
-    "destination": "buried_treasure",
-    "decoration": "red_x",
-    "zoom": 1,
-    "skip_existing_chunks": false
-}[/code]
-
-
-[size=3][b]minecraft:furnace_smelt[/b][/size]
-
-得到该物品被熔炉熔炼后的结果。例如该物品是生鸡肉，执行该函数后会变为熟鸡肉。
-
-例子：[code]{
-    "function": "minecraft:furnace_smelt"
-}[/code]
-
-
-[size=3][b]minecraft:looting_enchant[/b][/size]
-
-[b]本函数只能在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:entity[/font][/backcolor] 类型的战利品表中使用。[/b]
-
-由击杀者的抢夺魔咒等级调整物品的数量。
-
--（整数或随机数）count：每一级抢夺魔咒增加的物品数量。
--（整数）limit：物品数量的最大限制。如果设置为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]，将没有任何限制。
-
-例子：[code]{
-    "function": "minecraft:looting_enchant",
-    "limit": 5
-}[/code]
-
-
-[size=3][b]minecraft:set_attributes[/b][/size]
-
-向该物品添加属性修饰器。
-
--（数组）modifiers：所有属性修饰器。
-    -[i]（对象）一个属性修饰器[/i]
-        -（字符串）name：属性修饰器名称。
-        -（字符串）attribute：被修饰的属性。
-        -（字符串）operation：修饰模式。可选值：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]addition[/font][/backcolor]、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]multiply_base[/font][/backcolor] 或 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]multiply_total[/font][/backcolor]。
-        -（整数或随机数）amount：修饰器修饰数量。
-        -（字符串）id：修饰器的 UUID。如果不指定，将会自动生成。
-        -（字符串）slot：能应用该修饰器的物品栏位。可选值：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]mainhand[/font][/backcolor]、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]offhand[/font][/backcolor]、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]feet[/font][/backcolor]、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]legs[/font][/backcolor]、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]chest[/font][/backcolor] 或 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]head[/font][/backcolor]。
-        -（数组）slot：能应用该修饰器的所有物品栏位。
-            -[i]（字符串）一个栏位。可选值：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]mainhand[/font][/backcolor]、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]offhand[/font][/backcolor]、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]feet[/font][/backcolor]、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]legs[/font][/backcolor]、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]chest[/font][/backcolor] 或 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]head[/font][/backcolor]。[/i]
-
-例子：[code]{
-    "function": "minecraft:set_attributes",
-    "modifiers": [
-        {
-            "name": "foo",
-            "attribute": "generic.movementSpeed",
-            "operation": "addition",
-            "amount": 2
-        }
-    ]
-}[/code]将给予该物品对移速属性的属性修饰器。
-
-
-[size=3][b]minecraft:set_count[/b][/size]
-
-设置物品堆叠数量。
-
--（整数或随机数）count：堆叠数量。
-
-例子：[code]{
-    "function": "minecraft:set_count",
-    "count": {
-        "min": 0,
-        "max": 16"
-    }
-}[/code]该物品会被随机设置为 0 至 16 之间的数量。
-
-
-[size=3][b]minecraft:set_damage[/b][/size]
-
-设置物品耐久度。
-
--（整数或随机数）damage：耐久度。值域为 [0.0, 1.0]。[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]1.0[/font][/backcolor] 是未被损坏，[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0.0[/font][/backcolor] 是用尽耐久。
-
-例子：[code]{
-    "function": "minecraft:set_damage",
-    "damage": {
-        "min": 0.01,
-        "max": 0.5
-    }
-}[/code]该物品的耐久度会被随机设置在「只剩一点点」和「还剩一半」之间。
-
-
-[size=3][b]minecraft:set_nbt[/b][/size]
-
-给该物品设置 NBT。
-
--（字符串）tag：要添加的 NBT。和 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]/give[/font][/backcolor] 命令里面的类似。注意转义。
-
-例子：[code]{
-    "function": "minecraft:set_nbt",
-    "tag": "{foo:\"bar\"}"
-}[/code]该物品会被添加上 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]foo:"bar"[/font][/backcolor] 这一自定义 NBT。
-
-
-[size=3][b]minecraft:set_name[/b][/size]
-
-设置该物品的显示名。
-
--（字符串）name：显示名。
--（对象）name：显示名。格式同 JSON 聊天文本。
--（字符串）entity：如果存在，将被用于解析 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]name[/font][/backcolor] 中的 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]score[/font][/backcolor]。可选值：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]this[/font][/backcolor]、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]killer[/font][/backcolor] 和 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]killer_player[/font][/backcolor]。[b]本参数只能在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:entity[/font][/backcolor] 类型的战利品表中使用。[color=Red]物品显示名中并不支持 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]score[/font][/backcolor]，但是该函数执行时会首先将指定实体的指定分数存储到 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]value[/font][/backcolor]，而物品名能够识别出这个 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]value[/font][/backcolor] 并将其显示出来。[/color][/b]
-
-例子：[code]{
-    "function": "minecraft:set_name",
-    "name": {
-        "score": {
-            "objective": "foo",
-            "name": "*"
-        },
-        "italic": false,
-        "color": "gold"
-    },
-    "entity": "killer_player"
-}[/code]假设击杀者的 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]foo[/font][/backcolor] 分数为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]41[/font][/backcolor]，击杀者游戏名称为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]SPGoding[/font][/backcolor]，得到的物品显示名 JSON 是 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]{"italic": false,"color":"gold","score":{"objective":"foo","name":"SPGoding","value":"41"}}[/font][/backcolor]，其中 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]41[/font][/backcolor] 会被显示出来。
-
-
-[size=3][b]minecraft:set_lore[/b][/size]
-
-设置该物品的下标。
-
--（数组）lore ：要添加的所有下标。
-    -[i]（字符串）一个下标。[/i]
-    -[i]（对象）一个下标。格式同 JSON 聊天文本。[/i]
--（字符串）entity：如果存在，将被用于解析 JSON 聊天文本的 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]selector[/font][/backcolor] 和 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]score[/font][/backcolor]。可选值：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]this[/font][/backcolor]、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]killer[/font][/backcolor] 和 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]killer_player[/font][/backcolor]。[b]本参数只能在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:entity[/font][/backcolor] 类型的战利品表中使用。[color=Red]物品下标中并不支持 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]score[/font][/backcolor]，但是该函数执行时会首先将指定实体的指定分数存储到 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]value[/font][/backcolor]，而下标能够识别出这个 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]value[/font][/backcolor] 并将其显示出来。[/color][/b]
--（布尔）replace：是否清除原有的下标。
-
-例子：[code]{
-    "function": "minecraft:set_lore",
-    "lore": [
-        {
-            "text": "丢弃物品请按: ",
-            "color": "green",
-            "italic": false,
-            "extra": [
-                {
-                    "keybind": "key.drop",
-                    "color": "gold"
-                }
-            ]
-        }
-    ],
-    "replace": true
-}[/code]
-
-
-[size=3][b]minecraft:fill_player_head[/b][/size]
-
-[b]本函数只能在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:entity[/font][/backcolor] 类型的战利品表中使用。[/b]
-
-将玩家头颅的皮肤信息设置为指定玩家。
-
--（字符串）entity：指定玩家。可选值：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]this[/font][/backcolor]、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]killer[/font][/backcolor] 和 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]killer_player[/font][/backcolor]。如果指定的实体不是玩家，或者该物品不是玩家头颅，什么都不会发生。
-
-例子：[code]{
-    "function": "minecraft:fill_player_head",
-    "entity": "killer"
-}[/code]将会返回击杀该实体的玩家的头颅。
-
-
 [size=3][b]minecraft:apply_bonus[/b][/size]
 
 [b]本函数只能在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:block[/font][/backcolor] 类型的战利品表中使用。[/b]
@@ -923,6 +718,55 @@ data/spgoding/loot_tables/bar.json
 }[/code]
 
 
+[size=3][b]minecraft:enchant_randomly[/b][/size]
+
+从指定的魔咒中随机抽取并附给该物品。
+
+-（数组）enchantments：随机魔咒的抽取范围。如果不指定，所有适用于该物品的魔咒都有可能被抽取。
+    -[i]（字符串）一个魔咒 ID。[/i]
+
+例子：[code]{
+    "function": "minecraft:enchant_randomly",
+    "enchantments": [
+        "minecraft:silk_touch",
+        "minecraft:fortune
+    ]
+}[/code]该物品会被随机附上精准采集或时运。
+
+
+[size=3][b]minecraft:enchant_with_levels[/b][/size]
+
+将等价于经验等级的魔咒附给该物品。
+
+-（数字或随机数）levels：经验等级。和使用附魔台消耗的经验等级一样。
+-（布尔）treasure：是否允许宝藏魔咒。
+
+例子：[code]{
+    "function": "minecraft:enchant_with_levels",
+    "levels": 30,
+    "treasure": true
+}[/code]将会给予该物品等价于 30 级经验等级的宝藏魔咒。
+
+
+[size=3][b]minecraft:exploration_map[/b][/size]
+
+将普通的地图物品变为一个指引到某个结构的探险地图。
+
+-（字符串）destination：目标结构的 ID。和 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]/locate[/font][/backcolor] 命令中的参数一样，但应改为全小写。
+-（字符串）decoration：该结构在地图中显示的图标。如果设置为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]mansion[/font][/backcolor] 或 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]monument[/font][/backcolor]，地图物品的图标将会改变。可以是[url=https://minecraft.gamepedia.com/Map#Map_icons]这些值[/url]，大小写敏感。
+-（整数）zoom：地图缩放等级。默认为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]2[/font][/backcolor]。
+-（整数）search_radius：搜寻的区块半径。搜寻的区域是方形，不是圆形。设置为 0 将只在当前区块搜寻，设置为 1 将会搜寻当前区块和周围的 8 个区块，以此类推。默认为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]50[/font][/backcolor]。
+-（布尔）skip_existing_chunks：是否不在已经生成过的区块搜寻。默认为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]true[/font][/backcolor]。
+
+例子：[code]{
+    "function": "minecraft:exploration_map",
+    "destination": "buried_treasure",
+    "decoration": "red_x",
+    "zoom": 1,
+    "skip_existing_chunks": false
+}[/code]
+
+
 [size=3][b]minecraft:explosion_decay[/b][/size]
 
 [b]本函数只能在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:block[/font][/backcolor] 类型的战利品表中使用。[/b]
@@ -931,6 +775,29 @@ data/spgoding/loot_tables/bar.json
 
 例子：[code]{
     "function": "minecraft:explosion_decay"
+}[/code]
+
+
+[size=3][b]minecraft:fill_player_head[/b][/size]
+
+[b]本函数只能在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:entity[/font][/backcolor] 类型的战利品表中使用。[/b]
+
+将玩家头颅的皮肤信息设置为指定玩家。
+
+-（字符串）entity：指定玩家。可选值：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]this[/font][/backcolor]、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]killer[/font][/backcolor] 和 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]killer_player[/font][/backcolor]。如果指定的实体不是玩家，或者该物品不是玩家头颅，什么都不会发生。
+
+例子：[code]{
+    "function": "minecraft:fill_player_head",
+    "entity": "killer"
+}[/code]将会返回击杀该实体的玩家的头颅。
+
+
+[size=3][b]minecraft:furnace_smelt[/b][/size]
+
+得到该物品被熔炉熔炼后的结果。例如该物品是生鸡肉，执行该函数后会变为熟鸡肉。
+
+例子：[code]{
+    "function": "minecraft:furnace_smelt"
 }[/code]
 
 
@@ -951,6 +818,49 @@ data/spgoding/loot_tables/bar.json
 }[/code]每种物品的堆叠数量会被限制在 [1, 5]
 
 
+[size=3][b]minecraft:looting_enchant[/b][/size]
+
+[b]本函数只能在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:entity[/font][/backcolor] 类型的战利品表中使用。[/b]
+
+由击杀者的抢夺魔咒等级调整物品的数量。
+
+-（整数或随机数）count：每一级抢夺魔咒增加的物品数量。
+-（整数）limit：物品数量的最大限制。如果设置为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0[/font][/backcolor]，将没有任何限制。
+
+例子：[code]{
+    "function": "minecraft:looting_enchant",
+    "limit": 5
+}[/code]
+
+
+[size=3][b]minecraft:set_attributes[/b][/size]
+
+向该物品添加属性修饰器。
+
+-（数组）modifiers：所有属性修饰器。
+    -[i]（对象）一个属性修饰器[/i]
+        -（字符串）name：属性修饰器名称。
+        -（字符串）attribute：被修饰的属性。
+        -（字符串）operation：修饰模式。可选值：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]addition[/font][/backcolor]、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]multiply_base[/font][/backcolor] 或 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]multiply_total[/font][/backcolor]。
+        -（整数或随机数）amount：修饰器修饰数量。
+        -（字符串）id：修饰器的 UUID。如果不指定，将会自动生成。
+        -（字符串）slot：能应用该修饰器的物品栏位。可选值：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]mainhand[/font][/backcolor]、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]offhand[/font][/backcolor]、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]feet[/font][/backcolor]、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]legs[/font][/backcolor]、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]chest[/font][/backcolor] 或 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]head[/font][/backcolor]。
+        -（数组）slot：能应用该修饰器的所有物品栏位。
+            -[i]（字符串）一个栏位。可选值：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]mainhand[/font][/backcolor]、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]offhand[/font][/backcolor]、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]feet[/font][/backcolor]、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]legs[/font][/backcolor]、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]chest[/font][/backcolor] 或 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]head[/font][/backcolor]。[/i]
+
+例子：[code]{
+    "function": "minecraft:set_attributes",
+    "modifiers": [
+        {
+            "name": "foo",
+            "attribute": "generic.movementSpeed",
+            "operation": "addition",
+            "amount": 2
+        }
+    ]
+}[/code]将给予该物品对移速属性的属性修饰器。
+
+
 [size=3][b]minecraft:set_contents[/b][/size]
 
 [b]本函数只能在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:block[/font][/backcolor] 类型的战利品表中使用。[/b]
@@ -968,6 +878,157 @@ data/spgoding/loot_tables/bar.json
         }
     ]
 }[/code]会将该方块的内容物设置到物品的 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]BlockEntityTag.Items[/font][/backcolor] 中。
+
+
+[size=3][b]minecraft:set_count[/b][/size]
+
+设置物品堆叠数量。
+
+-（整数或随机数）count：堆叠数量。
+
+例子：[code]{
+    "function": "minecraft:set_count",
+    "count": {
+        "min": 0,
+        "max": 16"
+    }
+}[/code]该物品会被随机设置为 0 至 16 之间的数量。
+
+
+[size=3][b]minecraft:set_damage[/b][/size]
+
+设置物品耐久度。
+
+-（整数或随机数）damage：耐久度。值域为 [0.0, 1.0]。[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]1.0[/font][/backcolor] 是未被损坏，[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]0.0[/font][/backcolor] 是用尽耐久。
+
+例子：[code]{
+    "function": "minecraft:set_damage",
+    "damage": {
+        "min": 0.01,
+        "max": 0.5
+    }
+}[/code]该物品的耐久度会被随机设置在「只剩一点点」和「还剩一半」之间。
+
+
+[size=3][b]minecraft:set_lore[/b][/size]
+
+设置该物品的下标。
+
+-（数组）lore ：要添加的所有下标。
+    -[i]（字符串）一个下标。[/i]
+    -[i]（对象）一个下标。格式同 JSON 聊天文本。[/i]
+-（字符串）entity：如果存在，将被用于解析 JSON 聊天文本的 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]selector[/font][/backcolor] 和 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]score[/font][/backcolor]。可选值：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]this[/font][/backcolor]、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]killer[/font][/backcolor] 和 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]killer_player[/font][/backcolor]。[b]本参数只能在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:entity[/font][/backcolor] 类型的战利品表中使用。[color=Red]物品下标中并不支持 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]score[/font][/backcolor]，但是该函数执行时会首先将指定实体的指定分数存储到 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]value[/font][/backcolor]，而下标能够识别出这个 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]value[/font][/backcolor] 并将其显示出来。[/color][/b]
+-（布尔）replace：是否清除原有的下标。
+
+例子：[code]{
+    "function": "minecraft:set_lore",
+    "lore": [
+        {
+            "text": "丢弃物品请按: ",
+            "color": "green",
+            "italic": false,
+            "extra": [
+                {
+                    "keybind": "key.drop",
+                    "color": "gold"
+                }
+            ]
+        }
+    ],
+    "replace": true
+}[/code]
+
+
+[size=3][b]minecraft:set_name[/b][/size]
+
+设置该物品的显示名。
+
+-（字符串）name：显示名。
+-（对象）name：显示名。格式同 JSON 聊天文本。
+-（字符串）entity：如果存在，将被用于解析 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]name[/font][/backcolor] 中的 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]score[/font][/backcolor]。可选值：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]this[/font][/backcolor]、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]killer[/font][/backcolor] 和 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]killer_player[/font][/backcolor]。[b]本参数只能在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:entity[/font][/backcolor] 类型的战利品表中使用。[color=Red]物品显示名中并不支持 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]score[/font][/backcolor]，但是该函数执行时会首先将指定实体的指定分数存储到 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]value[/font][/backcolor]，而物品名能够识别出这个 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]value[/font][/backcolor] 并将其显示出来。[/color][/b]
+
+例子：[code]{
+    "function": "minecraft:set_name",
+    "name": {
+        "score": {
+            "objective": "foo",
+            "name": "*"
+        },
+        "italic": false,
+        "color": "gold"
+    },
+    "entity": "killer_player"
+}[/code]假设击杀者的 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]foo[/font][/backcolor] 分数为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]41[/font][/backcolor]，击杀者游戏名称为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]SPGoding[/font][/backcolor]，得到的物品显示名 JSON 是 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]{"italic": false,"color":"gold","score":{"objective":"foo","name":"SPGoding","value":"41"}}[/font][/backcolor]，其中 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]41[/font][/backcolor] 会被显示出来。
+
+
+[size=3][b]minecraft:set_nbt[/b][/size]
+
+给该物品设置 NBT。
+
+-（字符串）tag：要添加的 NBT。和 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]/give[/font][/backcolor] 命令里面的类似。注意转义。
+
+例子：[code]{
+    "function": "minecraft:set_nbt",
+    "tag": "{foo:\"bar\"}"
+}[/code]该物品会被添加上 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]foo:"bar"[/font][/backcolor] 这一自定义 NBT。
+
+
+[size=3][b]minecraft:set_stew_effect[/b][/size]
+
+给迷之炖菜（[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:suspicious_stew[/font][/backcolor]）设置效果。
+
+-（数组）effects：随机添加的效果，将从中随机抽出一个赋予迷之炖菜。
+    -[i]（对象）一个效果。[/i]
+        -（字符串）type： 状态效果的 ID。
+        -（数字或随机数）duration：该效果持续的时长。
+
+例子：[code]{
+    "function": "minecraft:set_stew_effect",
+    "effects": [
+        {
+            "type": "minecraft:poison",
+            "duration": {
+                "min": 10.0,
+                "max": 20.0
+            }
+        },
+        {
+            "type": "minecraft:weakness",
+            "duration": {
+                "min": 6.0,
+                "max": 8.0
+            }
+        },
+        {
+            "type": "minecraft:blindness",
+            "duration": {
+                "min": 5.0,
+                "max": 7.0
+            }
+        },
+        {
+            "type": "minecraft:speed",
+            "duration": {
+                "min": 7.0,
+                "max": 10.0
+            }
+        },
+        {
+            "type": "minecraft:jump_boost",
+            "duration": {
+                "min": 7.0,
+                "max": 10.0
+            }
+        },
+        {
+            "type": "minecraft:saturation",
+            "duration": {
+                "min": 7.0,
+                "max": 10.0
+            }
+        }
+    ]
+}[/code]该物品会被添加上众多随机效果。
 
 
 [size=3][b]minecraft:set_loot_table[/b][/size]
