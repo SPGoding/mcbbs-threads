@@ -2383,7 +2383,7 @@ JSON 格式包含五种结构，分别是对象、字符串、布尔值、数字
 [/list]
 [/list][*][font=Monaco,Consolas,'Lucida Console','Courier New',serif][backcolor=white]must_reach[/backcolor][/font]：（布尔值，默认 [font=Monaco,Consolas,'Lucida Console','Courier New',serif][backcolor=white]false[/backcolor][/font]）如果为 [font=Monaco,Consolas,'Lucida Console','Courier New',serif][backcolor=white]true[/backcolor][/font]，目标点必须可以到达。
 [*][font=Monaco,Consolas,'Lucida Console','Courier New',serif][backcolor=white]must_see[/backcolor][/font]：（布尔值，默认 [font=Monaco,Consolas,'Lucida Console','Courier New',serif][backcolor=white]false[/backcolor][/font]）如果为 [font=Monaco,Consolas,'Lucida Console','Courier New',serif][backcolor=white]true[/backcolor][/font]，该实体必须在视野范围内才有效。
-[*][font=Monaco,Consolas,'Lucida Console','Courier New',serif][backcolor=white]must_see_forget_duration[/backcolor][/font]：（数字，默认 3.0）决定当该实体离开视野后，选取新的目标前的秒数。
+[*][font=Monaco,Consolas,'Lucida Console','Courier New',serif][backcolor=white]must_see_forget_duration[/backcolor][/font]：（数字，默认 4.0）决定当该实体离开视野后，选取新的目标前的秒数。
 [*][font=Monaco,Consolas,'Lucida Console','Courier New',serif][backcolor=white]persist_time[/backcolor][/font]：（数字，默认 0.0）当一个实体不再符合目标条件后，仍作为目标的秒数。
 [*][font=Monaco,Consolas,'Lucida Console','Courier New',serif][backcolor=white]reselect_targets[/backcolor][/font]：（布尔值，默认 [font=Monaco,Consolas,'Lucida Console','Courier New',serif][backcolor=white]false[/backcolor][/font]）如果为 [font=Monaco,Consolas,'Lucida Console','Courier New',serif][backcolor=white]true[/backcolor][/font]，该实体会把目标切换为更近的一个实体。
 [*][font=Monaco,Consolas,'Lucida Console','Courier New',serif][backcolor=white]scan_interval[/backcolor][/font]：（整数，默认 10）两次寻找目标之间间隔的刻数。
@@ -3628,7 +3628,7 @@ JSON 格式包含五种结构，分别是对象、字符串、布尔值、数字
 [*][font=Monaco,Consolas,'Lucida Console','Courier New',serif][backcolor=white]fuseLength[/backcolor][/font]：（数组，默认为 [font=Monaco,Consolas,'Lucida Console','Courier New',serif][backcolor=white][0.0， 0.0][/backcolor][/font]）自点燃后爆炸前的时间范围。负数会使其立刻爆炸。
 [*][font=Monaco,Consolas,'Lucida Console','Courier New',serif][backcolor=white]fuseLit[/backcolor][/font]：（布尔值，默认为 [font=Monaco,Consolas,'Lucida Console','Courier New',serif][backcolor=white]false[/backcolor][/font]）如果为 [font=Monaco,Consolas,'Lucida Console','Courier New',serif][backcolor=white]true[/backcolor][/font]，当该组件被添加时立刻点燃。
 [*][font=Monaco,Consolas,'Lucida Console','Courier New',serif][backcolor=white]maxResistance[/backcolor][/font]：（数字，默认为 [font=Monaco,Consolas,'Lucida Console','Courier New',serif][backcolor=white]Infinite[/backcolor][/font]）爆炸抗性比这个值低的方块会被破坏。
-[*][font=Monaco,Consolas,'Lucida Console','Courier New',serif][backcolor=white]power[/backcolor][/font]：（数字，默认为 [font=Monaco,Consolas,'Lucida Console','Courier New',serif][backcolor=white]3.0[/backcolor][/font]）爆炸半径，及爆炸的伤害。
+[*][font=Monaco,Consolas,'Lucida Console','Courier New',serif][backcolor=white]power[/backcolor][/font]：（数字，默认为 [font=Monaco,Consolas,'Lucida Console','Courier New',serif][backcolor=white]4.0[/backcolor][/font]）爆炸半径，及爆炸的伤害。
 [/list]
 [code]{
     "fuseLength": 0,
@@ -3714,7 +3714,7 @@ JSON 格式包含五种结构，分别是对象、字符串、布尔值、数字
 添加一个计时器记录玩家上一次睡觉的时间（用于决定是否生成幻翼）。
 
 [list]
-[*][font=Monaco,Consolas,'Lucida Console','Courier New',serif][backcolor=white]days_until_insomnia[/backcolor][/font]：（数字，默认 3.0）玩家需要修仙的天数。
+[*][font=Monaco,Consolas,'Lucida Console','Courier New',serif][backcolor=white]days_until_insomnia[/backcolor][/font]：（数字，默认 4.0）玩家需要修仙的天数。
 [/list]
 [code]{
     "days_until_insomnia": 3

@@ -1,10 +1,14 @@
 # mcbbs-threads
+
 @SPGoding 在 MCBBS 发表的有价值帖子的 BBCode 代码
 
-# 协议
-除非特别声明，本仓库内所有文件均以 [CC BY-NC-SA 4.0 协议](https://creativecommons.org/licenses/by-nc-sa/4.0/)发布。
+## 协议
 
-# 快速替换 regex
+![知识共享许可协议](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png)
+
+本作品采用[知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议](http://creativecommons.org/licenses/by-nc-sa/4.0/)进行许可。
+
+## 快速替换 regex
 
 ```
 `(.*?)`
