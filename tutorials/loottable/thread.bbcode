@@ -441,7 +441,7 @@ data/spgoding/loot_tables/bar.json
 -（对象）predicate：对该伤害的断言。
     -（布尔）blocked：伤害是否被盾牌阻挡。
     -（数字或范围）dealt：被防御前的伤害大小。
-    -（数字或范围）taken：实际造成的伤害大小（可能被盔**免等）。
+    -（数字或范围）taken：实际造成的伤害大小（可能被盔甲[size=0px].[/size]减免等）。
     -（对象）direct_entity：伤害的直接来源实体（如弹射物）。格式同 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:entity_properties[/font][/backcolor] 中的 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]predicate[/font][/backcolor]。
     -（对象）source_entity：伤害的根本来源实体（如射箭的骷髅）。格式同 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:entity_properties[/font][/backcolor] 中的 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]predicate[/font][/backcolor]。
     -（对象）type：伤害的类型。
@@ -538,7 +538,7 @@ data/spgoding/loot_tables/bar.json
 分别定义不同级别的附魔等级下条件的通过几率。
 
 -（字符串）enchantment：探测的魔咒 ID。
--（数组）每个魔咒等级下的通过几率。
+-（数组）chances：每个魔咒等级下的通过几率。
     -[i]（数字）无该魔咒的几率[/i]
     -[i]（数字）该魔咒为 1 级的几率[/i]
     -[i]（数字）该魔咒为 2 级的几率[/i]
@@ -675,7 +675,7 @@ data/spgoding/loot_tables/bar.json
 将[ruby=source][b]复制源[/b][/ruby]的指定 NBT 路径的值复制到物品的指定 NBT 路径下。
 
 -（字符串）source：复制源。可选值：[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]this[/font][/backcolor]（死亡实体）、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]killer[/font][/backcolor]（击杀者实体）、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]killer_player[/font][/backcolor]（击杀者玩家）和 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]block_entity[/font][/backcolor]（被破坏的方块实体）。[b]前三者只能在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:entity[/font][/backcolor] 类型的战利品表中使用，后者只能在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:block[/font][/backcolor] 类型的战利品表中使用[/b]。
--（数组）所有要进行的复制操作。
+-（数组）ops：所有要进行的复制操作。
     -[i]（对象）一个复制操作。[/i]
         -（字符串）source：源 NBT 路径。如果值为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]""[/font][/backcolor]，将会复制[b]复制源[/b]的所有 NBT。如果该路径无法匹配到复制源的任何 NBT，将不会进行此项复制操作。
         -（字符串）target：目标 NBT 路径。
