@@ -38,8 +38,9 @@
 - [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:empty[/font][/backcolor]：空的。
 - [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:entity[/font][/backcolor]：决定实体掉落物。
 - [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:fishing[/font][/backcolor]：决定玩家钓鱼奖励。
+- [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:generic[/font][/backcolor]：除上述以外的战利品表。原版数据包中并没有使用该类型的战利品表。该类型的战利品表可以使用任何函数、条件等而不报错，效果类似于不指定战利品表类型。
 
-在战利品表的 JSON 文件内的 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]type[/font][/backcolor] 字段中，可以定义该战利品表的类型为上述六种之一。通过定义该字段，在战利品表内使用了其不能使用的函数或条件时（比如，在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:block[/font][/backcolor] 类型的战利品表内检测了「被击杀者」。有关函数/条件的具体内容，会在后文进行讲解），游戏会进行报错；如果不指定该字段，则对函数/条件的使用没有限制，但是，游戏会在调用战利品表时根据调用它的情景来决定它的类型，你无法使用的函数/条件仍然无法使用（例如，一个叫 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]foo:bar[/font][/backcolor] 的战利品表没有指定类型，但是在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:gameplay/fishing[/font][/backcolor] 里调用了它，游戏则会认为它是 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:fishing[/font][/backcolor] 类型的战利品表，无法使用该类型不支持的函数/进度），而且在加载时不会有任何报错，[color=Red]除非特殊需求，十分不建议省略该字段[/color]。
+在战利品表的 JSON 文件内的 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]type[/font][/backcolor] 字段中，可以定义该战利品表的类型为上述七种之一。通过定义该字段，在战利品表内使用了其不能使用的函数或条件时（比如，在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:block[/font][/backcolor] 类型的战利品表内检测了「被击杀者」。有关函数/条件的具体内容，会在后文进行讲解），游戏会进行报错；如果不指定该字段，则对函数/条件的使用没有限制，但是，游戏会在调用战利品表时根据调用它的情景来决定它的类型，你无法使用的函数/条件仍然无法使用（例如，一个叫 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]foo:bar[/font][/backcolor] 的战利品表没有指定类型，但是在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:gameplay/fishing[/font][/backcolor] 里调用了它，游戏则会认为它是 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:fishing[/font][/backcolor] 类型的战利品表，无法使用该类型不支持的函数/进度），而且在加载时不会有任何报错，[color=Red]除非特殊需求，十分不建议省略该字段[/color]。
 
 战利品表内定义了许多的[ruby=pool][b]奖池[/b][/ruby]（或称[b]随机池[/b]），这些奖池里面又定义了一些 [ruby=entry][b]项目[/b][/ruby]（具体的介绍见「项目」章节）。游戏会在每个奖池中，随机抽取一定数量的项目（这个数量即为[ruby=rolls][b]抽取次数[/b][/ruby]）。被抽出的项目会返回数个[ruby=item][b]物品[/b][/ruby]，最终呈现在玩家面前。
 
@@ -964,10 +965,11 @@ data/spgoding/loot_tables/bar.json
 
 -（字符串）tag：要添加的 NBT。和 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]/give[/font][/backcolor] 命令里面的类似。注意转义。
 
-例子：[code]{
+例子：{
     "function": "minecraft:set_nbt",
     "tag": "{foo:\"bar\"}"
-}[/code]该物品会被添加上 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]foo:"bar"[/font][/backcolor] 这一自定义 NBT。
+}
+该物品会被添加上 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]foo:"bar"[/font][/backcolor] 这一自定义 NBT。
 
 
 [size=3][b]minecraft:set_stew_effect[/b][/size]
@@ -1284,6 +1286,6 @@ data/spgoding/loot_tables/bar.json
 
 本教程完。
 
-[afd]SPGoding[/afd]
+
 
 
