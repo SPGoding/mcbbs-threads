@@ -84,7 +84,7 @@ We take safety seriously and are taking measures to make Minecraft Earth an enjo
 
 **玩家的安全性有保障吗？**
 
-我们很重视安全性，并且会采取各种措施以保证 Minecraft Earth 能为所有玩家带来有趣、有保障的游戏体验。玩家与家长将能够通过**帐号管理**来调整安全与隐私设置。玩家将能够在游戏内或在网站上通过反馈系统来反馈任何对游戏的担忧。
+我们很重视安全性，并且会采取各种措施以保证 Minecraft Earth 能为所有玩家带来有趣、有保障的游戏体验。玩家与家长将能够通过**帐号管理**来调整安全与隐私设置。玩家将能够在游戏内或网站上的反馈系统来反馈任何对游戏的担忧。
 
 ---
 
@@ -94,7 +94,7 @@ Yes. A free Microsoft or Xbox Live account allows you to track your progress and
 
 **Minecraft Earth 需要微软或 XBox Live 帐号吗？**
 
-需要。免费的微软帐号或 XBox Live 帐号将可以追踪你的游戏进度，并且保存你的建筑与物品栏，这样你每次玩的时候都可以接着上次的来了！你并不需要付费的 XBox Live Gold 服务就可以玩到 Minecraft Earth。
+需要。你可以通过免费的微软帐号或 XBox Live 帐号来追踪游戏进度，并且保存你的建筑与物品栏，这样你每次玩的时候都可以接着上次的来了！你并不需要付费的 XBox Live Gold 服务就可以玩到 Minecraft Earth。
 
 ---
 
@@ -152,9 +152,9 @@ There’s lots to do in Minecraft Earth whilst exploring your world or relaxing 
 
 你可以在 Minecraft Earth 里做很多事情，比如探索你的世界，或是在家放松等：
 
-- 通过点击获取方块、生物和物品等各种稀有的可收集物；
+- 通过简单的点击来获取方块、生物和物品等各种稀有的可收集物；
 - 使用你收集到的方块、生物以及物品在**建筑底盘**上建造；
-- 以等身大小通过 AR（增强现实）探索你的建筑；
+- 通过 AR（增强现实）探索等身大小的你的建筑；
 - 通过基于增强现实的**冒险**功能在真实世界中探索 Minecraft 的世界。
 
 ---
@@ -174,7 +174,7 @@ You can both invite friends to join you in diorama build mode, and in life-size 
 Adventures are the survival part of Minecraft Earth. The part where you explore, take daring risks and lose it all in a pool of lava.  You will see an Adventure on your in-game map. Get close and tap on it to enter. You will never know exactly what’s in there, the contents are randomized.  It is a slice of a real Minecraft world in life size on the ground. You dig down with your pickaxe or shovel, chop down trees. There might be mobs in there you can kill or breed, and deep under the ground, you may find valuable ores, hidden treasures or a hive of hostile mobs! 
 
 **冒险是什么？**
-冒险是 Minecraft Earth 的生存部分，你在探险的时候需要冒着很大的风险，比如掉到熔岩湖里失去一切。你可以在游戏内地图上看到**冒险**，接近它以后点击即可进入。内容是随机生成的，你永远也不会知道那里面到底有什么。它会在地面上开一个等身大小的 Minecraft 世界的切面，你可以用镐或锹向下挖，砍倒树木等。那里可能会有一些你能击杀或是喂养的生物，而在地底深处你可能会找到价值连城的矿物、隐藏的宝藏，或是一伙敌对生物！
+冒险是 Minecraft Earth 的生存部分，你在探险的时候需要冒着很大的风险，比如掉到熔岩湖里失去一切。你可以在游戏内地图上看到**冒险**，接近它以后点击即可进入。冒险内容是随机生成的，你永远也不会知道那里面到底有什么。它会在地面上开一个等身大小的 Minecraft 世界的切面，你可以用镐或锹向下挖掘，砍倒树木等。那里可能会有一些你能击杀或是喂养的生物，而在地底深处你可能会找到价值连城的矿物、隐藏的宝藏，或是一伙敌对生物！
 
 ---
 
@@ -196,7 +196,7 @@ This means that in tabletop Build mode, you should only build with friends that 
 **人们可以摧毁/拿我建筑底盘里的东西吗？**
 当你在**桌面建造模式**中邀请了其他玩家加入你的建筑底盘时，他们可以像在任何一个 Minecraft 世界中那样与它交互。建造、放物品、放生物，以及破坏、拿走方块都是可能的。
 
-不过，当你在**等身大小游玩模式**时，你玩的是世界的一个实例，任何操作都不会保存。所以在该模式下可以尽情地防火、掠夺、伤害生物。游玩模式正是为了恶作剧而设立的，当游玩结束后，一切都会恢复原状，不会有任何损失。
+不过，当你在**等身大小游玩模式**中时，你玩的是世界的一个实例，任何操作都不会保存。所以在该模式下可以尽情地放火、掠夺、伤害生物。游玩模式正是为了恶作剧而设立的，当游玩结束后，一切都会恢复原状，不会有任何损失。
 
 这就意味着，在**桌面建造模式**中，你应该只和你信任的朋友一起建造，谨慎地对待你的建筑，时刻小心火烛。不过在游玩模式里，什么都不用担心了。
 
@@ -238,8 +238,8 @@ No, your inventory size is unlimited. As with vanilla Minecraft, the maximum sta
 **HOW DOES LEVELING WORK IN MINECRAFT EARTH?**
 You gain experience points based on the Tappables you get while playing. Once you have enough experience points, you’ll gain a level in the game. Every 5 levels, you’ll unlock a new build plate with even more blocks and mobs to play with. 
 
-**MINECRAFT EARTH 中的等级机制怎样运作？**
-你通过获取可收集物得到经验点。当你有了足够的经验点后，你就可以升级。每升 5 级你就可以解锁一个带有更多方块和生物的新的建筑底板。
+**Minecraft Earth 中的等级机制怎样运作？**
+你可以通过获取可收集物得到经验点。当你有了足够的经验点后，你就可以升级。每升 5 级你就可以解锁一个带有更多方块和生物的新的建筑底板。
 
 ---
 
@@ -311,7 +311,7 @@ During Closed Beta, we expect to have Tappables, tabletop build plates and life-
 
 **内测中将会有哪些 Minecraft Earth 的游戏元素？**
 
-在内测期间，我们计划上线可收集物、桌面建筑底板和等身大小的 AR（增强现实）特性。我们预计将随着时间推移逐步推出更多特性，不过这会慢慢来，以确保所有功能都在正常运作，所以我们无法给出**冒险**功能或是其他计划的特性上线的具体时间。
+在内测期间，我们计划上线可收集物、桌面建筑底板和等身大小的 AR（增强现实）特性。我们预计将随着时间推移逐步推出更多特性，不过这会慢慢来，以确保所有功能都在正常运作，所以我们无法给出**冒险功能**或是其他计划的特性上线的具体时间。
 
 ---
 
@@ -319,9 +319,9 @@ During Closed Beta, we expect to have Tappables, tabletop build plates and life-
 
 Don’t worry! We have a beta planned for Android too. Our Closed Beta will be running first on iOS, and then once we are ready to add more people, we’ll be opening it up to Android players. Keep an eye on your e-mail inbox and stay tuned to the Minecraft Earth official twitter account at [@MinecraftEarth](https://twitter.com/minecraftearth?lang=en) for news on this.
 
-**我有安卓用户！什么时候我能参与内测？**
+**我是安卓用户！什么时候我才能参与内测？**
 
-别担心！我们有针对安卓的测试计划。内测将首先在 iOS 平台上进行，当我们准备好让更多人加入以后，我们就会为安卓玩家开启内测。注意你的电子邮件收件箱以及 Minecraft Earth 的官方 Twitter 帐号（[@MinecraftEarth](https://twitter.com/minecraftearth?lang=en)）以获得有关新闻。
+别担心！我们有针对安卓的测试计划。内测将首先在 iOS 平台上进行，当我们准备好让更多人加入以后，我们就会为安卓玩家开启内测。注意你的电子邮件收件箱，并关注 Minecraft Earth 的官方 Twitter 帐号[@MinecraftEarth](https://twitter.com/minecraftearth?lang=en) 以获得有关新闻。
 
 ---
 
@@ -329,6 +329,13 @@ Don’t worry! We have a beta planned for Android too. Our Closed Beta will be r
 
 原文：[https://www.minecraft.net/en-us/earth/faq](https://www.minecraft.net/en-us/earth/faq)
 
-译者：[@SPGoding]()
+译文：
 
-该译文以 CC BY-NC-SA 4.0 协议发布。文字形式托管于 [GitHub](https://github.com)，图片形式发表于 [MCBBS](http://mcbbs.net)。
+- https://github.com/SPGoding/mcbbs-threads/blob/master/translations/minecraft-earth-faq.md
+
+- https://www.mcbbs.net/thread-887454-1-1.html
+
+译者：[@SPGoding](https://github.com/SPGoding)
+
+该译文以 CC BY-NC-SA 4.0 协议发布。
+
