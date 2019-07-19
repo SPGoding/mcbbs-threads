@@ -617,15 +617,26 @@ data/spgoding/loot_tables/bar.json
 [size=5][b]格式[/b][/size]
 [size=4][b]函数 - function[/b][/size]
 
+函数，能够对该战利品表/奖池/项目返回的物品进行操作。
+
 本节中，「数字或随机数」表示该字段的值可以是一个确切的数字，也可以是一个表示随机数范围的对象（即随机数生成器）。
 
-随机数生成器的格式如下：
--（数字）min：随机数的最小值（含）。
--（数字）max：随机数的最大值（含）。
--（字符串）type：随机数的生成方式。可以为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:constant[/font][/backcolor]（常数）、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:uniform[/font][/backcolor]（均匀分布）或 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:binomial[/font][/backcolor]（二项分布）。默认为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:uniform[/font][/backcolor]（均匀分布）。
+随机数生成器有三种，「均匀分布型」「二项分布型」和「常数型」。随机数生成器的格式如下：
+-（字符串）type：随机数的生成方式。可选。可以为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:constant[/font][/backcolor]（常数）、[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:uniform[/font][/backcolor]（均匀分布）或 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:binomial[/font][/backcolor]（二项分布）。默认为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:uniform[/font][/backcolor]（均匀分布）。
 
-函数，能够对该战利品表/奖池/项目返回的物品进行操作。下面将分别介绍所有的函数以及它们的参数。
+如果没有指定 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]type[/font][/backcolor]，或是指定的为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:uniform[/font][/backcolor]，你需要额外指定最小值与最大值：
+-（整型）min：随机数的最小值（包含）。
+-（整型）max：随机数的最大值（包含）。
 
+如果 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]type[/font][/backcolor] 指定的为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:binomial[/font][/backcolor]，你需要额外指定参数 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]n[/font][/backcolor] 和 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]p[/font][/backcolor]：
+-（整型）n：伯努利试验的次数。
+-（整型）p：伯努利试验成功的概率。
+
+如果 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]type[/font][/backcolor] 指定的为 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:constant[/font][/backcolor]，事实上它产生的就不是随机数了，而是一个固定的数。你需要额外指定参数 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]count[/font][/backcolor]：
+-（整型）count：该随机数生成器返回的精确的数。
+也就是说，[backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]{"type": "minecraft:constant", "count": 1}[/font][/backcolor] 和 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]1[/font][/backcolor] 是完全等价的写法，一般我们都不会写这么麻烦的东西。
+
+下面将分别介绍所有的函数以及它们的参数。
 
 [size=3][b]minecraft:apply_bonus[/b][/size]
 
@@ -1286,6 +1297,3 @@ data/spgoding/loot_tables/bar.json
 本节完。
 
 本教程完。
-
-
-
