@@ -219,7 +219,7 @@
 
 | 字段 | 值 | 备注 |
 | - | - | - |
-| `predicate` | `TagHelper.areTagsEqual(%值%, tag, true) != isNegation` | 判断实体的类型是否满足指定条件。 |
+| `predicate` | `TagHelper.areTagsEqual(%值%, tag, true) != isNegation` | 判断实体的 NBT 标签是否满足指定条件。 |
 
 ##### `scores=%值%`
 
@@ -232,7 +232,7 @@
 | 字段 | 值 | 备注 |
 | - | - | - |
 | `includingNonPlayer` | `false` | **不允许包含非玩家**。 |
-| `predicate` | 略 | 判断实体的分数是否满足指定条件。 |
+| `predicate` | 略 | 判断实体的进度是否满足指定条件。 |
 
 ### 小结
 
@@ -270,43 +270,109 @@
 
 **断言**，英文 predicate，可简单理解为一系列的条件。当我们把一个实体传入断言中后，断言会进行一系列判断，返回这个实体是否满足各种条件。
 
-上述过程中的「建立断言」，是在**基础断言**的基础上，加入了**坐标断言**后合成出来的新断言。其中，基础断言，是在实体选择器的解析过程中不断建立出来的：在解析过程中，设置 `predicate` 字段的时候，其实是将新内容合并到旧内容中，不断地合并建立出了基础断言（见源码 `net.minecraft.command.EntitySelectorReader#setPredicate`）。坐标断言，
+上述过程中的「建立断言」，指的是在**基础断言**的基础上，加入**坐标断言**合成出新断言的过程。
 
-再来看看 `getEntities()` 的流程：
+其中，基础断言，是在实体选择器的解析过程中不断建立出来的：在解析过程中，设置 `predicate` 字段的时候，其实是在将新断言合并到原有断言中（见源码 `net.minecraft.command.EntitySelectorReader#setPredicate`）。在全部解析完成后，又会执行一个函数，添加 `x_rotation`、`y_rotation`、`level` 这三个选择器参数对应的断言到基础断言当中（见源码 `net.minecraft.command.EntitySelectorReader#buildPredicate`），至此基础断言彻底建立完毕。例如，根据上面的字段表，在解析实体选择器 `@e[type=zombie]` 时，当解析完变量 `@e` 后，会将 `Entity::isAlive` 加入断言；当解析完参数 `type=zombie` 后，会将「判断实体类型是否为僵尸」合并入断言；全部解析完成后，得到了基础断言，它要求实体既需要是活的，也需要是一只僵尸。
 
-1. 当不满足 `includeNonPlayers`，即只允许选取玩家时，调用上面提到的 `getPlayers()` 函数。
-2. 当指定了 `playerName` 时，遍历服务器玩家列表，找到玩家名和 `playerName` 一致的玩家（这部分操作和 `getPlayers()` 里相应部分一致）；
-3. 当指定了 `uuid` 时，遍历所有加载的世界，获取该世界中 UUID 为 `uuid` 的实体（后半部分操作同样基于 `HashMap`，速度非常快）（见源码 `net.minecraft.server.world.ServerWorld#getEntity`）；
-4. 当以上条件均不满足时：
-    0. a
+坐标断言，是基于 `distance`、`x`、`y`、`z`、`dx`、`dy`、`dz` 这七个选择器参数建立的对实体坐标的断言。我们省去 `offset`、`box` 等只在源代码中体现的技术性细节不谈，只说近似结论：
+1. `x`、`y`、`z` 中缺省的项目会使用命令执行坐标补全；
+2. 当存在 `distance` 时，会判定实体所在坐标到 (`x`, `y`, `z`) 的距离是否在 `distance` 限定范围之内；
+3. 当存在 `dx`、`dy`、`dz` 的任意一个时，会将缺省项目用 `0.0` 补齐，然后使用以下函数建立 `Box`，判定实体的碰撞箱是否与这个 `Box` 相交：
 
-## 总结
+```Java
+// net.minecraft.command.EntitySelectorReader#createBox
+private Box createBox(double dx, double dy, double dz) {
+    boolean boolean_1 = dx < 0.0D;
+    boolean boolean_2 = dy < 0.0D;
+    boolean boolean_3 = dz < 0.0D;
+    double double_1 = boolean_1 ? dx : 0.0D;
+    double double_2 = boolean_2 ? dy : 0.0D;
+    double double_3 = boolean_3 ? dz : 0.0D;
+    double double_4 = (boolean_1 ? 0.0D : dx) + 1.0D;
+    double double_5 = (boolean_2 ? 0.0D : dy) + 1.0D;
+    double double_6 = (boolean_3 ? 0.0D : dz) + 1.0D;
+    return new Box(double_1, double_2, double_3, double_4, double_5, double_6);
+}
+```
+
+这是一个非常莫名其妙的函数。在[这个帖子中](https://search.mcbbs.net/forum.php?mod=redirect&goto=findpost&ptid=772452&pid=12578685)，@chyx 给出了他的测试结果，虽然表述非常混乱，但实质上与代码表现出来的完全一致。即：
+
+> 如果 `dx` 小于 `0.0`，那么实体的碰撞箱在 x 轴方向上需要接触的范围是 (`x + dx`, `x + 1.0`)  
+> 如果 `dx` 大于等于 `0.0`，那么该范围是 (`x`, `x + dx + 1.0`)  
+> 其中 `x`、`dx` 均为实体选择器参数。  
+> （替换为 `y` 和 `dy`、`z` 和 `dz` 同理。）
+
+还有一件诡异的事情，当你完全没有指定 `dx`、`dy`、`dz` 这三者，但是指定了 `distance` 的最大值（例如 `distance=..5`、`distance=3` 等）的时候，游戏会自动建立出一个判定区域 `Box`，判定实体的碰撞箱是否与这个 `Box` 相交：
+
+```Java
+float distanceMax = (Float)this.distance.getMax();
+box = new Box(
+    (double)(-distanceMax), (double)(-distanceMax), (double)(-distanceMax), 
+    (double)(distanceMax + 1.0F), (double)(distanceMax + 1.0F), (double)(distanceMax + 1.0F)
+);
+```
+
+这一段操作意义不明。
+
+### `getEntities()` 的流程
+
+1. 当不满足 `includeNonPlayers`，即只允许选取玩家时，调用上面提到的 `getPlayers()` 函数，并**返回**。
+2. 当指定了 `playerName` 时，遍历服务器玩家列表，找到玩家名和 `playerName` 一致的玩家（这一步和 `getPlayers()` 里相应步骤一致），并**返回**；
+3. 当指定了 `uuid` 时，遍历所有加载的世界，获取该世界中 UUID 为 `uuid` 的实体（后半部分操作同样基于 `HashMap`，速度非常快）（见源码 `net.minecraft.server.world.ServerWorld#getEntity`），并**返回**；
+4. 基于命令执行坐标等，建立断言；
+5. 当 `senderOnly` 为 `true`，即只选择命令执行者时，将检查命令执行者是否为实体、是否满足断言，均满足则**返回**命令执行者，否则**返回**空列表。（由于是直接对命令执行者进行判断，而上文又提到过，命令的执行者被作为参数传入函数，因此该判断没有进行任何遍历，非常迅速）；
+6. 当 `localWorldOnly` 为 `true`，即只选择命令执行者所在的世界的实体时，将遍历该世界的实体列表，**筛选**出满足断言的实体（见源码 `net.minecraft.server.world.ServerWorld#getEntities`）；
+7. 否则，遍历所有世界，再遍历每个世界中的实体列表（见源码 `net.minecraft.command.EntitySelector#getEntities` 和 `net.minecraft.server.world.ServerWorld#getEntities`），**筛选**出满足断言的实体。
+8. 将上述步骤（6 或 7）中**筛选**出的实体按照 `sorter` 排序，再按照 `limit` 限制的数量从列表中移除多余的实体（见源码 `net.minecraft.command.EntitySelector#getEntities`），并**返回**。
+
+可以看出，这一部分的流程大体与 `getPlayers()` 一致，但是是从实体列表中遍历，耗时可能更长。
+
+### 小结
+
+实体选择器在获取实体时的步骤，整合以后可以归类如下：
+
+1. 对 UUID 的特殊处理，直接从 `HashMap` 索引，速度非常快；
+2. 对 `@s`（`senderOnly`）的特殊处理，直接读取参数，速度非常快；
+3. 一般情况下，将从列表中获取实体。`includingNonPlayers` 决定使用实体列表还是玩家列表，`localWorldOnly` 决定范围是当前世界还是全服；
+4. 把获取到的实体传入断言，筛选出符合条件的实体；
+5. 根据 `sorter` 排序，再根据 `limit` 移除多余实体。
+
+如果你追求性能的话，在函数全篇大量使用某个相同实体（如 `@e[tag=marker]`）时，不如套一层 `execute as @e[tag=marker] run function xxx`，用极其高效的 `@s` 替换掉多次遍历全服实体列表。如果你有些病态，可以用手动指定 UUID 来替代用 tag 标记 marker，但我个人不太推荐这么做。
+
+另外，由常识：
+
+1. 玩家列表通常比实体列表要小，至少不会比它大；
+2. 当前世界的列表通常比全服列表小，至少不会比它大。
+
+因此，如果你是一个十分病态、极致追求性能（其实一般情况下没有必要，真的涉及实体数量非常多的话，MC 自己就会卡得不行了，你命令再怎么高性能也挽救不回来）的玩家的话，可以通过限定选择器变量、选择器参数，在允许的情况下尽量使 `includingNonPlayers` 变为 `false`，使 `localWorldOnly` 变为 `true`。
 
 ## 后语
 
-在最初观看 Wiki 时，看到实体选择器的相关介绍时，我曾有过各种各样的困惑。而如今，我也能够把握十足地回答它们了：
+在最初观看 Wiki、看到实体选择器的相关介绍时，我曾有过各种各样的困惑。而如今，我也能够把握十足地回答它们了。请注意，以下内容适用于 Minecraft 1.14.4，可能颠覆您的三观：
 
 > `@e[type=minecraft:player]`、`@a` 是否等价？性能呢？
 
-并不等价。由于 `@e` 向断言中自动加入 `Entity::isAlive` ，导致前者不能选中死亡的玩家；后者则没有这种限制。
+并不等价。根据「解析」部分的字段表，`@e` 向断言中自动加入了 `Entity::isAlive`，导致前者不能选中死亡的玩家；后者则没有这种限制。
 
-性能区别不大。前者在读取完 `type` 后会设定 `includingNonPlayers` 为 `false`，后者 `@a` 自动设定 `includingNonPlayers` 为 `false`，两者都是从玩家列表中选择玩家。
+性能区别不大。前者在解析完 `type` 后会设定 `includingNonPlayers` 为 `false`，后者 `@a` 自动设定 `includingNonPlayers` 为 `false`，两者都是从玩家列表中选择玩家。
 
 > `@p[name=SPGoding]`、`SPGoding` 是否等价？ 性能呢？
 
-效果等价，都是选择名为 `SPGoding` 的玩家。
+效果等价。都是选择名为 `SPGoding` 的玩家。
 
-性能上，前者慢于后者。//
+性能区别不大。两者都遍历了一遍全服玩家列表。
 
 > `@e[nbt={UUIDMost:1L,UUIDLeast:1L}]`、`00000000-0000-0001-0000-000000000001` 是否等价？ 性能呢？
 
 效果等价，都是选择 UUID 为  `00000000-0000-0001-0000-00000000000` 的实体。
 
-性能上，前者远远慢于后者。因为前者将遍历全部世界和世界中的全部实体，而后者将在遍历全部世界时直接从 `HashMap` 中获取指定 UUID 对应的实体。
+性能上前者慢于后者。因为前者将遍历全部世界和世界中的全部实体，而后者将在遍历全部世界时直接从 `HashMap` 中获取指定 UUID 对应的实体。
 
-> `@e[type=minecraft:zombie,tag=haha]`、`@e[tag=haha,type=minecraft:zombie]` 是否等价？ 性能呢？
+> `@e[tag=marker]`、`@e[tag=marker,type=minecraft:armor_stand]` 是否等价？ 性能呢？（假设只有盔甲架有 `marker` 标签。）
 
-只是交换了一下参数位置，效果肯定等价。//
+效果等价。
+
+性能上区别不大，可能后者还要耗时长一些，因为基础断言中多了一个比较的部分。
 
 > `@a[sort=nearest,limit=1]`、`@p` 是否等价？ 性能呢？
 
@@ -316,14 +382,14 @@
 
 ## 结语
 
-你对实体选择器有过什么困惑吗？如今，面对着上面整理出的所有实体选择器变量、实体选择器参数的字段设定表，以及实体选择器的工作原理，你的困惑是否解决了呢？如果还有什么疑问，请在本帖留言。
+不知道本帖是否具有很高的实用性，但我个人认为，从源代码的角度理解实体选择器的运作原理，能让人不那么「被 Mojang 牵着鼻子走」，至少在写下每一个选择器的时候，心里能有点底，知道它到底意味着什么。
 
-由于笔者完全不会编程，只是对命令略有涉猎，文章中可能有不少错误，望编程 dalaoes 不吝指出，感谢。
+由于笔者完全不会编程，只是对命令略有涉猎，文章中可能有不少错误，望各位 dalaoes 不吝指出，感谢。
 
 ## 你知道吗
 
 本部分是本人在分析反编译后的源代码中发现的一些有趣的事情。
 
-1. 在判断实体到指定坐标的距离是否满足选择器参数 `distance` 中规定的范围时，Mojang 进行比较的是距离的平方，省去了很多次开根运算。其实我们在写一些数据包的时候也可以这样的，不一定非要算出距离是多少，距离的平方也许就够用了；
+1. 在判断实体到指定坐标的距离是否满足选择器参数 `distance` 中规定的范围时，Mojang 进行比较的是距离的平方，省去了很多次开根运算。**其实我们在写一些数据包的时候也可以这样的，不一定非要算出距离是多少，距离的平方也许就够用了**；
 2. 在判断实体 NBT 标签的断言中，有一句向玩家的标签中添加 `SelectedItem` 的代码。也就是说，**我们平时检测得很爽的 `SelectedItem` 标签其实原本是不存在的，它是 Mojang 为了让我们方便检测，硬生生加出来的**。感动！
 3. 对字符串进行的 `switch` 编译以后会变成对 `hashCode()` 的 `switch`。这是因为 `switch` 其实只能对数字进行，对字符串的支持是在 Java7 加入的补救措施。
