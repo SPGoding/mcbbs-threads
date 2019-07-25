@@ -1,4 +1,10 @@
-[1.14.4] 追根溯「源」——实体选择器
+# [1.14.4] 追根溯「源」——实体选择器
+
+[![CC BY-NC-SA 4.0](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png)](http://www.mcbbs.net/plugin.php?id=link_redirect&target=https%3A%2F%2Fcreativecommons.org%2Flicenses%2Fby-nc-sa%2F4.0%2Fdeed.zh)
+
+[GitHub 原帖](https://github.com/SPGoding/mcbbs-threads/blob/master/tutorials/seek-the-source/entity_selector/entity_selector.md)
+
+[MCBBS 原帖](https://www.mcbbs.net/thread-891687-1-1.html)
 
 # 追根溯「源」
 
