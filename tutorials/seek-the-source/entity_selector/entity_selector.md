@@ -99,7 +99,6 @@
 | `predicate` | `Entity::isAlive` | **筛选出活着的实体**。 |
 | `limit` | `2147483647` | 相当于我们在选择器参数里写的 `limit=2147483647`。 |
 | `sorter` | `ARBITRARY` | 相当于我们在选择器参数里写的 `sort=arbitrary` |
-| `entityType` | `EntityType.PLAYER` | 相当于我们在选择器参数里写的 `type=player` |
 
 #### 读取选择器参数
 
@@ -211,6 +210,7 @@
 | 字段 | 值 | 备注 |
 | - | - | - |
 | `includingNonPlayer` | 某些情况下设置为 `false` | 当 `%值%` 为 `minecraft:player` 并且没有感叹号 `!` 时设置为**不允许包含非玩家**。 |
+| `type` | 某些情况下设置为 `%值%` | 只有在 `%值%` 不包含感叹号 `!` 时才设置。 |
 | `predicate` | 略 | 判断实体的类型是否满足指定条件。 |
 
 ##### `tag=%值%`
@@ -301,10 +301,11 @@ private Box createBox(double dx, double dy, double dz) {
 }
 ```
 
-这是一个非常莫名其妙的函数。在[这个帖子中](https://search.mcbbs.net/forum.php?mod=redirect&goto=findpost&ptid=772452&pid=12578685)，@chyx 给出了他的测试结果，虽然表述非常混乱，但实质上与代码表现出来的完全一致。即：
+这是一个非常莫名其妙的函数。说成人话，即：
 
 > 如果 `dx` 小于 `0.0`，那么实体的碰撞箱在 x 轴方向上需要接触的范围是 (`x + dx`, `x + 1.0`)  
 > 如果 `dx` 大于等于 `0.0`，那么该范围是 (`x`, `x + dx + 1.0`)  
+> 不论 `dx` 取何值，该范围与我们印象中的 (`x`, `x + dx`) 都不相同。
 > 其中 `x`、`dx` 均为实体选择器参数。  
 > （替换为 `y` 和 `dy`、`z` 和 `dz` 同理。）
 
@@ -318,7 +319,7 @@ box = new Box(
 );
 ```
 
-这一段操作意义不明。
+这一段操作看似多出了不少没必要的操作，实则是对实体选择器极大的优化。为什么呢？且看下一部分，注意对比它与 `getPlayers()` 流程的差异。
 
 ### `getEntities()` 的流程
 
@@ -327,11 +328,46 @@ box = new Box(
 3. 当指定了 `uuid` 时，遍历所有加载的世界，获取该世界中 UUID 为 `uuid` 的实体（后半部分操作同样基于 `HashMap`，速度非常快）（见源码 `net.minecraft.server.world.ServerWorld#getEntity`），并**返回**；
 4. 基于命令执行坐标等，建立断言；
 5. 当 `senderOnly` 为 `true`，即只选择命令执行者时，将检查命令执行者是否为实体、是否满足断言，均满足则**返回**命令执行者，否则**返回**空列表。（由于是直接对命令执行者进行判断，而上文又提到过，命令的执行者被作为参数传入函数，因此该判断没有进行任何遍历，非常迅速）；
-6. 当 `localWorldOnly` 为 `true`，即只选择命令执行者所在的世界的实体时，将遍历该世界的实体列表，**筛选**出满足断言的实体（见源码 `net.minecraft.server.world.ServerWorld#getEntities`）；
-7. 否则，遍历所有世界，再遍历每个世界中的实体列表（见源码 `net.minecraft.command.EntitySelector#getEntities` 和 `net.minecraft.server.world.ServerWorld#getEntities`），**筛选**出满足断言的实体。
+6. 当 `localWorldOnly` 为 `true`，即只选择命令执行者所在的世界的实体时，将调用该世界的 `getEntities()` 函数，**筛选**出满足断言的实体（见源码 `net.minecraft.server.world.ServerWorld#getEntities`）；
+7. 否则，遍历所有世界，调用每个世界的 `getEntities()` 函数，**筛选**出满足断言的实体。
 8. 将上述步骤（6 或 7）中**筛选**出的实体按照 `sorter` 排序，再按照 `limit` 限制的数量从列表中移除多余的实体（见源码 `net.minecraft.command.EntitySelector#getEntities`），并**返回**。
 
-可以看出，这一部分的流程大体与 `getPlayers()` 一致，但是是从实体列表中遍历，耗时可能更长。
+其中，世界的 `getEntities()` 函数代码如下：
+
+```Java
+// net.minecraft.world.World#getEntities
+public List<Entity> getEntities(@Nullable EntityType<?> type, Box box, Predicate<? super Entity> predicate) {
+    /* 所谓 box，是根据 x y z dx dy dz 这六个选择器参数计算出来的方块区域，
+     * 而我们上文曾说过，如果指定 distance，游戏会自动计算出一个 box，这便是为了让这一步骤中能够不遍历不必要的区块。
+     * 因此，只要参数中指定了 dx dy dz distance 中的任几个，并且 includingNonPlayer 为 true，都可以享受到由本函数带来的优化。
+     */
+    // 计算出 box 涉及到的区块坐标们。
+    int chunkMinX = MathHelper.floor((box.minX - 2.0D) / 16.0D);
+    int chunkMaxX = MathHelper.ceil((box.maxX + 2.0D) / 16.0D);
+    int chunkMinZ = MathHelper.floor((box.minZ - 2.0D) / 16.0D);
+    int chunkMaxZ = MathHelper.ceil((box.maxZ + 2.0D) / 16.0D);
+    List<Entity> result = Lists.newArrayList();
+
+    // 遍历这些区块坐标。
+    for(int chunkX = chunkMinX; chunkX < chunkMaxX; ++chunkX) {
+        for(int chunkZ = chunkMinZ; chunkZ < chunkMaxZ; ++chunkZ) {
+        WorldChunk chunk = this.getChunkManager().getWorldChunk(chunkX, chunkZ, false);
+        if (chunk != null) {
+            /* 调用该区块的 appendEntities 函数，把该区块中满足断言的实体加入返回的实体列表当中。
+             * 而 net.minecraft.world.chunk.Chunk#appendEntities 函数中调用的是 net.minecraft.util.TypeFilterableList#getAllOfType，
+             * 在类 net.minecraft.util.TypeFilterableList 中，元素以类型索引，
+             * 说了这么多废话，就是想说，如果选择器参数中指定了 type，就只会遍历该类型实体的列表了。
+             */
+            chunk.appendEntities((EntityType)type, box, result, predicate);
+        }
+        }
+    }
+
+    return result;
+}
+```
+
+可以看出，这一部分的流程大体与 `getPlayers()` 一致，但是在具体代码实现上，是从实体列表中遍历，还引入了针对实体类型 `type`、针对实体坐标所在区块的特殊优化，使得每次检索实体时不一定遍历整个实体列表，而是可以只获取某几个区块的指定类型的生物的实体列表。
 
 ### 小结
 
@@ -339,11 +375,16 @@ box = new Box(
 
 1. 对 UUID 的特殊处理，直接从 `HashMap` 索引，速度非常快；
 2. 对 `@s`（`senderOnly`）的特殊处理，直接读取参数，速度非常快；
-3. 一般情况下，将从列表中获取实体。`includingNonPlayers` 决定使用实体列表还是玩家列表，`localWorldOnly` 决定范围是当前世界还是全服；
+3. 一般情况下，将从列表中获取实体。字段 `includingNonPlayers` 决定使用实体列表还是玩家列表，字段 `localWorldOnly` 决定范围是当前世界还是全服，是否有字段 `box` 决定范围是某几个区块还是全地图，是否有字段 `type` 决定范围是指定类型的实体列表还是全部实体列表；
 4. 把获取到的实体传入断言，筛选出符合条件的实体；
 5. 根据 `sorter` 排序，再根据 `limit` 移除多余实体。
 
-如果你追求性能的话，在函数全篇大量使用某个相同实体（如 `@e[tag=marker]`）时，不如套一层 `execute as @e[tag=marker] run function xxx`，用极其高效的 `@s` 替换掉多次遍历全服实体列表。如果你有些病态，可以用手动指定 UUID 来替代用 tag 标记 marker，但我个人不太推荐这么做。
+如果你追求性能的话：
+
+1. 在函数全篇大量使用某个相同实体（如 `@e[tag=marker]`）时，不如套一层 `execute as @e[tag=marker] run function xxx`，用极其高效的 `@s` 替换掉多次遍历全服实体列表；
+2. 在选择确定类型的实体的时候，在选择器内显式指定不带感叹号且不是实体标签的 `type`；
+3. 在选择确定位置的实体的时候，尽量指定 `distance`、`dx`、`dy`、`dz` 中的一个或几个，缩小遍历范围；
+4. 如果你有些病态，可以用手动指定 UUID 来替代用 tag 标记 marker，但我个人不太推荐这么做。
 
 另外，由常识：
 
@@ -362,23 +403,23 @@ box = new Box(
 
 性能区别不大。前者在解析完 `type` 后会设定 `includingNonPlayers` 为 `false`，后者 `@a` 自动设定 `includingNonPlayers` 为 `false`，两者都是从玩家列表中选择玩家。
 
+> `@e[nbt={UUIDMost:1L,UUIDLeast:1L}]`、`00000000-0000-0001-0000-000000000001` 是否等价？ 性能呢？
+
+效果不等价。如上所述，前者不能选中死亡的实体。不过鉴于实体死亡后很快就会从实体列表中移除，这个差别不是很大。
+
+性能上前者慢于后者。因为前者将遍历全部世界和世界中的全部实体，而后者将在遍历全部世界时直接从 `HashMap` 中获取指定 UUID 对应的实体。
+
 > `@p[name=SPGoding]`、`SPGoding` 是否等价？ 性能呢？
 
 效果等价。都是选择名为 `SPGoding` 的玩家。
 
 性能区别不大。两者都遍历了一遍全服玩家列表。
 
-> `@e[nbt={UUIDMost:1L,UUIDLeast:1L}]`、`00000000-0000-0001-0000-000000000001` 是否等价？ 性能呢？
-
-效果等价，都是选择 UUID 为  `00000000-0000-0001-0000-00000000000` 的实体。
-
-性能上前者慢于后者。因为前者将遍历全部世界和世界中的全部实体，而后者将在遍历全部世界时直接从 `HashMap` 中获取指定 UUID 对应的实体。
-
 > `@e[tag=marker]`、`@e[tag=marker,type=minecraft:armor_stand]` 是否等价？ 性能呢？（假设只有盔甲架有 `marker` 标签。）
 
 效果等价。
 
-性能上区别不大，可能后者还要耗时长一些，因为基础断言中多了一个比较的部分。
+性能上前者慢于后者，因为前者将遍历各地图、各区块的全部实体，而后者将只遍历各地图、各区块的盔甲架。
 
 > `@a[sort=nearest,limit=1]`、`@p` 是否等价？ 性能呢？
 
