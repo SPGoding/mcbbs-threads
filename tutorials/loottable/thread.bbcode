@@ -23,6 +23,8 @@
 
 所有的战利品表应该放置在数据包的 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]data/(命名空间)/loot_tables[/font][/backcolor] 下，每个 JSON 文件对应一个战利品表。
 
+外国友人 [url=https://github.com/misode]Misode[/url] 制作了一个适用于 1.14.4 战利品表的编辑器，本人将其[url=https://www.mcbbs.net/thread-897487-1-1.html]转载到了 MCBBS[/url]。建议先大体理解战利品表的工作方式后再使用生成器，能够避免一些奇怪的问题。
+
 本节完。点击论坛界面右侧的粉色「书签」可以快速回到上方目录。
 
 [page]
@@ -1294,7 +1296,7 @@ data/spgoding/loot_tables/bar.json
 
 由于该假设，当指定了 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]mainhand[/font][/backcolor] 或 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]offhand[/font][/backcolor] 时，这条命令必须由拥有 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]HandItems[/font][/backcolor] 标签的实体执行，不能被数据包命令函数、命令方块、告示牌等执行（可以使用 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]/execute as[/font][/backcolor] 更改命令执行者）。
 
-在该假设下，战利品表所返回的物品即为该命令返回的物品。
+在该假设下，战利品表所返回的物品近似为该命令返回的物品。需要注意的是，[b]该命令并不会检测工具的挖掘等级是否足够[/b]。也就是说，如果你在空手的状态下，假设 0 0 0 位置所放置的方块是铁块，在默认战利品表下，使用命令 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]/loot give @s mine 0 0 0 mainhand[/font][/backcolor] 能够[b]成功获得[/b]一个铁块。但是，对于基岩、命令方块这类[b]本身就不存在战利品表[/b]的不可破坏的方块，使用该命令并[b]不能[/b]获得物品。
 
 [b]指定战利品表[/b]
 
