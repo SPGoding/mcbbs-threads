@@ -264,23 +264,23 @@
 
 1. 当指定了 `playerName` 时，遍历服务器玩家列表，找到玩家名和 `playerName` 一致的玩家（见源码 `net.minecraft.server.PlayerManager#getPlayer`），并**返回**；
 2. 当指定了 `uuid` 时，直接从服务器玩家列表中获取 UUID 为 `uuid` 的玩家（该操作基于 `HashMap`，速度非常快）（见源码 `net.minecraft.server.PlayerManager#getPlayer`），并**返回**；
-3. 基于命令执行坐标等，**建立断言**（后文有说明）；
-4. 当 `senderOnly` 为 `true`，即只选择命令执行者时，将检查命令执行者是否为玩家、是否满足断言，均满足则**返回**命令执行者，否则**返回**空列表。（由于是直接对命令执行者进行判断，而上文又提到过，命令的执行者被作为参数传入函数，因此该判断没有进行任何遍历，非常迅速）；
-5. 当 `localWorldOnly` 为 `true`，即只选择命令执行者所在的世界的玩家时，将遍历该世界的玩家列表，**筛选**出满足断言的玩家（见源码 `net.minecraft.server.world.ServerWorld#getPlayers`）；
-6. 否则，遍历全服的玩家列表（见源码 `net.minecraft.server.MinecraftServer#getPlayerManager` 和 `net.minecraft.server.PlayerManager#getPlayerList`），**筛选**出满足断言的玩家。
+3. 基于命令执行坐标等，**建立谓词**（后文有说明）；
+4. 当 `senderOnly` 为 `true`，即只选择命令执行者时，将检查命令执行者是否为玩家、是否满足谓词，均满足则**返回**命令执行者，否则**返回**空列表。（由于是直接对命令执行者进行判断，而上文又提到过，命令的执行者被作为参数传入函数，因此该判断没有进行任何遍历，非常迅速）；
+5. 当 `localWorldOnly` 为 `true`，即只选择命令执行者所在的世界的玩家时，将遍历该世界的玩家列表，**筛选**出满足谓词的玩家（见源码 `net.minecraft.server.world.ServerWorld#getPlayers`）；
+6. 否则，遍历全服的玩家列表（见源码 `net.minecraft.server.MinecraftServer#getPlayerManager` 和 `net.minecraft.server.PlayerManager#getPlayerList`），**筛选**出满足谓词的玩家。
 7. 将上述步骤（5 或 6）中**筛选**出的玩家按照 `sorter` 排序，再按照 `limit` 限制的数量从列表中移除多余的玩家（见源码 `net.minecraft.command.EntitySelector#getEntities`），并**返回**。
 
-刚刚我们提到了「断言」，这就进行解释。
+刚刚我们提到了「谓词」，这就进行解释。
 
-### 断言
+### 谓词
 
-**断言**，英文 predicate，可简单理解为一系列的条件。当我们把一个实体传入断言中后，断言会进行一系列判断，返回这个实体是否满足各种条件。
+**谓词**，英文 predicate，可简单理解为一系列的条件。当我们把一个实体传入谓词中后，谓词会进行一系列判断，返回这个实体是否满足各种条件。
 
-上述过程中的「建立断言」，指的是在**基础断言**的基础上，加入**坐标断言**合成出新断言的过程。
+上述过程中的「建立谓词」，指的是在**基础谓词**的基础上，加入**坐标谓词**合成出新谓词的过程。
 
-其中，基础断言，是在实体选择器的解析过程中不断建立出来的：在解析过程中，设置 `predicate` 字段的时候，其实是在将新断言合并到原有断言中（见源码 `net.minecraft.command.EntitySelectorReader#setPredicate`）。在全部解析完成后，又会执行一个函数，添加 `x_rotation`、`y_rotation`、`level` 这三个选择器参数对应的断言到基础断言当中（见源码 `net.minecraft.command.EntitySelectorReader#buildPredicate`），至此基础断言彻底建立完毕。例如，根据上面的字段表，在解析实体选择器 `@e[type=zombie]` 时，当解析完变量 `@e` 后，会将 `Entity::isAlive` 加入断言；当解析完参数 `type=zombie` 后，会将「判断实体类型是否为僵尸」合并入断言；全部解析完成后，得到了基础断言，它要求实体既需要是活的，也需要是一只僵尸。
+其中，基础谓词，是在实体选择器的解析过程中不断建立出来的：在解析过程中，设置 `predicate` 字段的时候，其实是在将新谓词合并到原有谓词中（见源码 `net.minecraft.command.EntitySelectorReader#setPredicate`）。在全部解析完成后，又会执行一个函数，添加 `x_rotation`、`y_rotation`、`level` 这三个选择器参数对应的谓词到基础谓词当中（见源码 `net.minecraft.command.EntitySelectorReader#buildPredicate`），至此基础谓词彻底建立完毕。例如，根据上面的字段表，在解析实体选择器 `@e[type=zombie]` 时，当解析完变量 `@e` 后，会将 `Entity::isAlive` 加入谓词；当解析完参数 `type=zombie` 后，会将「判断实体类型是否为僵尸」合并入谓词；全部解析完成后，得到了基础谓词，它要求实体既需要是活的，也需要是一只僵尸。
 
-坐标断言，是基于 `distance`、`x`、`y`、`z`、`dx`、`dy`、`dz` 这七个选择器参数建立的对实体坐标的断言。我们省去 `offset`、`box` 等只在源代码中体现的技术性细节不谈，只说近似结论：
+坐标谓词，是基于 `distance`、`x`、`y`、`z`、`dx`、`dy`、`dz` 这七个选择器参数建立的对实体坐标的谓词。我们省去 `offset`、`box` 等只在源代码中体现的技术性细节不谈，只说近似结论：
 1. `x`、`y`、`z` 中缺省的项目会使用命令执行坐标补全；
 2. 当存在 `distance` 时，会判定实体所在坐标到 (`x`, `y`, `z`) 的距离是否在 `distance` 限定范围之内；
 3. 当存在 `dx`、`dy`、`dz` 的任意一个时，会将缺省项目用 `0.0` 补齐，然后使用以下函数建立 `Box`，判定实体的碰撞箱是否与这个 `Box` 相交：
@@ -326,10 +326,10 @@ box = new Box(
 1. 当不满足 `includeNonPlayers`，即只允许选取玩家时，调用上面提到的 `getPlayers()` 函数，并**返回**。
 2. 当指定了 `playerName` 时，遍历服务器玩家列表，找到玩家名和 `playerName` 一致的玩家（这一步和 `getPlayers()` 里相应步骤一致），并**返回**；
 3. 当指定了 `uuid` 时，遍历所有加载的世界，获取该世界中 UUID 为 `uuid` 的实体（后半部分操作同样基于 `HashMap`，速度非常快）（见源码 `net.minecraft.server.world.ServerWorld#getEntity`），并**返回**；
-4. 基于命令执行坐标等，建立断言；
-5. 当 `senderOnly` 为 `true`，即只选择命令执行者时，将检查命令执行者是否为实体、是否满足断言，均满足则**返回**命令执行者，否则**返回**空列表。（由于是直接对命令执行者进行判断，而上文又提到过，命令的执行者被作为参数传入函数，因此该判断没有进行任何遍历，非常迅速）；
-6. 当 `localWorldOnly` 为 `true`，即只选择命令执行者所在的世界的实体时，将调用该世界的 `getEntities()` 函数，**筛选**出满足断言的实体（见源码 `net.minecraft.server.world.ServerWorld#getEntities`）；
-7. 否则，遍历所有世界，调用每个世界的 `getEntities()` 函数，**筛选**出满足断言的实体。
+4. 基于命令执行坐标等，建立谓词；
+5. 当 `senderOnly` 为 `true`，即只选择命令执行者时，将检查命令执行者是否为实体、是否满足谓词，均满足则**返回**命令执行者，否则**返回**空列表。（由于是直接对命令执行者进行判断，而上文又提到过，命令的执行者被作为参数传入函数，因此该判断没有进行任何遍历，非常迅速）；
+6. 当 `localWorldOnly` 为 `true`，即只选择命令执行者所在的世界的实体时，将调用该世界的 `getEntities()` 函数，**筛选**出满足谓词的实体（见源码 `net.minecraft.server.world.ServerWorld#getEntities`）；
+7. 否则，遍历所有世界，调用每个世界的 `getEntities()` 函数，**筛选**出满足谓词的实体。
 8. 将上述步骤（6 或 7）中**筛选**出的实体按照 `sorter` 排序，再按照 `limit` 限制的数量从列表中移除多余的实体（见源码 `net.minecraft.command.EntitySelector#getEntities`），并**返回**。
 
 其中，世界的 `getEntities()` 函数代码如下：
@@ -353,7 +353,7 @@ public List<Entity> getEntities(@Nullable EntityType<?> type, Box box, Predicate
         for(int chunkZ = chunkMinZ; chunkZ < chunkMaxZ; ++chunkZ) {
         WorldChunk chunk = this.getChunkManager().getWorldChunk(chunkX, chunkZ, false);
         if (chunk != null) {
-            /* 调用该区块的 appendEntities 函数，把该区块中满足断言的实体加入返回的实体列表当中。
+            /* 调用该区块的 appendEntities 函数，把该区块中满足谓词的实体加入返回的实体列表当中。
              * 而 net.minecraft.world.chunk.Chunk#appendEntities 函数中调用的是 net.minecraft.util.TypeFilterableList#getAllOfType，
              * 在类 net.minecraft.util.TypeFilterableList 中，元素以类型索引，
              * 说了这么多废话，就是想说，如果选择器参数中指定了 type，就只会遍历该类型实体的列表了。
@@ -376,7 +376,7 @@ public List<Entity> getEntities(@Nullable EntityType<?> type, Box box, Predicate
 1. 对 UUID 的特殊处理，直接从 `HashMap` 索引，速度非常快；
 2. 对 `@s`（`senderOnly`）的特殊处理，直接读取参数，速度非常快；
 3. 一般情况下，将从列表中获取实体。字段 `includingNonPlayers` 决定使用实体列表还是玩家列表，字段 `localWorldOnly` 决定范围是当前世界还是全服，是否有字段 `box` 决定范围是某几个区块还是全地图，是否有字段 `type` 决定范围是指定类型的实体列表还是全部实体列表；
-4. 把获取到的实体传入断言，筛选出符合条件的实体；
+4. 把获取到的实体传入谓词，筛选出符合条件的实体；
 5. 根据 `sorter` 排序，再根据 `limit` 移除多余实体。
 
 如果你追求性能的话：
@@ -399,7 +399,7 @@ public List<Entity> getEntities(@Nullable EntityType<?> type, Box box, Predicate
 
 > `@e[type=minecraft:player]`、`@a` 是否等价？性能呢？
 
-并不等价。根据「解析」部分的字段表，`@e` 向断言中自动加入了 `Entity::isAlive`，导致前者不能选中死亡的玩家；后者则没有这种限制。
+并不等价。根据「解析」部分的字段表，`@e` 向谓词中自动加入了 `Entity::isAlive`，导致前者不能选中死亡的玩家；后者则没有这种限制。
 
 性能区别不大。前者在解析完 `type` 后会设定 `includingNonPlayers` 为 `false`，后者 `@a` 自动设定 `includingNonPlayers` 为 `false`，两者都是从玩家列表中选择玩家。
 
@@ -438,5 +438,5 @@ public List<Entity> getEntities(@Nullable EntityType<?> type, Box box, Predicate
 本部分是本人在分析反编译后的源代码中发现的一些有趣的事情。
 
 1. 在判断实体到指定坐标的距离是否满足选择器参数 `distance` 中规定的范围时，Mojang 进行比较的是距离的平方，省去了很多次开根运算。**其实我们在写一些数据包的时候也可以这样的，不一定非要算出距离是多少，距离的平方也许就够用了**；
-2. 在判断实体 NBT 标签的断言中，有一句向玩家的标签中添加 `SelectedItem` 的代码。也就是说，**我们平时检测得很爽的 `SelectedItem` 标签其实原本是不存在的，它是 Mojang 为了让我们方便检测，硬生生加出来的**。感动！
+2. 在判断实体 NBT 标签的谓词中，有一句向玩家的标签中添加 `SelectedItem` 的代码。也就是说，**我们平时检测得很爽的 `SelectedItem` 标签其实原本是不存在的，它是 Mojang 为了让我们方便检测，硬生生加出来的**。感动！
 3. 对字符串进行的 `switch` 编译以后会变成对 `hashCode()` 的 `switch`。这是因为 `switch` 其实只能对数字进行，对字符串的支持是在 Java7 加入的补救措施。
