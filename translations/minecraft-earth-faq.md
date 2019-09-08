@@ -279,6 +279,26 @@ Minecraft Earth 使用苹果 ARKit（增强现实开发平台）的**人物识�
 
 ---
 
+**AS A PRIVATE PROPERTY OWNER OR A PARK MANAGER HOW CAN I REPORT A LOCATION?**
+
+If you are a park manager and would like to report your hours of operations or if you are a private property owner and would like to report a game location on your property, please email [MCELocation@microsoft.com](MCELocation@microsoft.com).
+
+**作为私有财产所有者或是公园管理者，我应当怎样报告一个位置？**
+
+如果你是一个公园的管理者并愿意报告你的营业时间，或者是一份私有财产的拥有者并且愿意报告在你所拥有财产上的游戏位置，请给 [MCELocation@microsoft.com](MCELocation@microsoft.com) 发电子邮件。
+ 
+---
+
+**WHAT DO I DO IF I SEE A GAME PLAY LOCATION THAT MAY NOT BE SUITABLE?**
+
+If you find a game play location in a place that is not ideal for game play, please contact [MCELocation@microsoft.com](MCELocation@microsoft.com).
+
+**如果我发现了一个不适合游玩的游戏位置该怎么做？**
+
+如果你发现了一个不适合游玩的游戏位置，请联系 [MCELocation@microsoft.com](MCELocation@microsoft.com)。
+
+---
+
 ## 内测信息 - CLOSED BETA INFO
 
 **HOW DO I GET INTO THE MINECRAFT EARTH BETA?**
@@ -360,4 +380,4 @@ Don’t worry! We have a beta planned for Android too. Our Closed Beta will be r
 
 译者：[@SPGoding](https://github.com/SPGoding)
 
-该译文以 CC BY-NC-SA 4.0 协议发布。
+该译文以 [MIT 协议](https://github.com/SPGoding/mcbbs-threads/blob/master/LICENSE)发布。
