@@ -745,6 +745,25 @@ data/spgoding/loot_tables/bar.json
 }[/code]
 
 
+[size=3][b]minecraft:copy_state[/b][/size]
+
+[b]本函数只能在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:block[/font][/backcolor] 类型的战利品表中使用。[/b]
+
+将该方块的方块状态复制到物品的 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]BlockStateTag[/font][/backcolor] 标签中。
+
+-（字符串）block：一个方块 ID。将用于检测 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]properties[/font][/backcolor] 中所写的方块状态是否存在。
+-（列表）properties：要复制的方块状态。
+    -[i]（字符串）一个方块状态的键。如果该方块状态并不存在于 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]block[/font][/backcolor] 中所指定的方块上，该方块状态并不会产生任何效果。[/i]
+
+例子：[code]{
+    "function": "minecraft:copy_state",
+    "block": "minecraft:cake",
+    "properties": [
+        "bites"
+    ]
+}[/code]将该函数放置在蛋糕的战利品表中，即可让掉落的物品的 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]BlockStateTag[/font][/backcolor] 标签中存有该蛋糕的 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]bites[/font][/backcolor] 方块状态和相应的值。
+
+
 [size=3][b]minecraft:enchant_randomly[/b][/size]
 
 从指定的魔咒中随机抽取并附给该物品。
