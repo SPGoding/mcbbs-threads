@@ -373,7 +373,7 @@
     "looting_multiplier": 0.1
 }
 ```
-该条件有 30% 的几率通过 `[E|S|L:entity]`。每多一级抢夺魔咒，通过几率增加 10% `[L:entity]`。
+该条件有 30% 的几率通过 `[E|S|L:entity]`。每多一级抢夺魔咒，通过几率增加 10 个百分点 `[L:entity]`。
 
 ## minecraft:reference `[E|S|L:*]`
 
