@@ -155,6 +155,18 @@
             - （字符串）`id`：状态效果名称。
             - （数字或范围）`amplifier`：效果倍率。
             - （数字或范围）`duration`：效果持续时间，以刻为单位。
+    - （对象）`equipment`：检测的实体所需穿有的装备。
+        - *（对象）一个装备栏位。键可选值：`head`、`chest`、`legs`、`feet`、`mainhand`、`offhand`。*
+            - （数字或范围）`count`：物品数量。
+            - （数字或范围）`durability`：物品耐久度。
+            - （数组）`enchantments`：魔咒列表。
+                - *（对象）一个魔咒。*
+                    - （字符串）`enchantment`：魔咒ID。
+                    - （数字或范围）`levels`：魔咒等级。
+            - （字符串）`item`：物品 ID。
+            - （字符串）`nbt`：物品 NBT。
+            - （字符串）`potion`：药水 ID。
+            - （字符串）`tag`：数据包物品标签 ID。
     - （对象）`flags`：检测的实体具备的特质。
         - （布尔）`is_on_fire`：正在着火。
         - （布尔）`is_sneaking`：正在潜行。
@@ -211,7 +223,7 @@
     "entity": "this"
 }
 ```
-该条件会在被击杀的实体着火时通过，可以利用它做出生物被烧死后掉落熟食的效果 `[L:entity]`。
+该条件会在被击杀的实体着火时通过。可以在战利品表中利用它做出生物被烧死后掉落熟食的效果。
 
 ## minecraft:entity_scores `[E|S|L:entitiy]`
 
