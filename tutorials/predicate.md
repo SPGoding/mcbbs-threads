@@ -33,6 +33,8 @@
 
 像 `tag` 等选择器参数一样，选择器中能够指定多个 `predicate` 参数，只有满足所有参数的实体才能被选中。例如，`@e[predicate=do,predicate=!not,sort=nearest,limit=1]` 会选中最近的、满足 `do` predicate、且不满足 `not` predicate 的实体。
 
+相比于用 `nbt` 选择器参数，`predicate` 选择器参数在大多数情况下性能都会更好。这是因为，`nbt` 选择器参数的检测原理是，先把实体的所有数据转换为 NBT，再将转换后的 NBT 与用户输入的 NBT 进行比较，这些操作十分耗时。而 predicate 会在游戏加载数据包以后就初始化完毕，在选择实体时会直接调用实体的各种方法进行比较，省去了转换为 NBT 的过程。
+
 ## 战利品表
 
 战利品表的条件（`conditions`）数组中的每一个对象就是 predicate。有关战利品表的详细内容可以参阅[【CBL｜SPG】［1.15］战利品表：从入门到重新入门](https://www.mcbbs.net/thread-831542-1-3.html)。
@@ -196,8 +198,8 @@
     - （字符串）`nbt`：检测的实体所需有的 NBT。
     - （对象）`player`：对玩家实体的各种判定条件。一旦指定了该参数，即使内容完全为空，也会要求当前实体必须为一名玩家。
         - （对象）`advancements`：进度。
-            - （布尔）*进度 id*：玩家是否完成了该进度。
-            - （对象）*进度 id*：对该进度中各判据的完成情况进行进一步判断。
+            - （布尔）*进度 ID*：玩家是否完成了该进度。
+            - （对象）*进度 ID*：对该进度中各判据的完成情况进行进一步判断。
                 - （布尔）*进度判据名称*：玩家是否完成了该进度的该判据。
         - （字符串）`gamemode`：游戏模式。可选值：`adventure`（冒险模式）、`creative`（创造模式）、`spectator`（旁观者模式）、`survival`（生存模式）。
         - （数字或范围）`level`：经验等级的范围。
@@ -223,7 +225,21 @@
     "entity": "this"
 }
 ```
-该条件会在被击杀的实体着火时通过。可以在战利品表中利用它做出生物被烧死后掉落熟食的效果。
+该条件会在 `this` 指定的实体着火时通过。可以在战利品表中利用它做出生物被烧死后掉落熟食的效果。
+```
+{
+    "condition": "minecraft:entity_properties",
+    "predicate": {
+        "equipment": {
+            "mainhand": {
+                "item": "minecraft:air"
+            }
+        }
+    },
+    "entity": "this"
+}
+```
+该条件会在 `this` 指定的实体主手中没有拿任何物品时通过。
 
 ## minecraft:entity_scores `[E|S|L:entitiy]`
 
@@ -487,3 +503,5 @@
 # 附录 2：Datapack Helper Plus (JSON)
 
 [Datapack Helper Plus (JSON)](https://www.mcbbs.net/thread-897610-1-1.html)（简称 `DHP (JSON)`，中文名`大憨批杰森`）是一款优秀的 [VSCode](https://code.visualstudio.com) 插件，提供适用于 Minecraft 1.15 数据包 JSON 文件的自动补全与格式校验。在该款插件的帮助下，编写 predicate 以及其他各种文件（如进度、配方、战利品表、各种标签）将变得十分方便。请您坐和放宽，前往该插件的[发布帖](https://www.mcbbs.net/thread-897610-1-1.html)一览究竟。
+
+[afd]SPGoding[/afd]
