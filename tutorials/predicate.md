@@ -505,3 +505,10 @@
 [Datapack Helper Plus (JSON)](https://www.mcbbs.net/thread-897610-1-1.html)（简称 `DHP (JSON)`，中文名`大憨批杰森`）是一款优秀的 [VSCode](https://code.visualstudio.com) 插件，提供适用于 Minecraft 1.15 数据包 JSON 文件的自动补全与格式校验。在该款插件的帮助下，编写 predicate 以及其他各种文件（如进度、配方、战利品表、各种标签）将变得十分方便。请您坐和放宽，前往该插件的[发布帖](https://www.mcbbs.net/thread-897610-1-1.html)一览究竟。
 
 [afd]SPGoding[/afd]
+
+------
+# 致谢
+
+- ruhuasiyu - 帮忙补充了点东西
+- 玄素 - 我断言了
+- 柘木铃 - 挑了一堆错
