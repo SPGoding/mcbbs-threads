@@ -1,4 +1,4 @@
-# 原版着色器指南
+# 指导到香草着色器
 
 - 原　文: [Guide to vanilla shaders](https://docs.google.com/document/d/15TOAOVLgSNEoHGzpNlkez5cryH3hFF3awXL5Py81EMk/edit#)
 - 原作者: SirBenet, with input from Godlander and Onnowhere
@@ -6,7 +6,8 @@
 - 译　者: SPGoding
 - 截止翻译时，原文最后更新: 2019-09-22 for Minecraft 1.14.4
 
-**注意：由于文章中很多链接用到了锚点，直接在 [GitHub](https://github.com/SPGoding/mcbbs-threads/blob/master/translations/guide-to-vanilla-shaders.md) 上阅读能够获得更好的阅读体验**
+**已经原作者授权**
+![image.png](https://i.loli.net/2019/09/23/pR95MBJQdq7Ooth.png)
 
 # 前言
 
