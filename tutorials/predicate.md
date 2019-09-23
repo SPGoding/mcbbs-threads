@@ -1,18 +1,18 @@
-# 【CBL|SPG】[1.15] 新出的 predicate 是什么东西
+# 【CBL|SPG】[1.15] 新出的断言是什么东西
 
 ------
-# 何为 predicate
+# 何为断言
 
-**Predicate**，社区常见译名「判据」「断言」「谓词」「条件」~~「特征函数」「皮迪凯特」~~，本篇文章为了避免陷入无谓的纠结，直接保留原文。在平常交流时可以任意采用合适的、不易与其他词语产生混淆的叫法。其是在 [19w38a](https://www.mcbbs.net/thread-914349-1-1.html) 中加入的新内容。
+**断言（predicate）**，社区常见译名「判据」「谓词」「条件」「特征函数」「皮迪凯特」，在平常交流时可以任意采用合适的、不易与其他词语产生混淆的叫法。其是在 [19w38a](https://www.mcbbs.net/thread-914349-1-1.html) 中加入的新内容。
 
-说是新内容，其实 predicate **就是**原先战利品表中的条件，只不过现在可以被单独抽离出来形成新的文件而已。没有接触过战利品表？没关系，本文将从零开始。
+说是新内容，其实断言**就是**原先战利品表中的条件，只不过现在可以被单独抽离出来形成新的文件而已。没有接触过战利品表？没关系，本文将从零开始。
 
-简单来讲，predicate 储存的是一系列**对实体的判定条件**。首先写好一个 predicate，再给定一个实体，游戏就能判定该实体是否是你想要的。好了，我说完了，大概没什么难理解的。
+简单来讲，断言储存的是一系列**对实体的判定条件**。首先写好一个断言，再给定一个实体，游戏就能判定该实体是否是你想要的。好了，我说完了，大概没什么难理解的。
 
 ------
 # 文件格式
 
-所有 predicate 文件**均为 JSON 格式**，放置在数据包的 `./data/<命名空间>/predicates` 文件夹下。
+所有断言文件**均为 JSON 格式**，放置在数据包的 `./data/<命名空间>/predicates` 文件夹下。
 
 该文件内容是一个对象。其中含有 `condition` 字段，指明所用条件的名称；同时还需含有该条件所需的各种附加参数：
 
@@ -23,21 +23,21 @@
 ------
 # 应用
 
-## 命令 `execute (if|unless) predicate <predicate 的命名空间 ID>`
+## 命令 `execute (if|unless) predicate <断言的命名空间 ID>`
 
-该命令能够检测命令的执行者和执行位置等是否满足指定的 predicate。在 `if` 模式下，只有满足指定 predicate 时，测试才能通过；在 `unless` 模式下则相反。特别地，当命令执行者并不是实体（例如命令方块、控制台等），且 predicate 中有对实体的限定条件时，在 `unless` 模式下也能导致测试通过。
+该命令能够检测命令的执行者和执行位置等是否满足指定的断言。在 `if` 模式下，只有满足指定断言时，测试才能通过；在 `unless` 模式下则相反。特别地，当命令执行者并不是实体（例如命令方块、控制台等），且断言中有对实体的限定条件时，在 `unless` 模式下也能导致测试通过。
 
 ## 实体选择器参数 `predicate`
 
-通过指定该选择器参数，能够筛选出满足（或不满足）指定 predicate 的实体。例如 `@a[predicate=minecraft:test]` 能够选中所有满足放置在数据包下 `./data/minecraft/predicates/test.json` 的文件中条件的玩家，而在等号后方添加一个半角感叹号（`!`）则将选中所有**不**满足该 predicate 的玩家。
+通过指定该选择器参数，能够筛选出满足（或不满足）指定断言的实体。例如 `@a[predicate=minecraft:test]` 能够选中所有满足放置在数据包下 `./data/minecraft/predicates/test.json` 的文件中条件的玩家，而在等号后方添加一个半角感叹号（`!`）则将选中所有**不**满足该断言的玩家。
 
-像 `tag` 等选择器参数一样，选择器中能够指定多个 `predicate` 参数，只有满足所有参数的实体才能被选中。例如，`@e[predicate=do,predicate=!not,sort=nearest,limit=1]` 会选中最近的、满足 `do` predicate、且不满足 `not` predicate 的实体。
+像 `tag` 等选择器参数一样，选择器中能够指定多个 `predicate` 参数，只有满足所有参数的实体才能被选中。例如，`@e[predicate=do,predicate=!not,sort=nearest,limit=1]` 会选中最近的、满足 `do` 断言、且不满足 `not` 断言的实体。
 
-相比于用 `nbt` 选择器参数，`predicate` 选择器参数在大多数情况下性能都会更好。这是因为，`nbt` 选择器参数的检测原理是，先把实体的所有数据转换为 NBT，再将转换后的 NBT 与用户输入的 NBT 进行比较，这些操作十分耗时。而 predicate 会在游戏加载数据包以后就初始化完毕，在选择实体时会直接调用实体的各种方法进行比较，省去了转换为 NBT 的过程。
+相比于用 `nbt` 选择器参数，`predicate` 选择器参数在大多数情况下性能都会更好。这是因为，`nbt` 选择器参数的检测原理是，先把实体的所有数据转换为 NBT，再将转换后的 NBT 与用户输入的 NBT 进行比较，这些操作十分耗时。而断言会在游戏加载数据包以后就初始化完毕，在选择实体时会直接调用实体的各种方法进行比较，省去了转换为 NBT 的过程。
 
 ## 战利品表
 
-战利品表的条件（`conditions`）数组中的每一个对象就是 predicate。有关战利品表的详细内容可以参阅[【CBL｜SPG】［1.15］战利品表：从入门到重新入门](https://www.mcbbs.net/thread-831542-1-3.html)。
+战利品表的条件（`conditions`）数组中的每一个对象就是断言。有关战利品表的详细内容可以参阅[【CBL｜SPG】［1.15］战利品表：从入门到重新入门](https://www.mcbbs.net/thread-831542-1-3.html)。
 
 ------
 # 附录 1：条件列表
@@ -405,7 +405,7 @@
 
 ## minecraft:reference `[E|S|L:*]`
 
-引用定义的其他 predicate 文件。
+引用定义的其他断言文件。
 
 - （字符串）`name`：判据的命名空间 ID。
 
@@ -416,7 +416,7 @@
     "name": "test:abc"
 }
 ```
-该条件将会引用定义在数据包 `./data/test/predicates/abc.json` 文件中的 predicate。当被引用的 predicate 能够通过时，该条件通过。
+该条件将会引用定义在数据包 `./data/test/predicates/abc.json` 文件中的断言。当被引用的断言能够通过时，该条件通过。
 
 ## minecraft:survives_explosion `[E|S|L:block]`
 
@@ -502,7 +502,7 @@
 ------
 # 附录 2：Datapack Helper Plus (JSON)
 
-[Datapack Helper Plus (JSON)](https://www.mcbbs.net/thread-897610-1-1.html)（简称 `DHP (JSON)`，中文名`大憨批杰森`）是一款优秀的 [VSCode](https://code.visualstudio.com) 插件，提供适用于 Minecraft 1.15 数据包 JSON 文件的自动补全与格式校验。在该款插件的帮助下，编写 predicate 以及其他各种文件（如进度、配方、战利品表、各种标签）将变得十分方便。请您坐和放宽，前往该插件的[发布帖](https://www.mcbbs.net/thread-897610-1-1.html)一览究竟。
+[Datapack Helper Plus (JSON)](https://www.mcbbs.net/thread-897610-1-1.html)（简称 `DHP (JSON)`，中文名`大憨批杰森`）是一款优秀的 [VSCode](https://code.visualstudio.com) 插件，提供适用于 Minecraft 1.15 数据包 JSON 文件的自动补全与格式校验。在该款插件的帮助下，编写断言以及其他各种文件（如进度、配方、战利品表、各种标签）将变得十分方便。请您坐和放宽，前往该插件的[发布帖](https://www.mcbbs.net/thread-897610-1-1.html)一览究竟。
 
 [afd]SPGoding[/afd]
 
