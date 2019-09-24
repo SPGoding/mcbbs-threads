@@ -4,7 +4,7 @@
 - 原作者: SirBenet, with input from Godlander and Onnowhere
 - 译　文: [指导到香草着色器](https://github.com/SPGoding/mcbbs-threads/blob/master/translations/guide-to-vanilla-shaders.md)
 - 译　者: SPGoding
-- 鸣　谢: 森林蝙蝠
+- 鸣　谢: 森林蝙蝠 - 提供了各种专业名词的专业机翻
 - 截止翻译时，原文最后更新: 2019-09-22 for Minecraft 1.14.4
 
 **已经原作者授权**
@@ -199,7 +199,7 @@ Post.JSON 文件应该放置在 `assets/minecraft/shaders/post` 目录当中，�
 
 ## 可运作的示例
 
-以下是一个可以正常运作的完整的 Post JSON 文件。它添加了一个 ["notch" 抖动效果](TOT)，并减少了颜色饱和度。
+以下是一个可以正常运作的完整的 post JSON 文件。它添加了一个 ["notch" 抖动效果](TOT)，并减少了颜色饱和度。
 
 [assets/minecraft/shaders/post/spider.json](https://drive.google.com/file/d/1lEW6WRHa0xN041qNNhr2XvpspiXK7A6g/view?usp=sharing)
 
@@ -235,9 +235,9 @@ Post.JSON 文件应该放置在 `assets/minecraft/shaders/post` 目录当中，�
 }
 ```
 
-# 创建一个「程序」JSON
+# 创建一个「着色器程序」JSON
 
-程序 JSON 文件应该放置在 `assets/minecraft/shaders/program` 文件夹中。 
+着色器程序 JSON 文件应该放置在 `assets/minecraft/shaders/program` 文件夹中。 
 
 可以使用任何名称（只要遵守正常资源包的文件命名规则即可，例如没有大写字母什么的）。
 
@@ -255,3 +255,95 @@ Post.JSON 文件应该放置在 `assets/minecraft/shaders/post` 目录当中，�
 `"vertex"` 指定了将要使用的[顶点着色器](TOT) `.vsh` 文件的文件名。
 
 `"fragment"` 指定了将要使用的[分段着色器](TOT) `.fsh` 文件的文件名。
+
+`"attributes"` 是一个字符串数组，指定顶点的哪些属性能够被顶点着色器访问到。目前只能写 `"Position"`（位置）。
+
+```json
+"attributes": [ "Position" ],
+```
+
+`"samplers"` 定义了分段着色器想要访问缓冲需要用到的变量名。`"DiffuseSampler"` 是被自动给予 `"intarget"` 中定义的缓冲的变量名。其他的任何名字都需要与你在 [post 文件的 `"auxtargets"`](#Passes.Auxtargets) 中指定的一致。
+
+```json
+"samplers": [
+   { "name": "DiffuseSampler" },
+   { "name": "DitherSampler" }
+]
+```
+
+`"uniforms"` 定义了 *uniforms*（对每个顶点或像素保持不变的值）的名称、类型和默认值。
+
+```json
+"uniforms": [
+   { "name": "ProjMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+   { "name": "InSize",  "type": "float", "count": 2,  "values": [ 1.0, 1.0 ] },
+   { "name": "OutSize", "type": "float", "count": 2,  "values": [ 1.0, 1.0 ] },
+   { "name": "BlurDir", "type": "float", "count": 2,  "values": [ 1.0, 1.0 ] },
+   { "name": "Radius",  "type": "float", "count": 1,  "values": [ 5.0 ] }
+]
+```
+
+`"name"` 字符串定义了在 GLSL 代码中或者[在向该着色器程序的该 uniform 传值时]()用的名称。游戏自动给了一些特殊的 uniform：
+
+- `"Time"` - 0 到 1 的一个值，表示在一秒内的时间，每秒自动重置
+- `"InSize"` - 以像素为单位的输入缓冲（input buffer）的宽度和高度
+- `"OutSize"` - 以像素为单位的输出缓冲（output buffer）的宽度和高度
+- `"ProjMat"` - 由顶点着色器使用的投影矩阵（projection matrix）
+
+`"values"` 应为一个浮点数数组，而 `"type"` 则定义了这些浮点数会在 GLSL 代码中被解析为的[数据类型](TOT)：
+
+- `"float"` - 一个 `float` 或 `vec2`/`vec3`/`vec4`，具体取决于在 `"values"` 中指定的数字个数
+- `"matrix4x4"` - 一个由 `"values"` 中指定的 16 个值产生的 `mat4`
+- `"matrix3x3"` - *可用的类型，但仍然需要输入 16 个值？*
+- `"matrix2x2"` - *可用的类型，但仍然需要输入 16 个值？*
+
+`"blend"` 理论上定义了着色器程序的输出应当怎样与目标缓冲（destination buffer）上已有的内容合并，*但目前好像没有效果。*
+
+```json
+"blend": {
+   "func": "add",
+   "srcrgb": "one",
+   "dstrgb": "zero"
+}
+```
+
+更多关于这些模式本应怎样运作的信息可以查看：khronos.org/opengl/wiki/Blending
+
+## 可运作的示例
+
+以下是一个可以正常运作的完整的着色器程序 JSON 文件。这是原版的 "wobble" 着色器，未经修改。
+
+[assets/minecraft/shaders/program/wobble.json](https://drive.google.com/file/d/1GssoJB9wQrj-POC_DZ--Rewmfvz9QvEq/view?usp=sharing)
+
+```json
+{
+    "blend": {
+        "func": "add",
+        "srcrgb": "one",
+        "dstrgb": "zero"
+    },
+    "vertex": "sobel",
+    "fragment": "wobble",
+    "attributes": [ "Position" ],
+    "samplers": [
+        { "name": "DiffuseSampler" }
+    ],
+    "uniforms": [
+        { "name": "ProjMat", "type": "matrix4x4", "count": 16, 
+          "values": [ 1.0, 0.0, 0.0, 0.0, 
+                      0.0, 1.0, 0.0, 0.0, 
+                      0.0, 0.0, 1.0, 0.0, 
+                      0.0, 0.0, 0.0, 1.0 ] },
+        { "name": "InSize", "type": "float", "count": 2, 
+          "values": [ 1.0, 1.0 ] },
+        { "name": "OutSize", "type": "float", "count": 2, 
+          "values": [ 1.0, 1.0 ] },
+        { "name": "Time", "type": "float", "count": 1, 
+          "values": [ 0.0 ] },
+        { "name": "Frequency", "type": "float", "count": 2, 
+          "values": [ 512.0, 288.0 ] },
+        { "name": "WobbleAmount", "type": "float", "count": 2, 
+          "values": [ 0.002, 0.002 ] }
+    ]
+}
+```
