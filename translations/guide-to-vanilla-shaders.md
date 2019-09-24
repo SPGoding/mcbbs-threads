@@ -1,4 +1,4 @@
-# 指导到香草着色器
+# 指导到香草着色器（喂，你这样过度玩梗了吧，我这么玩梗是要死的！）
 
 - 原　文: [Guide to vanilla shaders](https://docs.google.com/document/d/15TOAOVLgSNEoHGzpNlkez5cryH3hFF3awXL5Py81EMk/edit#)
 - 原作者: SirBenet, with input from Godlander and Onnowhere
@@ -11,7 +11,7 @@
 
 # 前言
 
-原版 Minecraft 有着许多的 GLSL（OpenGL Shading Language）着色器。这些着色器以前能通过选项中的「Super Secret Settings」来启用，但现在只在以下情景有应用了：
+原版 Minecraft 有着许多的 GLSL（OpenGL Shading Language）着色器（译注：这些着色器经常会被称作光影）。这些着色器以前能通过选项中的「Super Secret Settings」来启用，但现在只在以下情景有应用了：
 - 以特定生物的视角旁观时（苦力怕、蜘蛛、末影人）
 - 屏幕中有具有发光状态效果的实体时
 
@@ -38,19 +38,19 @@
 
 # 梗概：着色器的组成部分
 
-[「岗位」（post）](TOT)文件（储存在 `assets/minecraft/shaders/post` 目录下）定义了一个由一系列「程序」（program）组成的管道（pipeline）。下图展示了由 `creeper.json` 定义的管道：
+Post（注：个人认为可以翻成“推送”或者“流动”，不过一个特定的文件名其实也可以不翻）(TOT)文件（储存在 `assets/minecraft/shaders/post` 目录下）定义了一个由一系列「着色器程序」（program）组成的渲染管线（pipeline）。下图展示了由 `creeper.json` 定义的管线：
 
 ![image.png](https://i.loli.net/2019/09/23/81ODcYF4EhRJ9fW.png)
 
 每个[「程序」](TOT)（例如 `color_convolve`）都是定义在另一个 JSON 文件当中的（这回储存在 `shaders/program` 目录下）。该文件通常包括：
 - 一个要使用的「顶点着色器」（vertex shader）的路径（一个以 GLSL 语言编写的 `.vsh` 文件）
-- 一个要使用的「分段着色器」（fragment shader）的路径（一个以 GLSL 语言编写的 `.fsh` 文件）
+- 一个要使用的「片段着色器」（fragment shader）的路径（一个以 GLSL 语言编写的 `.fsh` 文件）
 
 [「顶点着色器」](TOT)会对每个顶点起效，将顶点的位置作为输入，并产生一个经过变换的位置作为输出。一个扭曲屏幕的顶点着色器示例见下：
 
 ![image.png](https://i.loli.net/2019/09/23/suc3nB2gvitdZ6I.png)
 
-[「分段着色器」](TOT)会对每个像素起效，并逐像素产生输出层。一个不改变任何内容的分段着色器将直接把输入的像素原样产生。一个交换红色和蓝色色道的分段着色器示例见下：
+[「片段着色器」](TOT)会对每个像素起效，并逐像素产生输出层。一个不改变任何内容的分段着色器将直接把输入的像素原样产生。一个交换红色和蓝色色道的分段着色器示例见下：
 
 ![image.png](https://i.loli.net/2019/09/23/QY4Net5fjFMHExJ.png)
 
@@ -71,9 +71,9 @@
 
 ![image.png](https://i.loli.net/2019/09/23/5yjrHDIwMWt1fm2.png)
 
-# 创建一个「岗位」JSON
+# 创建一个Post.JSON
 
-岗位 JSON 文件应该放置在 `assets/minecraft/shaders/post` 目录当中，并且命名为：
+Post.JSON 文件应该放置在 `assets/minecraft/shaders/post` 目录当中，并且命名为：
 - `creeper.json` 将在以苦力怕视角旁观时启用
 - `invert.json` 将在以末影人视角旁观时启用
 - `spider.json` 将在以蜘蛛视角旁观时启用
@@ -92,11 +92,11 @@
 
 ## Targets
 
-`"targets"` 数组**声明（declare）**了一些**帧缓冲层（frame buffers）** —— 把它们想象成我们可以往上面读取或写入像素的画布。该数组中的每一项都可以是以下两者之一：
-- 一个有着 `"name"`（名称。字符串）、`"width"`（宽度。整型数字）、`"height"`（高度。整型数字）三个参数的对象。这三个参数描述了帧缓冲层。
+`"targets"` 数组**声明**了一些**帧缓冲（frame buffers）** —— 把它们想象成我们可以往上面读取或写入像素的画布。该数组中的每一项都可以是以下两者之一：
+- 一个有着 `"name"`（名称，字符串）、`"width"`（宽度，整型数字）、`"height"`（高度，整型数字）三个参数的对象。这三个参数描述了帧缓冲。
 - 一个字符串名称。宽度和高度将会默认为游戏窗口的宽度和高度。
 
-你可以在声明帧缓冲层时随意混用两种方式：
+你可以在声明帧缓冲时随意混用两种方式：
 
 ```json
 "targets": [
@@ -107,7 +107,7 @@
 ]
 ```
 
-除了这些手动声明的缓冲层，还有一些特殊的、预先定义好的缓冲层。这些缓冲层里面会自带内容，不需要声明就可以直接使用。它们是：
+除了这些手动声明的缓冲层，还有一些特殊的、预先定义好的缓冲。这些缓冲里面会自带内容，不需要声明就可以直接使用。它们是：
 
 - 为**发光着色器**准备的、预先填充好的特殊缓冲区
 
@@ -151,9 +151,9 @@
 ]
 ```
 
-`"blit"` 是一个不改变任何内容的程序，它只是简单地把数据从一个缓冲层复制到另一个缓冲层当中（注意：[在不同大小的缓冲层之间复制数据时会有问题](TOT)）。
+`"blit"` 是一个不改变任何内容的程序，它只是简单地把数据从一个缓冲复制到另一个缓冲当中（注意：[在不同大小的缓冲层之间复制数据时会有问题](TOT)）。
 
-你想要显示的内容应当最终输出到 `"minecraft:main"` 缓冲层当中（如果是发光着色器，还可以进一步修改 `final` 缓冲层，该缓冲层的内容[会覆盖到一切内容上面](TOT)）
+你想要显示的内容应当最终输出到 `"minecraft:main"` 缓冲当中（如果是发光着色器，还可以进一步修改 `final` 缓冲层，该缓冲层的内容[会覆盖到一切内容上面](TOT)）
 
 ### Passes.Auxtargets
 
@@ -198,7 +198,7 @@
 
 ## 可运作的示例
 
-以下是一个可以正常运作的完整的岗位 JSON 文件。它添加了一个 ["notch" 抖动效果](TOT)，并减少了颜色饱和度。
+以下是一个可以正常运作的完整的Post.JSON 文件。它添加了一个 ["notch" 抖动效果](TOT)，并减少了颜色饱和度。
 
 [assets/minecraft/shaders/post/spider.json](https://drive.google.com/file/d/1lEW6WRHa0xN041qNNhr2XvpspiXK7A6g/view?usp=sharing)
 
