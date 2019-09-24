@@ -1,9 +1,10 @@
-# 指导到香草着色器（喂，你这样过度玩梗了吧，我这么玩梗是要死的！）
+# 指导到香草着色器
 
 - 原　文: [Guide to vanilla shaders](https://docs.google.com/document/d/15TOAOVLgSNEoHGzpNlkez5cryH3hFF3awXL5Py81EMk/edit#)
 - 原作者: SirBenet, with input from Godlander and Onnowhere
 - 译　文: [指导到香草着色器](https://github.com/SPGoding/mcbbs-threads/blob/master/translations/guide-to-vanilla-shaders.md)
 - 译　者: SPGoding
+- 鸣　谢: 森林蝙蝠
 - 截止翻译时，原文最后更新: 2019-09-22 for Minecraft 1.14.4
 
 **已经原作者授权**
@@ -38,11 +39,11 @@
 
 # 梗概：着色器的组成部分
 
-Post（注：个人认为可以翻成“推送”或者“流动”，不过一个特定的文件名其实也可以不翻）(TOT)文件（储存在 `assets/minecraft/shaders/post` 目录下）定义了一个由一系列「着色器程序」（program）组成的渲染管线（pipeline）。下图展示了由 `creeper.json` 定义的管线：
+[Post](TOT) 文件（储存在 `assets/minecraft/shaders/post` 目录下）定义了一个由一系列「着色器程序」（program）组成的渲染管线（pipeline）。下图展示了由 `creeper.json` 定义的管线：
 
 ![image.png](https://i.loli.net/2019/09/23/81ODcYF4EhRJ9fW.png)
 
-每个[「程序」](TOT)（例如 `color_convolve`）都是定义在另一个 JSON 文件当中的（这回储存在 `shaders/program` 目录下）。该文件通常包括：
+每个[「着色器程序」](TOT)（例如 `color_convolve`）都是定义在另一个 JSON 文件当中的（这回储存在 `shaders/program` 目录下）。该文件通常包括：
 - 一个要使用的「顶点着色器」（vertex shader）的路径（一个以 GLSL 语言编写的 `.vsh` 文件）
 - 一个要使用的「片段着色器」（fragment shader）的路径（一个以 GLSL 语言编写的 `.fsh` 文件）
 
@@ -151,21 +152,21 @@ Post.JSON 文件应该放置在 `assets/minecraft/shaders/post` 目录当中，�
 ]
 ```
 
-`"blit"` 是一个不改变任何内容的程序，它只是简单地把数据从一个缓冲复制到另一个缓冲当中（注意：[在不同大小的缓冲层之间复制数据时会有问题](TOT)）。
+`"blit"` 是一个不改变任何内容的程序，它只是简单地把数据从一个缓冲复制到另一个缓冲当中（注意：[在不同大小的缓冲之间复制数据时会有问题](TOT)）。
 
-你想要显示的内容应当最终输出到 `"minecraft:main"` 缓冲当中（如果是发光着色器，还可以进一步修改 `final` 缓冲层，该缓冲层的内容[会覆盖到一切内容上面](TOT)）
+你想要显示的内容应当最终输出到 `"minecraft:main"` 缓冲当中（如果是发光着色器，还可以进一步修改 `final` 缓冲，该缓冲的内容[会覆盖到一切内容上面](TOT)）
 
 ### Passes.Auxtargets
 
-可选的 `"auxtargets"` 数组提供了一系列补充的缓冲层或图片，使得程序能够**读取**它们。在 auxtargets 数组中的对象应当包含：
-- `"id"` - 指定一个现存缓冲层的名称（即定义在 `"targets"` 中的名称），**或者**是一张位于资源包 `minecraft/textures/effect` 目录下的图片的文件名。
-- `"name"` - 能让你给该缓冲层或图片分配任意的一个名称，使得程序的 GLSL 代码中能够访问它们。
+可选的 `"auxtargets"` 数组提供了一系列补充的缓冲或图片，使得程序能够**读取**它们。在 auxtargets 数组中的对象应当包含：
+- `"id"` - 指定一个现存缓冲的名称（即定义在 `"targets"` 中的名称），**或者**是一张位于资源包 `minecraft/textures/effect` 目录下的图片的文件名。
+- `"name"` - 能让你给该缓冲或图片分配任意的一个名称，使得程序的 GLSL 代码中能够访问它们。
 - 如果指定的是一张**图片**，还必须指定以下参数：
     - `"width"` - 以像素为单位的图片宽度（*似乎没有实际效果？*）
     - `"height"` - 以像素为单位的图片高度（*似乎没有实际效果？*）
     - `"bilinear"` - 指定该图片被采样时使用的[缩放算法](TOT)
 
-一个示例 auxtargets 数组如下，它使得程序能够访问 `qux` 缓冲层，以及一张叫做 `abc.png` 的图片：
+一个示例 auxtargets 数组如下，它使得程序能够访问 `qux` 缓冲，以及一张叫作 `abc.png` 的图片：
 
 ```json
 "auxtargets": [
@@ -198,7 +199,7 @@ Post.JSON 文件应该放置在 `assets/minecraft/shaders/post` 目录当中，�
 
 ## 可运作的示例
 
-以下是一个可以正常运作的完整的Post.JSON 文件。它添加了一个 ["notch" 抖动效果](TOT)，并减少了颜色饱和度。
+以下是一个可以正常运作的完整的 Post JSON 文件。它添加了一个 ["notch" 抖动效果](TOT)，并减少了颜色饱和度。
 
 [assets/minecraft/shaders/post/spider.json](https://drive.google.com/file/d/1lEW6WRHa0xN041qNNhr2XvpspiXK7A6g/view?usp=sharing)
 
@@ -233,3 +234,24 @@ Post.JSON 文件应该放置在 `assets/minecraft/shaders/post` 目录当中，�
    ]
 }
 ```
+
+# 创建一个「程序」JSON
+
+程序 JSON 文件应该放置在 `assets/minecraft/shaders/program` 文件夹中。 
+
+可以使用任何名称（只要遵守正常资源包的文件命名规则即可，例如没有大写字母什么的）。
+
+```json
+{
+   "blend": { … },
+   "vertex": "foo",
+   "fragment": "foo",
+   "attributes": [ … ],
+   "samplers": [ … ],
+   "uniforms": [ … ]
+}
+```
+
+`"vertex"` 指定了将要使用的[顶点着色器](TOT) `.vsh` 文件的文件名。
+
+`"fragment"` 指定了将要使用的[分段着色器](TOT) `.fsh` 文件的文件名。
