@@ -41,7 +41,7 @@
 
 [Post](TOT) 文件（储存在 `assets/minecraft/shaders/post` 目录下）定义了一个由一系列「着色器程序」（program）组成的渲染管线（pipeline）。下图展示了由 `creeper.json` 定义的管线：
 
-![image.png](https://i.loli.net/2019/09/23/81ODcYF4EhRJ9fW.png)
+![image.png](https://i.loli.net/2019/09/24/Ewl8WJZUIaFPV7G.png)
 
 每个[「着色器程序」](TOT)（例如 `color_convolve`）都是定义在另一个 JSON 文件当中的（这回储存在 `shaders/program` 目录下）。该文件通常包括：
 - 一个要使用的「顶点着色器」（vertex shader）的路径（一个以 GLSL 语言编写的 `.vsh` 文件）
