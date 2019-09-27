@@ -354,6 +354,48 @@ Post.JSON 文件应该放置在 `assets/minecraft/shaders/post` 目录当中，�
 
 有关核心语言的更多信息：khronos.org/opengl/wiki/Core_Language_(GLSL)
 
-有关所有可用函数的深度文档：docs.gl/sl4/all
+有关所有可用函数的详细文档：docs.gl/sl4/all
 
-> **注意**： 
+> **注意**： 原版 jar 文件中的着色器是用的 GLSL 版本是 110，本文为保持一致也将使用该版本。不过，由于 [Minecraft 需要 OpenGL 4.4](https://help.mojang.com/customer/en/portal/articles/325948-minecraft-java-edition-system-requirements)，你可以放心地使用最高到 440 版本的 GLSL。版本需要在 GLSL 代码的开头声明（可以看示例）。
+
+## 数据类型
+
+> ### 标量
+> 
+> `bool`: 布尔值 `true` / `false`  
+> `int` / `unit`: 有符号 / 无符号 32 位整型数字  
+> `float` / `double`: 单精度 / 双精度浮点数
+> 
+> ### 向量
+> 
+> `bve`**_`n`_**、`ive`**_`n`_**、`uvec`**_`n`_**、`vec`**_`n`_**、`dvec`**_`n`_**: 分别代表由 > **_`n`_** 个 `bool`、`int`、`uint`、`float` 或 `double` 组成的向量
+> 
+> **_`n`_** 必须为 2、3 或 4。
+> 
+> ### 矩阵
+> 
+> `mat`**_`n`_**: 由 `float` 组成的矩阵，大小为 **_`n`_** × **_`n`_**  
+> `mat`**_`n`_**`x`**_`m`_**: 由 `float` 组成的矩阵，大小为 **_`n`_** × **_`m`_**  
+> 
+> **_`n`_** 和 **_`m`_** 都必须为 2、3 或 4。
+> 
+> 矩阵是**列优先**的（3×2 = 3 列，2 行）。
+
+在 GLSL 里最常处理的就是 `float` 了。
+
+想要构造向量和矩阵的话，可以任意组合其他的标量 / 向量：
+
+```glsl
+vec2 v2 = vec2(0.4, 0.5);
+vec3 v3 = vec3(v2, 0.6);
+mat4 m3 = mat3(0.1, 0.2, 0.3,
+               v3,
+               v2, 0.7);
+```
+
+请注意，列优先的矩阵可能有点反直觉：
+
+```glsl
+mat2(a, b,   // 第一列（不是第一行！）
+     c, d);  // 第二列
+```
