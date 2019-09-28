@@ -419,17 +419,17 @@ for (int i = 0; i < 10; i++) { ... }
 while (x < 20) { ... }
 ```
 
-## 属性、全局量、TOT
+## 属性、全局量、传递变量
 
 > 如果你选择了更高版本的 GLSL，该部分在 GLSL 140 及以上版本有所改动。见：https://www.khronos.org/opengl/wiki/Type_Qualifier_(GLSL)#Shader_stage_inputs_and_outputs。
 
 全局变量可以被声明为 `attribute`（属性）、`uniform`（全局量）或 `varying`（TOT）。
 
-`attributes`（属性）变量只能由顶点着色器读取，它自动包含了当前顶点的一些信息。对于 Minecraft 的着色器来说，它只包含了顶点的 `Position`（位置）属性。
+`attributes`（属性）只能由顶点着色器读取，它自动包含了当前顶点的一些信息。对于 Minecraft 的着色器来说，它只包含了顶点的 `Position`（位置）属性。
 
-`uniform`（全局量）变量可以被顶点着色器与分段着色器读取，对所有的顶点或像素都会保持恒定不变。它们的值可以通过 post JSON 文件传入，否则将会使用在着色器程序 JSON 文件中定义的默认值。
+`uniform`（全局量）可以被顶点着色器与分段着色器读取，对所有的顶点或像素都会保持恒定不变。它们的值可以通过 post JSON 文件传入，否则将会使用在着色器程序 JSON 文件中定义的默认值。
 
-`varying`（）变量由顶点着色器声明并赋值，然后可在分段着色器中被读取。这些值会在顶点间**插值**计算出来。举个例子：
+`varying`（传递变量）由顶点着色器声明并赋值，然后可在分段着色器中被读取。这些值会在顶点间**插值**计算出来。举个例子：
 
 ```glsl
 varying vec2 texCoord;
@@ -437,4 +437,48 @@ varying vec2 texCoord;
 
 ![image.png](https://i.loli.net/2019/09/28/c7WE8yQUFjdZoDO.png)
 
+# 编写一个顶点着色器
 
+顶点着色器会在每个顶点上运行，以对顶点进行变换。通常来讲这指的是世界几何体的每一个顶点 —— 但是在 Minecraft 中，它指的只是缓冲四个角上的顶点。这使得目前的顶点着色器十分受限。不对顶点缓冲器做任何修改是很常见的做法（绝大多数原版的着色器程序都重复使用了 `sobel.vsh`）。
+
+![image.png](https://i.loli.net/2019/09/28/xCswyYEjhgpQPAi.png)
+
+顶点着色器的主要工作是用一个「投影矩阵」乘坐标。一般来讲这会把一个处于[视锥](https://upload.wikimedia.org/wikipedia/commons/0/02/ViewFrustum.svg)内的顶点转换到一个 2×2×2 的立方体中，这样能够更方便地拍扁到屏幕上：
+
+![image.png](https://i.loli.net/2019/09/28/p39hGSMJB2VfcnX.png)
+
+不过在 Minecraft 中，顶点着色器直接就从一个处于 3 维空间内的平面开始，并且直接变换四个角上的顶点，而不是变换任何实际上的几何体的顶点。Minecraft 使用 `ProjMat` 这样一个特殊的全局量用来计算，虽然这完全可以用 4 个硬编码（hardcoded）的特例来替代（因为这些顶点总是会被计算到相同的位置上）[*](TOT)。
+
+![image.png](https://i.loli.net/2019/09/28/4EAisOGleYaLJHS.png)
+
+顶点的初始位置可以从 `Position` 属性获取，而计算结果应当储存到特殊的 `gl_Position` 变量当中（这两者都是 `vec4`）。
+
+顶点着色器还定义并赋值了一些有用的传递变量，以供片段着色器使用：
+- `texCoord`: 范围从 `0,0`（左下角）到 `1,1`（右上角）的坐标。
+- `oneTexel`: 在 `texCoord` 所表示的坐标中，一个像素所占的大小。例如：对于一个像素数为 4×2 的输入缓冲，其中每个像素的大小为 0.25×0.5（1/4 的高度，1/2 的宽度）
+
+## 可运作的示例
+
+`sobel.vsh` 顶点着色器，它被绝大多数原版的着色器程序所调用。它并没有什么特别涉及到 sobel（索伯算子？）的东西 —— 这么命名可能只是因为它是 Mojang 第一个使用的着色器程序。
+
+```glsl
+#version 110
+
+attribute vec4 Position;
+
+uniform mat4 ProjMat;
+uniform vec2 InSize;
+uniform vec2 OutSize;
+
+varying vec2 texCoord;
+varying vec2 oneTexel;
+
+void main(){
+    vec4 outPos = ProjMat * vec4(Position.xy, 0.0, 1.0);
+    gl_Position = vec4(outPos.xy, 0.2, 1.0);
+
+    oneTexel = 1.0 / InSize;
+
+    texCoord = Position.xy / OutSize;
+}
+```
