@@ -12,7 +12,7 @@
 
 # 前言
 
-原版 Minecraft 有着许多的 GLSL（OpenGL Shading Language）着色器（译注：这些着色器经常会被称作光影）。这些着色器以前能通过选项中的「Super Secret Settings」来启用，但现在只在以下情景有应用了：
+原版 Minecraft 有着许多的 GLSL（OpenGL Shading Language）着色器。这些着色器以前能通过选项中的「Super Secret Settings」来启用，但现在只在以下情景有应用了：
 - 以特定生物的视角旁观时（苦力怕、蜘蛛、末影人）
 - 屏幕中有具有发光状态效果的实体时
 
