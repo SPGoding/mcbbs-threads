@@ -72,7 +72,7 @@
 
 ![image.png](https://i.loli.net/2019/09/23/5yjrHDIwMWt1fm2.png)
 
-# 创建一个Post.JSON
+# 创建一个 post JSON
 
 Post.JSON 文件应该放置在 `assets/minecraft/shaders/post` 目录当中，并且命名为：
 - `creeper.json` 将在以苦力怕视角旁观时启用
@@ -82,7 +82,7 @@ Post.JSON 文件应该放置在 `assets/minecraft/shaders/post` 目录当中，�
 
 我们只能通过替换以上四个现存的着色器来使用自定义着色器。没有应用其他着色器的办法。
 
-岗位文件由两个数组构成：
+post 文件由两个数组构成：
 
 ```json
 {
@@ -399,3 +399,42 @@ mat4 m3 = mat3(0.1, 0.2, 0.3,
 mat2(a, b,   // 第一列（不是第一行！）
      c, d);  // 第二列
 ```
+
+除了普通的\[索引\]以外，**混合** `xyzw` 或 `rgba` 是种方便的获取某个向量的 1 个或多个元素的方式：
+
+```glsl
+vec3 v3 = vec3(0.1, 0.2, 0.3);
+v3.x;     // == 0.1
+v3.yzyz;  // == vec4(0.2, 0.3, 0.2, 0.3)
+```
+
+## 着色器程序工作流程
+
+顶点着色器或分段着色器都有一个 `void main()` 函数，作为代码的起始点。该函数没有任何参数，也不返回任何东西，它只应更新一个现存的特殊变量（`gl_Position` 或 `gl_FragColor`，将在下方解释。）
+
+由于 GLSL 代码是在无法任意写入内存的硬件上执行的，因此 GLSL 不支持递归操作。不过循环是可以的：
+
+```glsl
+for (int i = 0; i < 10; i++) { ... }
+while (x < 20) { ... }
+```
+
+## 属性、全局量、TOT
+
+> 如果你选择了更高版本的 GLSL，该部分在 GLSL 140 及以上版本有所改动。见：https://www.khronos.org/opengl/wiki/Type_Qualifier_(GLSL)#Shader_stage_inputs_and_outputs。
+
+全局变量可以被声明为 `attribute`（属性）、`uniform`（全局量）或 `varying`（TOT）。
+
+`attributes`（属性）变量只能由顶点着色器读取，它自动包含了当前顶点的一些信息。对于 Minecraft 的着色器来说，它只包含了顶点的 `Position`（位置）属性。
+
+`uniform`（全局量）变量可以被顶点着色器与分段着色器读取，对所有的顶点或像素都会保持恒定不变。它们的值可以通过 post JSON 文件传入，否则将会使用在着色器程序 JSON 文件中定义的默认值。
+
+`varying`（）变量由顶点着色器声明并赋值，然后可在分段着色器中被读取。这些值会在顶点间**插值**计算出来。举个例子：
+
+```glsl
+varying vec2 texCoord;
+```
+
+![image.png](https://i.loli.net/2019/09/28/c7WE8yQUFjdZoDO.png)
+
+
