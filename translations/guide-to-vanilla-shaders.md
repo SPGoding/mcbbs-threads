@@ -267,7 +267,7 @@ post 文件由两个数组构成：
 "attributes": [ "Position" ],
 ```
 
-`"samplers"` 定义了片段着色器想要访问缓冲需要用到的变量名。`"DiffuseSampler"` 是被自动给予 `"intarget"` 中定义的缓冲的变量名。其他的任何名字都需要与你在 [post 文件的 `"auxtargets"`](#Passes.Auxtargets) 中指定的一致。
+`"samplers"` 定义了片段着色器想要访问缓冲需要用到的变量名（采样器）。`"DiffuseSampler"` 是被自动给予 `"intarget"` 中定义的缓冲的采样器。其他的任何名字都需要与你在 [post 文件的 `"auxtargets"`](#Passes.Auxtargets) 中指定的一致。
 
 ```json
 "samplers": [
@@ -496,7 +496,7 @@ void main(){
 
 ## Sampler
 
-`texture2D` 函数允许你用一个 [sampler](#创建一个「着色器程序」JSON) 来获取一个缓冲中的像素。例如：
+`texture2D` 函数允许你用一个[采样器](#创建一个「着色器程序」JSON)来获取一个缓冲中的像素。例如：
 
 ```glsl
 vec4 centerPixel = texture2D(DiffuseSampler, vec2(0.5, 0.5));
@@ -611,7 +611,7 @@ void main(){
 
 GLSL 编译器会优化那些**它认为不会对着色器的输出有影响的代码与变量**（输出指的是 `gl_FragColor`、`gl_Position` 以及其他任何传递变量）。
 
-GLSL 编译器找到一个没有被使用的 sampler 后会把它优化出去，但 Minecraft 仍然会传输同样的缓冲，这就导致了问题。所有的 sampler 都会读取前一个缓冲的内容。
+GLSL 编译器找到一个没有被使用的采样器后会把它优化出去，但 Minecraft 仍然会传输同样的缓冲，这就导致了问题：所有的采样器都会读取前一个缓冲的内容。
 
 ![image.png](https://i.loli.net/2019/09/28/bCTycV2xi4zDwqa.png)
 
