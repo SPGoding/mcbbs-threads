@@ -261,7 +261,7 @@
 ```
 该条件会在 `this` 指定的实体主手中没有拿任何物品时通过。
 
-## minecraft:entity_scores `[E|S|L:entitiy]`
+## minecraft:entity_scores `[E|S|L:entity]`
 
 在指定的实体的分数满足指定条件时，该条件通过。
 
