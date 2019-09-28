@@ -558,3 +558,185 @@ void main(){
 ```
 
 ![image.png](https://i.loli.net/2019/09/28/D5I9Pwc3EWtkj6U.png)
+
+# 技巧与难题
+
+## 发光颜色
+
+发光的实体是一种不易被察觉的向 `entity_outline` 着色器传递数据的方式，这是因为该着色器可以读取 `final` 缓冲，并且使其不渲染可见的发光边框效果。
+
+一个具有发光状态效果的实体的轮廓颜色由它所处**队伍的颜色**决定。实体本身具有的透明度会保留。这使得分段着色器可以读取并使用 16 种不同的颜色以及 256 种不同的透明度值。
+
+![image.png](https://i.loli.net/2019/09/28/GdwBOAXL8JUfpIv.png)
+
+（图中添加了棋盘背景以显示出透明度）
+
+## 阴影
+
+由于分段着色器可以读取像素，因此可以通过像素的颜色信息来传递信息。不过请小心，有许多因素会使你的材质变暗：
+
+> ### 光照等级
+>
+> 远离光源并且不在太阳照射下的方块或实体会变暗。
+>
+> 可以用夜视效果或光源避免。
+>
+> ![image.png](https://i.loli.net/2019/09/28/eKDOWhgQfrw3UTS.png)
+> 
+> ### 面阴影
+>
+> 顶面是最亮的，其次是北面和南面，再其次是东面和西面，最暗的是底面。方块和实体都受到这一影响。
+>
+> 若想为方块禁用该阴影效果，可以在[模型](https://minecraft-zh.gamepedia.com/模型#方块模型)中将每个元素（element）设置为 `"shade": false`。
+> 
+> 不能为实体禁用！
+>
+> ![image.png](https://i.loli.net/2019/09/28/4PamBpFiklLwe97.png)
+>
+> ### 环境遮挡（「平滑光照」）
+>
+> 角落会变暗。只有方块受到这一影响。
+>
+> 若想为方块禁用该阴影效果，可以在[模型](https://minecraft-zh.gamepedia.com/模型#方块模型)中设置 `"ambientocclusion":false `。
+>
+> ![image.png](https://i.loli.net/2019/09/28/EYiX1bZIRCrGA6F.png)
+>
+
+## 编译器优化问题
+
+GLSL 编译器会优化那些**它认为不会对着色器的输出有影响的代码与变量**（输出指的是 `gl_FragColor`、`gl_Position` 以及其他任何传递变量）。
+
+GLSL 编译器找到一个没有被使用的 sampler 后会把它优化出去，但 Minecraft 仍然会传输同样的缓冲，这就导致了问题。所有的 sampler 都会读取前一个缓冲的内容。
+
+![image.png](https://i.loli.net/2019/09/28/bCTycV2xi4zDwqa.png)
+
+如果想避免让编译器优化出某个变量，你可以让编译器认为该变量有可能影响着色器的输出结果。例如，`texCoord.x` 永远不会是 `731031`，但编译器并不知道这一点：
+
+```glsl
+if (texCoord.x == 731031) { gl_FragColor = texture2D(DiffuseSampler, texCoord); }
+```
+
+## 跨帧储存信息
+
+缓冲并不会被自动清空，因此着色器可以在不同帧之间传递信息。
+
+想要获取在上一帧存储的数据很简单：
+1. 在这一帧中，把数据写入到缓冲
+2. 在下一帧中，在**新的数据被写入缓冲之前**读取它
+
+为了让缓冲中的数据能跨刻存在，向一个缓冲写入的着色器程序必须要能让该缓冲中的数据不变。这就有些麻烦了，因为一个着色器程序**必须**要写入每一个像素，并且在这个过程中**不能**读取它正在写入的那个缓冲。
+
+一个解决方案是，首先把信息复制到另一个缓冲当中。这时着色器程序就可以读取被复制出来的那个缓冲，同时把新数据写到原有的缓冲当中了，进而能够为每个像素写入它们在上一帧的值。
+
+![image.png](https://i.loli.net/2019/09/28/4tYT5KzmVcIqvaP.png)
+
+```json
+"passes": [
+   {
+       "name": "blit",
+       "intarget": "foo",
+       "outtarget": "foo_copy"
+   },
+   {
+       "name": "maybe_update",
+       "intarget": "minecraft:main",
+       "auxtargets": [ { "name": "BackupSampler", "id": "foo_copy" } ],
+       "outtarget": "foo"
+   }
+]
+```
+
+## 着色器启用顺序
+
+1. Minecraft 渲染普通方块和实体到 `minecraft:main`
+2. Minecraft 渲染纯色的发光实体到 `final`
+3. 运行发光着色器（`entity_outline.json`），其能够访问 `minecraft:main` 与 `final` 缓冲
+4. Minecraft 渲染其他的东西（手、水、方块实体）到 `minecraft:main`
+5. Minecraft 把 `final` 覆盖到 `minecraft:main` 上
+6. 运行实体视角着色器，其能够访问 `minecraft:main` 缓冲
+
+通过发光着色器向 `minecraft:main` 写入数据（第 3 步）似乎会破坏掉有关深度的信息，使得其他的东西（第 4 步）被渲染到 `minecraft:main` 的所有东西之上：
+
+![image.png](https://i.loli.net/2019/09/28/crdONlsXaYCnASM.png)
+
+## Blit 缩放问题
+
+原版默认的 blit 着色器程序在相同大小的缓冲间复制数据时能正常运作，但是会在缓冲大小不一样时出问题。
+
+这是因为顶点着色器 `blit.vsh` 没有匹配整个输出缓冲。例如，如果输出缓冲是输入缓冲一半的大小，只有一半的输出缓冲会被写入数据：
+
+![image.png](https://i.loli.net/2019/09/28/WZ8FD1H9o53JzUj.png)
+
+下方链接是一个 “Clone” 着色器，能够正确地拉伸输入，使其完全匹配到输出缓冲当中：
+
+![image.png](https://i.loli.net/2019/09/28/mMegGWOHfnsDip2.png)
+
+下载：[着色器程序 JSON 文件](https://drive.google.com/file/d/1LIYFv588QcbjmFHObk4sgWqCc1I5CDzq/view?usp=sharing)，[.vsh GLSL 文件](https://drive.google.com/file/d/1_pjORoiga0TT_KB5UrYwMCHIB9mvDmQd/view?usp=sharing)
+
+## 读取玩家输入
+
+玩家的 `Motion` 不会在服务端更新，但如果玩家尝试在骑着猪或者矿车时移动的话则会更新，尽管玩家事实上并没有移动。通过让玩家骑着猪或矿车，命令能够读取玩家的 `Motion`，并（结合玩家的视角方向）确定玩家当前正按下的方向键。
+
+*TODO：示例命令*
+
+左键或右键的检测和平时一样（击打生物、右键使用胡萝卜钓竿或与村民交谈）。
+
+任何由命令获取到的信息（例如玩家目前正按着的按键）可以通过[一个发光实体的队伍的颜色传递给着色器](#发光颜色)。
+
+*TODO：Rotation*
+
+# 工具和参考
+
+## GLSL
+
+文档：  
+http://docs.gl/sl4/all
+
+教程：  
+https://www.shadertoy.com/view/Md23DV  
+https://thebookofshaders.com/
+
+非 Minecraft 的示例：  
+https://www.shadertoy.com/
+
+## SpiderEye
+
+![image.png](https://i.loli.net/2019/09/28/KVNgSjClo3XJrMI.png)
+
+使用 GLIntercept 做的小工具，能让你查看每个缓冲的数据。
+
+**下载**：https://drive.google.com/open?id=1p_FOalR0LzKmQu9negjtaVzobO9YSeiu
+
+v0.1：初步发布
+
+由于该软件的运作会操作游戏的 OpenGL32.dll 文件，[可能会被杀软误报](https://www.virustotal.com/gui/file/ff4e4037cf7dabcb79cbfc4afa7a52bb05e2e11eabe249a3511614cd58b6420c/detection)。
+
+## 着色器示例
+
+![image.png](https://i.loli.net/2019/09/28/JfRG8SFdto9hVWu.png)
+
+[可以看过去的传送门](https://www.reddit.com/r/Minecraft/comments/b15dho/vanilla_portal_gun_in_latest_snapshot_with/)
+
+从一个角度捕获画面并显示
+
+*完整、复杂的着色器运用*
+
+---
+
+![image.png](https://i.loli.net/2019/09/28/uYLwyUVnJz8HGx9.png)
+
+[调试文字](https://drive.google.com/open?id=1n-SjTRv6D7CnYXok7A4cB9sqnSw00wGS)
+
+通过着色器向屏幕上写入文字或数字
+
+*用来调试着色器的工具*
+
+---
+
+![image.png](https://i.loli.net/2019/09/28/APdCim8rUMI1pTz.png)
+
+[屏幕方块](https://www.reddit.com/r/Minecraft/comments/9hj1l3/a_screen_that_displays_what_youre_seeing_in/)
+
+简单的着色器，将 `minecraft:main` 缓存显示在一个方块上
+
+*易于理解的着色器*
