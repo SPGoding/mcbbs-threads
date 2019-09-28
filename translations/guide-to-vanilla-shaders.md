@@ -1,4 +1,4 @@
-# 指导到香草着色器
+# 原版着色器指导
 
 - 原　文: [Guide to vanilla shaders](https://docs.google.com/document/d/15TOAOVLgSNEoHGzpNlkez5cryH3hFF3awXL5Py81EMk/edit#)
 - 原作者: SirBenet, with input from Godlander and Onnowhere
