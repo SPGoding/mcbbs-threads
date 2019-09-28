@@ -158,7 +158,7 @@ post 文件由两个数组构成：
 
 ### Passes.Auxtargets
 
-可选的 `"auxtargets"` 数组提供了一系列补充的缓冲或图片，使得程序能够**读取**它们。在 auxtargets 数组中的对象应当包含：
+可选的 `"auxtargets"` 数组提供了一系列补充的缓冲或图片，使得着色器程序能够**读取**它们。在 auxtargets 数组中的对象应当包含：
 - `"id"` - 指定一个现存缓冲的名称（即定义在 `"targets"` 中的名称），**或者**是一张位于资源包 `minecraft/textures/effect` 目录下的图片的文件名。
 - `"name"` - 能让你给该缓冲或图片分配任意的一个名称，使得程序的 GLSL 代码中能够访问它们。
 - 如果指定的是一张**图片**，还必须指定以下参数：
@@ -166,7 +166,7 @@ post 文件由两个数组构成：
     - `"height"` - 以像素为单位的图片高度（*似乎没有实际效果？*）
     - `"bilinear"` - 指定该图片被采样时使用的[缩放算法](TOT)
 
-一个示例 auxtargets 数组如下，它使得程序能够访问 `qux` 缓冲，以及一张叫作 `abc.png` 的图片：
+一个示例 auxtargets 数组如下，它使得着色器程序能够访问 `qux` 缓冲，以及一张叫作 `abc.png` 的图片：
 
 ```json
 "auxtargets": [
@@ -482,3 +482,79 @@ void main(){
     texCoord = Position.xy / OutSize;
 }
 ```
+
+# 编写一个分段着色器
+
+分段着色器会为每一个**输出**像素执行一次，可以读取它的输入缓冲中的任何像素。
+
+每一个像素都是异步计算的，因此分段着色器不能读取输出缓冲中的其他像素，因为那些像素有可能还没有被计算 [*](https://stackoverflow.com/questions/16365385/explanation-of-dfdx/16368768#16368768)。
+
+## Sampler
+
+`texture2D` 函数允许你用一个 [sampler](#创建一个「着色器程序」JSON) 来获取一个缓冲中的像素。例如：
+
+```glsl
+vec4 centerPixel = texture2D(DiffuseSampler, vec2(0.5, 0.5));
+```
+
+在从缓冲中获取像素时，`0.0, 0.0` 是左下角，`1.0 1.0` 是右上角。
+
+![image.png](https://i.loli.net/2019/09/28/pXHyUFJZ7gMx6C8.png)
+
+这和顶点着色器设置的 `texCoord` 传递变量一致，十分方便。因此对于当前正在输出的像素，你可以用以下代码来获取相应的位于输入缓冲中的像素：
+
+```glsl
+texture2D(DiffuseSampler, texCoord)
+```
+
+该函数返回一个包含 `red`（红）、`green`（绿）、`blue`（蓝）、`opacity`（不透明度）的 `vec4` —— 这四者都由一个从 0 到 1 的 `float` 表示。
+
+`oneTexel` 代表一个像素（在输入缓冲中）的大小，所以可以用它来偏移指定数量的像素。例如：获取往上数第 3 个像素的颜色：
+
+```glsl
+texture2D(DiffuseSampler, texCoord + vec2(0.0, 3 * oneTexel.y));
+```
+
+如果想要得到以像素为单位的坐标，而不是 0-1 的小数的话，用 `OutSize` 乘即可。例如：
+
+```glsl
+OutSize; // == vec2(1920, 1080)
+texCoord; // == vec2(0.5, 0.5)
+OutSize * texCoord; // == vec2(960, 540)
+```
+
+分段着色器应当把输出像素写入到 `gl_FragColor` 中 —— 另一个由 `red`（红）、`green`（绿）、`blue`（蓝）、`opacity`（不透明度）构成的 `vec4`。
+
+## 可运作的示例
+
+以下的着色器：
+- 当距离中心的距离在 0.38 至 0.4 之间时，把这个像素变成橙色
+- 当距离中心的距离在 0.38 至 0.4 之间时，读取放大过的（距离中心更近的）像素
+- 当距离中心的距离在 0.38 至 0.4 之间时，正常读取对应的输入像素
+
+```glsl
+#version 110
+
+uniform sampler2D DiffuseSampler;
+
+varying vec2 texCoord;
+varying vec2 oneTexel;
+
+void main(){
+    float distFromCenter = distance(texCoord, vec2(0.5, 0.5));
+
+    if (distFromCenter < 0.38) {
+        // Inside circle
+        vec2 zoomedCoord = ((texCoord - vec2(0.5, 0.5)) * 0.2) + vec2(0.5, 0.5);
+        gl_FragColor = texture2D(DiffuseSampler, zoomedCoord);
+    } else if (distFromCenter >= 0.38 && distFromCenter < 0.4) {
+        // Orange border
+        gl_FragColor = vec4(0.7, 0.4, 0.1, 1.0); 
+    } else {
+        // Outside, normal pixels
+        gl_FragColor = texture2D(DiffuseSampler, texCoord);
+    }
+}
+```
+
+![image.png](https://i.loli.net/2019/09/28/D5I9Pwc3EWtkj6U.png)
