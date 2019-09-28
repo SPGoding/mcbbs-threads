@@ -39,19 +39,19 @@
 
 # 梗概：着色器的组成部分
 
-[Post](TOT) 文件（储存在 `assets/minecraft/shaders/post` 目录下）定义了一个由一系列「着色器程序」（program）组成的渲染管线（pipeline）。下图展示了由 `creeper.json` 定义的管线：
+[Post](#创建一个 post JSON) 文件（储存在 `assets/minecraft/shaders/post` 目录下）定义了一个由一系列「着色器程序」（program）组成的渲染管线（pipeline）。下图展示了由 `creeper.json` 定义的管线：
 
 ![image.png](https://i.loli.net/2019/09/24/Ewl8WJZUIaFPV7G.png)
 
-每个[「着色器程序」](TOT)（例如 `color_convolve`）都是定义在另一个 JSON 文件当中的（这回储存在 `shaders/program` 目录下）。该文件通常包括：
+每个[「着色器程序」](#创建一个「着色器程序」JSON)（例如 `color_convolve`）都是定义在另一个 JSON 文件当中的（这回储存在 `shaders/program` 目录下）。该文件通常包括：
 - 一个要使用的「顶点着色器」（vertex shader）的路径（一个以 GLSL 语言编写的 `.vsh` 文件）
 - 一个要使用的「片段着色器」（fragment shader）的路径（一个以 GLSL 语言编写的 `.fsh` 文件）
 
-[「顶点着色器」](TOT)会对每个顶点起效，将顶点的位置作为输入，并产生一个经过变换的位置作为输出。一个扭曲屏幕的顶点着色器示例见下：
+[「顶点着色器」](#编写一个顶点着色器)会对每个顶点起效，将顶点的位置作为输入，并产生一个经过变换的位置作为输出。一个扭曲屏幕的顶点着色器示例见下：
 
 ![image.png](https://i.loli.net/2019/09/23/suc3nB2gvitdZ6I.png)
 
-[「片段着色器」](TOT)会对每个像素起效，并逐像素产生输出层。一个不改变任何内容的分段着色器将直接把输入的像素原样产生。一个交换红色和蓝色色道的分段着色器示例见下：
+[「片段着色器」](#编写一个分段着色器)会对每个像素起效，并逐像素产生输出层。一个不改变任何内容的分段着色器将直接把输入的像素原样产生。一个交换红色和蓝色色道的分段着色器示例见下：
 
 ![image.png](https://i.loli.net/2019/09/23/QY4Net5fjFMHExJ.png)
 
@@ -152,9 +152,9 @@ post 文件由两个数组构成：
 ]
 ```
 
-`"blit"` 是一个不改变任何内容的程序，它只是简单地把数据从一个缓冲复制到另一个缓冲当中（注意：[在不同大小的缓冲之间复制数据时会有问题](TOT)）。
+`"blit"` 是一个不改变任何内容的程序，它只是简单地把数据从一个缓冲复制到另一个缓冲当中（注意：[在不同大小的缓冲之间复制数据时会有问题](#Blit 缩放问题)）。
 
-你想要显示的内容应当最终输出到 `"minecraft:main"` 缓冲当中（如果是发光着色器，还可以进一步修改 `final` 缓冲，该缓冲的内容[会覆盖到一切内容上面](TOT)）
+你想要显示的内容应当最终输出到 `"minecraft:main"` 缓冲当中（如果是发光着色器，还可以进一步修改 `final` 缓冲，该缓冲的内容[会覆盖到一切内容上面](#着色器启用顺序)）
 
 ### Passes.Auxtargets
 
@@ -164,7 +164,10 @@ post 文件由两个数组构成：
 - 如果指定的是一张**图片**，还必须指定以下参数：
     - `"width"` - 以像素为单位的图片宽度（*似乎没有实际效果？*）
     - `"height"` - 以像素为单位的图片高度（*似乎没有实际效果？*）
-    - `"bilinear"` - 指定该图片被采样时使用的[缩放算法](TOT)
+    - `"bilinear"` - 指定该图片被采样时使用的缩放算法
+
+> 缩放算法：  
+> ![image.png](https://i.loli.net/2019/09/28/sAapzHChyGuo5e9.png)
 
 一个示例 auxtargets 数组如下，它使得着色器程序能够访问 `qux` 缓冲，以及一张叫作 `abc.png` 的图片：
 
@@ -199,7 +202,9 @@ post 文件由两个数组构成：
 
 ## 可运作的示例
 
-以下是一个可以正常运作的完整的 post JSON 文件。它添加了一个 ["notch" 抖动效果](TOT)，并减少了颜色饱和度。
+以下是一个可以正常运作的完整的 post JSON 文件。它添加了一个 "notch" 抖动效果，并减少了颜色饱和度。
+
+![image.png](https://i.loli.net/2019/09/28/tV4AmDFdT7hyHcv.png)
 
 [assets/minecraft/shaders/post/spider.json](https://drive.google.com/file/d/1lEW6WRHa0xN041qNNhr2XvpspiXK7A6g/view?usp=sharing)
 
@@ -252,9 +257,9 @@ post 文件由两个数组构成：
 }
 ```
 
-`"vertex"` 指定了将要使用的[顶点着色器](TOT) `.vsh` 文件的文件名。
+`"vertex"` 指定了将要使用的[顶点着色器](#编写一个顶点着色器) `.vsh` 文件的文件名。
 
-`"fragment"` 指定了将要使用的[分段着色器](TOT) `.fsh` 文件的文件名。
+`"fragment"` 指定了将要使用的[分段着色器](#编写一个分段着色器) `.fsh` 文件的文件名。
 
 `"attributes"` 是一个字符串数组，指定顶点的哪些属性能够被顶点着色器访问到。目前只能写 `"Position"`（位置）。
 
@@ -290,7 +295,7 @@ post 文件由两个数组构成：
 - `"OutSize"` - 以像素为单位的输出缓冲（output buffer）的宽度和高度
 - `"ProjMat"` - 由顶点着色器使用的投影矩阵（projection matrix）
 
-`"values"` 应为一个浮点数数组，而 `"type"` 则定义了这些浮点数会在 GLSL 代码中被解析为的[数据类型](TOT)：
+`"values"` 应为一个浮点数数组，而 `"type"` 则定义了这些浮点数会在 GLSL 代码中被解析为的[数据类型](#数据类型)：
 
 - `"float"` - 一个 `float` 或 `vec2`/`vec3`/`vec4`，具体取决于在 `"values"` 中指定的数字个数
 - `"matrix4x4"` - 一个由 `"values"` 中指定的 16 个值产生的 `mat4`
@@ -423,7 +428,7 @@ while (x < 20) { ... }
 
 > 如果你选择了更高版本的 GLSL，该部分在 GLSL 140 及以上版本有所改动。见：https://www.khronos.org/opengl/wiki/Type_Qualifier_(GLSL)#Shader_stage_inputs_and_outputs。
 
-全局变量可以被声明为 `attribute`（属性）、`uniform`（全局量）或 `varying`（TOT）。
+全局变量可以被声明为 `attribute`（属性）、`uniform`（全局量）或 `varying`（传递变量）。
 
 `attributes`（属性）只能由顶点着色器读取，它自动包含了当前顶点的一些信息。对于 Minecraft 的着色器来说，它只包含了顶点的 `Position`（位置）属性。
 
@@ -447,7 +452,7 @@ varying vec2 texCoord;
 
 ![image.png](https://i.loli.net/2019/09/28/p39hGSMJB2VfcnX.png)
 
-不过在 Minecraft 中，顶点着色器直接就从一个处于 3 维空间内的平面开始，并且直接变换四个角上的顶点，而不是变换任何实际上的几何体的顶点。Minecraft 使用 `ProjMat` 这样一个特殊的全局量用来计算，虽然这完全可以用 4 个硬编码（hardcoded）的特例来替代（因为这些顶点总是会被计算到相同的位置上）[*](TOT)。
+不过在 Minecraft 中，顶点着色器直接就从一个处于 3 维空间内的平面开始，并且直接变换四个角上的顶点，而不是变换任何实际上的几何体的顶点。Minecraft 使用 `ProjMat` 这样一个特殊的全局量用来计算，虽然这完全可以用 4 个硬编码（hardcoded）的特例来替代（因为这些顶点总是会被计算到相同的位置上）[*](#Blit 缩放问题)。
 
 ![image.png](https://i.loli.net/2019/09/28/4EAisOGleYaLJHS.png)
 
