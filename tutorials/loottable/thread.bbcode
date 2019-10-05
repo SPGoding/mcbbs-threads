@@ -34,13 +34,12 @@
 1.14 内战利品表的工作流程相比 1.13 没有过大改动，对于战利品表的结构已经熟悉的玩家可以略读本章。
 
 战利品表有如下几个类型：
-- [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:advancement_reward[/font][/backcolor]：决定进度奖励。
 - [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:block[/font][/backcolor]：决定方块掉落物。
 - [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:chest[/font][/backcolor]：决定箱子内的物品。
 - [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:empty[/font][/backcolor]：空的。
 - [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:entity[/font][/backcolor]：决定实体掉落物。
 - [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:fishing[/font][/backcolor]：决定玩家钓鱼奖励。
-- [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:generic[/font][/backcolor]：除上述以外的战利品表。原版数据包中并没有使用该类型的战利品表。该类型的战利品表可以使用任何函数、条件等而不报错，效果类似于不指定战利品表类型。
+- [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:generic[/font][/backcolor]：通用型战利品表。原版数据包中并没有使用该类型的战利品表。该类型的战利品表可以使用任何函数、条件等而不报错，效果类似于不指定战利品表类型。
 
 在战利品表的 JSON 文件内的 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]type[/font][/backcolor] 字段中，可以定义该战利品表的类型为上述七种之一。通过定义该字段，在战利品表内使用了其不能使用的函数或条件时（比如，在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:block[/font][/backcolor] 类型的战利品表内检测了「被击杀者」。有关函数/条件的具体内容，会在后文进行讲解），游戏会进行报错；如果不指定该字段，则对函数/条件的使用没有限制，但是，游戏会在调用战利品表时根据调用它的情景来决定它的类型，你无法使用的函数/条件仍然无法使用（例如，一个叫 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]foo:bar[/font][/backcolor] 的战利品表没有指定类型，但是在 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:gameplay/fishing[/font][/backcolor] 里调用了它，游戏则会认为它是 [backcolor=white][font=Monaco,Consolas,'Lucida Console','Courier New',serif]minecraft:fishing[/font][/backcolor] 类型的战利品表，无法使用该类型不支持的函数/进度），而且在加载时不会有任何报错，[color=Red]除非特殊需求，十分不建议省略该字段[/color]。
 
