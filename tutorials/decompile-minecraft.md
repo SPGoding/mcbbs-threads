@@ -36,7 +36,7 @@ Wiki 是由玩家社区更新的，可能会比较慢，在新快照发布后等
 
 看 `versions` 数组即可，里面的每个对象代表一个版本。`id` 是该版本的版本号，`url` 是该版本的客户端 JSON。找到你想要的版本，然后打开对应 `url` 里的链接。这里以 `19w36a` 为例，打开 [https://launchermeta.mojang.com/v1/packages/cf1478395850173064e078bc7195314471634118/19w36a.json](https://launchermeta.mojang.com/v1/packages/cf1478395850173064e078bc7195314471634118/19w36a.json)。
 
-你看到了另外的一个巨长无比的 JSON 文件，这是该版本的客户端 JSON。按下 Ctrl + F 搜索 `mappings`，你看到了 `client_mappings` 和 `server_mappings`，它们分别代表客户端的混淆表和服务端的混淆表（如果你没有找到，说明这个版本没有官方的混淆表）。找到你想要的那个表，打开它对应的 `url` 内链接即可下载该混淆表（如果你的浏览器没有下载，而是打开了一个新的展现混淆表内容的网页，你可以按 Ctrl + S 把它保存下来）。
+你看到了另外的一个巨长无比的 JSON 文件，这是该版本的客户端 JSON，和启动器下载的 `.minecraft/versions/<版本>/<版本>.json` 是同一个文件。按下 Ctrl + F 搜索 `mappings`，你看到了 `client_mappings` 和 `server_mappings`，它们分别代表客户端的混淆表和服务端的混淆表（如果你没有找到，说明这个版本没有官方的混淆表）。找到你想要的那个表，打开它对应的 `url` 内链接即可下载该混淆表（如果你的浏览器没有下载，而是打开了一个新的展现混淆表内容的网页，你可以按 Ctrl + S 把它保存下来）。
 
 再在客户端 JSON 中搜索 `client.jar` 或 `server.jar`，下载你想要的客户端或服务端核心 jar 文件即可。
 
@@ -58,7 +58,7 @@ Wiki 是由玩家社区更新的，可能会比较慢，在新快照发布后等
 (c) 2019 Microsoft Corporation. All rights reserved. This information is provided “as-is” and you bear the risk of using it. This information does not provide you with any legal rights to any intellectual property in any Microsoft product. You may copy and use this information for your internal, reference purposes. Microsoft makes no warranties, express or implied, with respect to the information provided here.
 ```
 
-这意味着 Microsoft 并没有改变对游戏代码和资源等的限制，**Minecraft 仍然是商业闭源软件**，任何散步、使用商业闭源软件源码的行为都是违法行为。
+这意味着 Microsoft 并没有改变对游戏代码和资源等的限制，**Minecraft 仍然是商业闭源软件**，任何散步商业闭源软件源码的行为都是违法行为。
 
 不只是 Minecraft 本身，该混淆表也有着极严格的限制，你不能拿它的命名去做一些你不能做的事情。
 
