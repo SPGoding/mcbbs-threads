@@ -1,10 +1,10 @@
 # 用 Enigma 和官方混淆表反混淆游戏
 
-Mojang AB 自 [19w36a](https://www.mcbbs.net/thread-911386-1-1.html) 起开始随游戏一同发布混淆表，玩家可以通过该混淆表反混淆游戏代码。本文将讲述如何通过[Enigma](https://github.com/FabricMC/Enigma) 软件完成这一事项。
+Mojang AB 自 [19w36a](https://www.mcbbs.net/thread-911386-1-1.html) 起开始随游戏一同发布混淆表，并补发了 1.14.4 的混淆表。玩家可以通过该混淆表反混淆游戏代码。本文将讲述如何通过 [Enigma](https://github.com/FabricMC/Enigma) 软件完成这一事项。
 
 ## 下载 Enigma
 
-Enigma（E・nig・ma）是一个可用于 Java 程序的反混淆工具，这里我们使用 [FabricMC](https://github.com/FabricMC/Enigma) 团队[维护的版本](https://github.com/FabricMC/Enigma)。
+Enigma 是一个可用于 Java 程序的反混淆工具，这里我们使用 [FabricMC](https://github.com/FabricMC/Enigma) 团队[维护的版本](https://github.com/FabricMC/Enigma)。
 
 你可以直接下载 [FabricMC 构建好的 Enigma](https://maven.fabricmc.net/cuchaz/enigma/)。把滚动条拉到最下面，点进最新版本的文件夹，下载 `enigma-0.xx.x.xx-all.jar` 即可。
 
@@ -34,7 +34,7 @@ Wiki 是由玩家社区更新的，可能会比较慢，在新快照发布后等
 > 1. 学习 JSON；
 > 2. 等着 Wiki 更新，从 Wiki 下载。
 
-看 `versions` 数组即可，里面的每个对象代表一个版本。`id` 是该版本的版本号，`url` 是该版本的客户端 JSON。找到你想要的版本，然后打开对应 `url` 里的链接。这里以 `19w36a` 为例，打开 https://launchermeta.mojang.com/v1/packages/cf1478395850173064e078bc7195314471634118/19w36a.json。
+看 `versions` 数组即可，里面的每个对象代表一个版本。`id` 是该版本的版本号，`url` 是该版本的客户端 JSON。找到你想要的版本，然后打开对应 `url` 里的链接。这里以 `19w36a` 为例，打开 [https://launchermeta.mojang.com/v1/packages/cf1478395850173064e078bc7195314471634118/19w36a.json](https://launchermeta.mojang.com/v1/packages/cf1478395850173064e078bc7195314471634118/19w36a.json)。
 
 你看到了另外的一个巨长无比的 JSON 文件，这是该版本的客户端 JSON。按下 Ctrl + F 搜索 `mappings`，你看到了 `client_mappings` 和 `server_mappings`，它们分别代表客户端的混淆表和服务端的混淆表（如果你没有找到，说明这个版本没有官方的混淆表）。找到你想要的那个表，打开它对应的 `url` 内链接即可下载该混淆表（如果你的浏览器没有下载，而是打开了一个新的展现混淆表内容的网页，你可以按 Ctrl + S 把它保存下来）。
 
