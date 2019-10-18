@@ -1,16 +1,10 @@
-# MINECRAFT EARTH FAQ
-
-Frequently asked questions about Minecraft Earth.
+# Minecraft Earth 常见问题
 
 有关 Minecraft Earth 的常见问题。
 
 ---
 
-## 一般信息 - GENERAL INFO
-
-**WHAT IS MINECRAFT EARTH?**
-
-Minecraft Earth is an all-new augmented reality game you can play on your mobile devices that brings the Minecraft world into our universe! Through the lens of the game, you’ll be able to build creations with friends and place them in the real world at life-size.  You’ll discover exciting new mobs to use in your builds. And you may need to put your survival skills to the test as you explore a new side to your neighborhood and battle Minecraft mobs in real life!  
+# 一般信息
 
 **什么是 Minecraft Earth？**
 
@@ -18,19 +12,11 @@ Minecraft Earth 是一款全新的增强现实游戏，你可以通过手机来�
 
 ---
 
-**HOW MUCH WILL MINECRAFT EARTH COST?**
-
-Minecraft Earth will be free to play. 
-
 **Minecraft Earth 定价多少？**
 
-Minecraft Earth 可以免费游玩。
+Minecraft Earth 将可以免费游玩。
 
 ---
-
-**WILL MINECRAFT EARTH HAVE LOOT BOXES?**
-
-No. 
 
 **Minecraft Earth 里能开箱吗？**
 
@@ -38,59 +24,29 @@ No.
 
 ---
 
-**WHICH PLATFORMS WILL MINECRAFT EARTH BE ON?**
+**红宝石是什么？有什么功能？**
 
-Minecraft Earth is coming to iOS and Android this summer on AR-capable devices. We’ll have more to share soon. 
+红宝石是游戏内的一种虚拟货币，你可以用它在 Minecraft Earth 市场中购买一些东西，比如建筑底盘。
+
+---
+
+**怎么获取红宝石？**
+
+你可以通过可收集物来获取红宝石！每当点击了一个可收集物，你就有一定机率获取到红宝石！如果需要的话，你还可以在市场内购买红宝石。
+
+---
 
 **Minecraft Earth 将上线哪些平台？**
 
-Minecraft Earth 会在今年夏天的时候上线兼容 AR（增强现实）技术的苹果/安卓机型。不久之后会上线更多平台。
+Minecraft Earth 会在今年夏天的时候上线兼容 AR（增强现实）技术的苹果和安卓机型。请查看 Google 的这一页面 https://developers.google.com/ar/discover/supported-devices 来寻找支持 AR Core 的设备！（译注：如果你的安卓设备不支持 AR Core，你可以尝试论坛内安装 AR Core 的教程：https://www.mcbbs.net/thread-906444-1-1.html）
 
 ---
-
-**WHAT KIND OF DEVICE DO I NEED TO PLAY MINECRAFT EARTH?**
-
-You will need a mobile device running iOS 10 and Android 7 or newer. 
 
 **想玩 Minecraft Earth 的话我需要有什么设备？**
 
-你需要运行着 iOS 10 或者 Android 7 以上系统的手机。
+你需要运行着 iOS 10 或者 Android 8 以上系统的手机。
 
 ---
-
-**WHAT REGIONS WILL MINECRAFT EARTH BE SUPPORTED IN? **
-
-We’re committed to bringing Minecraft Earth to the entire Earth but will roll the game out gradually to ensure everyone gets the best play experience. Minecraft Earth will support all the same languages as regular vanilla Minecraft. 
-
-**Minecraft Earth 将在哪些区域上线？**
-
-我们计划将 Minecraft Earth 带到全地球，不过这会逐步进行，以确保每位玩家都能获得最佳的游戏体验。Minecraft Earth 将会支持原版 Minecraft 支持的所有语言。
-
----
-
-**WHEN WILL MINECRAFT EARTH BE RELEASED?**
-
-Minecraft Earth will be available in closed beta this summer.
-
-**Minecraft Earth 什么时候会发布？**
-
-Minecraft Earth 将在今年夏季开始内测。
-
----
-
-**WHAT ABOUT PLAYER SAFETY?**
-
-We take safety seriously and are taking measures to make Minecraft Earth an enjoyable and reliable experience for all our players. Players and parents will be able to use Account Management to adjust safety and privacy settings. A reporting system will allow players to report any concerns in-game and on our website. In addition, we will also have a moderation team working 24/7 to manage and respond to reports.  
-
-**玩家的安全性有保障吗？**
-
-我们很重视安全性，并且会采取各种措施以保证 Minecraft Earth 能为所有玩家带来有趣、有保障的游戏体验。玩家与家长将能够通过**帐号管理**来调整安全与隐私设置。玩家将能够在游戏内或网站上的反馈系统来反馈任何对游戏的担忧。
-
----
-
-**DOES MINECRAFT EARTH REQUIRE A MICROSOFT OR XBOX LIVE ACCOUNT?**
-
-Yes. A free Microsoft or Xbox Live account allows you to track your progress and save both builds and inventory to your profile. This means that every time you play, you can pick up right where you left off! The paid Xbox Live Gold service is not required to play Minecraft Earth.  
 
 **Minecraft Earth 需要微软或 XBox Live 帐号吗？**
 
@@ -98,19 +54,11 @@ Yes. A free Microsoft or Xbox Live account allows you to track your progress and
 
 ---
 
-**WHAT HAPPENS IF I LOSE MY PHONE?**
-
-Everything in your Minecraft Earth game is kept on your account in the cloud, including your build plates, inventory, etc. Be sure to keep your Microsoft Account/Xbox Live account safe – we will never ask for it and you should never give your password to anyone.  
-
 **如果我手机丢了怎么办？**
 
-所有 Minecraft Earth 的游戏数据都是存在云端的，包括你的建筑底盘、物品栏等等。请确保你的微软帐号/ XBox Live 帐号的安全性——我们绝不会向你询问它的密码，你也不应把你的密码告诉任何人。
+所有 Minecraft Earth 的游戏数据都是存在云端的，包括你的建筑底盘、物品栏等等。请确保你的微软帐号或 XBox Live 帐号的安全性 —— 我们绝不会向你询问它的密码，你也不应把你的密码告诉任何人。
 
 ---
-
-**CAN I USE MY SKIN FROM VANILLA MINECRAFT IN MINECRAFT EARTH?**
-
-Yes, we’ve designed a system that allows you to use your favorite Marketplace skin in Minecraft Earth as well. Just click on your character’s picture at the top left side of the screen and you can choose from any of your owned skin packs. 
 
 **我可以在 Minecraft Earth 里用我原版 Minecraft 里的皮肤吗？**
 
@@ -118,9 +66,11 @@ Yes, we’ve designed a system that allows you to use your favorite Marketplace 
 
 ---
 
-**WHY ARE YOU TAKING TIME AWAY FROM DEVELOPING VANILLA MINECRAFT TO MAKE THIS GAME?**
+**玩家可以在 Minecraft Earth 里上传自己的皮肤吗？**
 
-Don’t worry - Minecraft Earth has a separate team dedicated to its development, so that both it and vanilla Minecraft can get the love and care they deserve. 
+目前没有让玩家能上传自己皮肤的计划。
+
+---
 
 **为什么你把精力从开发原版 Minecraft 独立出来，开发这个游戏了？**
 
@@ -128,26 +78,7 @@ Don’t worry - Minecraft Earth has a separate team dedicated to its development
 
 ---
 
-**IS HEROBRINE IN THIS GAME TOO?**
-
-\<REDACTED> 
-
-**这个游戏里也有 Herobrine 吗？**
-
-【数据删除】
-
----
-
-## 游戏信息 - GAMEPLAY INFO
-
-**WHAT’S THE GAMEPLAY LIKE IN MINECRAFT EARTH?**
-
-There’s lots to do in Minecraft Earth whilst exploring your world or relaxing at home:
-
-- Collect blocks, mobs, and items of varying rarities from Tappables.
-- Use the blocks, mobs, and items you collected to build your latest masterpiece on tabletop Build Plates.
-- Explore your builds in life-size AR.
-- Experience the world of Minecraft in the real world with augmented reality at Adventures.
+# 游戏信息
 
 **在 Minecraft Earth 中都可以玩什么？**
 
@@ -160,21 +91,13 @@ There’s lots to do in Minecraft Earth whilst exploring your world or relaxing 
 
 ---
 
-**CAN I INVITE FRIENDS TO PLAY WITH ME ON MY BUILDS?**
-
-When in your Build Plate, you can hit “Invite Friend” to generate a QR code. Friends nearby that also have the game installed can scan this QR code using the “Join Friend” feature from the main Minecraft Earth map and they’ll be placed into your build plate! From there, you can both interact with your build plate just as you would any Minecraft world. You need to be in the same location to build together. When you (the owner of the build plate) stop playing, all other players are disconnected.
-
-You can both invite friends to join you in diorama build mode, and in life-size play mode.
-
 **我可以邀请朋友来我的建筑玩吗？**
 
 当你在你的**建筑底盘**中时，可以点击「邀请好友」来生成一个二维码。在附近的好友只要也装有 Minecraft Earth，就可以通过游戏主地图上的「加入好友」选项扫描二维码加入你的建筑底盘了！之后，你们就都可以像在 Minecraft 世界中那样与你的建筑底盘交互了。你们需要在相同的位置才能一起建造。当你（建筑底盘的拥有者）下线以后，其他玩家也会断开链接。
 
+你既可以邀请朋友加入桌面建造模式，也可以邀请他们加入等身大小游玩模式。
+
 ---
-
-**WHAT ARE ADVENTURES?**
-
-Adventures are the survival part of Minecraft Earth. The part where you explore, take daring risks and lose it all in a pool of lava.  You will see an Adventure on your in-game map. Get close and tap on it to enter. You will never know exactly what’s in there, the contents are randomized.  It is a slice of a real Minecraft world in life size on the ground. You dig down with your pickaxe or shovel, chop down trees. There might be mobs in there you can kill or breed, and deep under the ground, you may find valuable ores, hidden treasures or a hive of hostile mobs! 
 
 **冒险是什么？**
 
@@ -182,37 +105,15 @@ Adventures are the survival part of Minecraft Earth. The part where you explore,
 
 ---
 
-**WHERE CAN I FIND ADVENTURES?**
-
-Adventures will not be available during the first phases of the closed beta. When they are ready, we will start placing them on the in-game map in small quantities, and eventually they will be easy to find and play.
-
-**我可以在哪里找到冒险？**
-
-内测的第一阶段中并不会有冒险。当准备好以后，我们会在游戏内地图逐步放置少量的冒险，最终你将很容易找到冒险。
-
----
-
-**CAN PEOPLE GRIEF/DESTROY/TAKE THINGS FROM MY BUILD PLATE?**
-
-When you invite other people into your build plate in tabletop Build mode, they can interact with it just like in any Minecraft world. Building, placing items and mobs, as well as breaking and taking blocks are all possible. 
-
-However, when you are in life-size Play mode, you are playing an instance of the world. Nothing gets saved. So, feel free to burn, pillage, and hunt the mobs in there. Play mode is built for shenanigans and action. After the session ends, everything is back to where it was, and nothing is lost.
-
-This means that in tabletop Build mode, you should only build with friends that you trust to handle your builds with care and not set everything on fire. But in play mode, all bets are off.
-
 **人们可以摧毁/拿我建筑底盘里的东西吗？**
 
 当你在**桌面建造模式**中邀请了其他玩家加入你的建筑底盘时，他们可以像在任何一个 Minecraft 世界中那样与它交互。建造、放物品、放生物，以及破坏、拿走方块都是可能的。
 
 不过，当你在**等身大小游玩模式**中时，你玩的是世界的一个实例，任何操作都不会保存。所以在该模式下可以尽情地放火、掠夺、伤害生物。游玩模式正是为了恶作剧而设立的，当游玩结束后，一切都会恢复原状，不会有任何损失。
 
-这就意味着，在**桌面建造模式**中，你应该只和你信任的朋友一起建造，谨慎地对待你的建筑，时刻小心火烛。不过在游玩模式里，什么都不用担心了。
+这就意味着，在**桌面建造模式**中，你应该只和你信任的朋友一起建造，谨慎地对待你的建筑，时刻小心火烛。
 
 ---
-
-**WILL THERE EVER BE BIGGER BUILD PLATES?**
-
-Yes, we are planning on making larger build plates with smaller blocks in future updates.
 
 **以后会有更大的建筑底盘吗？**
 
@@ -220,19 +121,11 @@ Yes, we are planning on making larger build plates with smaller blocks in future
 
 ---
 
-**CAN SOMEONE ELSE GO INTO MY BUILD PLATE WHEN I’M NOT PLAYING?**
-
-No- for someone to access your build plate, you have to invite them in. Once you stop playing, they will be removed from the game.
-
 **我不玩的时候其他人能进入我的建筑底盘吗？**
 
 不能。某人必须有你邀请才能加入你的建筑底盘，当你下线以后他们也会从游戏中移除。
 
 ---
-
-**I’M COLLECTING A LOT OF COOL & RARE ITEMS IN THIS BETA! WILL I GET TO KEEP THEM?**
-
-The integrity of your builds and data is super important to us, making sure that your creations and collection stay intact is a top priority. That said, we will wipe everything at least once during the beta period- Inventory, stats and build plates. That is because this is a true beta designed to test a huge amount of things. After the beta period ends, what you collect, build and own will stay there.  
 
 **我在测试的时候收集了很多稀有物品！它们会保留吗？**
 
@@ -240,19 +133,11 @@ The integrity of your builds and data is super important to us, making sure that
 
 ---
 
-**IS THERE ANY LIMIT TO THE NUMBER OF ITEMS I CAN HAVE IN MY INVENTORY?**
-
-No, your inventory size is unlimited. As with vanilla Minecraft, the maximum stack size in your hotbar is still 64, but in your inventory, there is no maximum stack size.
-
 **对我物品栏里能放的物品数量有限制吗？**
 
 没有，你的物品栏没有大小限制。尽管和原版 Minecraft 一样，在你快捷栏中的物品最大堆叠数量仍为 64，但是在你的物品栏里并没有最大堆叠数量限制。
 
 ---
-
-**HOW DOES LEVELING WORK IN MINECRAFT EARTH?**
-
-You gain experience points based on the Tappables you get while playing. Once you have enough experience points, you’ll gain a level in the game. Every 5 levels, you’ll unlock a new build plate with even more blocks and mobs to play with. 
 
 **Minecraft Earth 中的等级机制怎样运作？**
 
@@ -260,111 +145,194 @@ You gain experience points based on the Tappables you get while playing. Once yo
 
 ---
 
-**AM I ALLOWED TO LIVESTREAM/POST PICTURES OR VIDEOS OF THE BETA TO MY SOCIAL MEDIA CHANNELS?**
-
-Yes. You can share with us and other players by using #MinecraftEarth or tagging our Twitter account at [@MinecraftEarth](https://twitter.com/minecraftearth?lang=en)! 
-
-**我可以在我的社交频道上直播/发布测试的图片/视频吗？**
-
-当然。你还可以在 Twitter 上使用 #MinecraftEarth 标签或标记我们的帐号  [@MinecraftEarth](https://twitter.com/minecraftearth?lang=en) 来和其他玩家分享！
-
----
-
-**WHAT ARE THE IOS-ONLY FEATURES OF MINECRAFT EARTH?**
-
-Minecraft Earth will use Apple ARKit’s People Occlusion to show people directly inside their life-size builds, and Motion Capture to trigger pre-set character animations in the game. This is part of ARKit 3.0 in the upcoming version of iOS, version 13.
-
 **Minecraft Earth 的仅限于 iOS 平台的特性是什么？**
-Minecraft Earth 使用苹果 ARKit（增强现实开发平台）的**人物识别技术**，将玩家直接显示在等身大小的建筑中，并使用**动作捕捉技术**来触发游戏中预先设定的角色动画。这些功能是 ARKit 3.0 的一部分，会在即将到来的 iOS 13 中实装。
+Minecraft Earth 使用苹果 ARKit（增强现实开发平台）的**人物识别技术**，将玩家直接显示在等身大小的建筑中，并使用**动作捕捉技术**来触发游戏中预先设定的角色动画。这些功能是 ARKit 3.0 的一部分，会在 iOS 13 中实装。
 
 ---
 
-**AS A PRIVATE PROPERTY OWNER OR A PARK MANAGER HOW CAN I REPORT A LOCATION?**
+**当我点击一个可收集物后会发生什么？**
 
-If you are a park manager and would like to report your hours of operations or if you are a private property owner and would like to report a game location on your property, please email [MCELocation@microsoft.com](MCELocation@microsoft.com).
-
-**作为私有财产所有者或是公园管理者，我应当怎样报告一个位置？**
-
-如果你是一个公园的管理者并愿意报告你的营业时间，或者是一份私有财产的拥有者并且愿意报告在你所拥有财产上的游戏位置，请给 [MCELocation@microsoft.com](MCELocation@microsoft.com) 发电子邮件。
+当你点击一个可收集物时，你可以在其中找到各种方块！在可收集物中获取到的方块取决于它的种类：如果你点击了树，你很有可能会得到木头！
  
 ---
 
-**WHAT DO I DO IF I SEE A GAME PLAY LOCATION THAT MAY NOT BE SUITABLE?**
+**我该怎么获取各种生物？**
 
-If you find a game play location in a place that is not ideal for game play, please contact [MCELocation@microsoft.com](MCELocation@microsoft.com).
+你可以在地图以及你解锁或购买的建筑底盘内的可收集物中获取生物。当你点击了一个可收集物时，你将获取到你点击的生物，不过也有一定机率会得到一个不同的稀有变种。当你获取到一个生物后它们会被添加到你的物品栏的生物页面中，你之后就可以在建筑底盘中使用它们了。
+ 
+---
 
-**如果我发现了一个不适合游玩的游戏位置该怎么做？**
+**能把别的版本的 Minecraft 中一个世界的区块迁移到 Minecraft Earth 中作为一个建筑底盘吗？**
 
-如果你发现了一个不适合游玩的游戏位置，请联系 [MCELocation@microsoft.com](MCELocation@microsoft.com)。
+不幸的是，不能。你只能在 Minecraft Earth 里面建造和收集资源，它们无法从任何其他版本中迁移过来。
 
 ---
 
-## 内测信息 - CLOSED BETA INFO
+**我现在能使用的建筑底盘有多大？**
 
-**HOW DO I GET INTO THE MINECRAFT EARTH BETA?**
-
-The closed betas for Minecraft Earth will be launching this summer on iOS and Android. As with all betas, the number of participants will be limited but we anticipate it rolling out to hundreds of thousands of players. Players must be 18 or older to participate. You can sign up for the opportunity to join [here](https://earth.minecraft.net/sign-up).
-
-**我怎么加入 Minecraft Earth 测试？**
-Minecraft Earth 的内测将在今年夏季在 iOS 和安卓平台上线。和所有的内测一样，参与人数将有一定限制，不过我们预计会将其推广到数十万玩家。玩家必须在 18 岁及以上才能参与内测。你可以在 [这里](https://earth.minecraft.net/sign-up) 注册内测机会。
+目前你能解锁和使用的建筑底盘的大小为 8×8 或 16×16 方块。
 
 ---
 
-**WHEN WILL I GET THE MINECRAFT EARTH SKIN FOR SIGNING UP FOR THE BETA?**
+**如果想要一起建造，是否需要处于同一个屋子里？**
 
-You will receive an email with instructions on how to claim your free skin within 24 hours of registration.
-
-**注册完内测后多久我能得到 Minecraft Earth 皮肤？**
-你会在注册后 24 小时内收到一封电子邮件，其中有教你获取免费皮肤的指引。
+是的。想要和朋友一起建造，你只需要把你的建筑底盘放置在一个平面上，然后邀请你的朋友加入。你的朋友只要扫描一个二维码就能加入你的游戏。你们需要处在同一个屋子内，这样你们才能一起建造！
 
 ---
 
-**THE SIGN-UP FORM IS ASKING FOR A LOT OF DATA. WHAT WILL YOU DO WITH IT?**
+**玩家可以成为生物吗？**
 
-We'll use your email address to send you your free skin and communicate updates about the game, including any beta programs. 
-
-**注册表问了一大堆信息，你们要拿它们做什么？**
-我们会通过你的电子邮箱给你发送你的免费皮肤、有关游戏的更新，以及任何内测项目。
+可以！你可以在可收集物中找到一个名为「我的生物」（Mob of Me）的物品。你可以自定义你的生物的样式然后放置在建筑底盘中，并且其他你邀请的朋友也能够在你的底盘中放置他们的生物，因此你可以和你的朋友们在游戏里合影！
 
 ---
 
-**WHAT IF I DON'T WANT TO PARTICIPATE IN A BETA?**
+**我能选择建筑底盘的生物群系吗？**
 
-Simply return to the Minecraft Earth [sign up page](https://earth.minecraft.net/sign-up), click the "Sign Up Now" button and login with the same Microsoft/XBL account you used to sign up. We'll show you all the data you entered and there will be a button to delete your data. Clicking that button removes you from the beta and deletes all your data from our servers. It does not opt you out of any promotional email communications. If you would like to opt out of email communications, then visit the [Promotional Communications Manager](https://go.microsoft.com/fwlink/?linkid=243189). You can find our Privacy Statement [here](http://go.microsoft.com/fwlink/?LinkId=521839).
-
-**如果我不想参与内测怎么办？**
-
-回到 Minecraft Earth  [注册页面](https://earth.minecraft.net/sign-up)，点击「Sign Up Now」按钮并使用你注册时使用的微软 / XBox Live 帐号登录。我们将会展示出所有你输入的信息，并且会有一个删除数据的按钮，点击该按钮就会将你移出内测，同时从我们的服务器上删除你的所有数据。不过这并不会让你不再收到推广的电子邮件，如果你不想再收到这些邮件，请访问 [推广信息管理](https://go.microsoft.com/fwlink/?linkid=243189)。你可以在 [这里](http://go.microsoft.com/fwlink/?LinkId=521839) 查看我们的隐私政策。
+每一个建筑底盘都有固定的生物群系。你可以解锁有着新生物群系的建筑底盘来在不同的环境中建造！
 
 ---
 
-**WHAT ARE THE REQUIREMENTS FOR PARTICIPATING IN THE BETA?**
+**我想成为 Minecraft Earth 社区的一分子，我该在哪里找到你们呢？**
 
-Spots to participate in the beta are limited, and we want to be sure that beta players stay active. So that we can get as many people as possible playing in the beta, participants will need to be actively playing within a seven-day span to remain as a participant. Players who are removed from the beta will go back into the beta pool and may have another chance to participate later.
-
-**参与内测的要求是什么？**
-
-参与内测的人数有限，我们希望内测玩家都能保持活跃，这样我们就能够有足够多的玩家玩测试版。参与者需要在七天内积极参与以保持参与者身份。被从内测玩家中移除的玩家将重新回到内测池，可能会有机会再在之后参加内测。
+你可以在官方 Minecraft Earth Discord 服务器上成为我们社区的一分子：https://discordapp.com/minecraftearth。如果你有建议可以来 https://aka.ms/mcearthfeedback，如果你遇到了漏洞可以在 https://aka.ms/mcearthbugs 反馈。
 
 ---
 
-**WHAT GAMEPLAY ELEMENTS WILL BE PRESENT IN THE MINECRAFT EARTH CLOSED BETA?**
+# 安全性
 
-During Closed Beta, we expect to have Tappables, tabletop build plates and life-size AR features available. We expect to roll out more features over time, but we’re taking this slow to make sure everything is working well, so we don’t have concrete timeframes to share on when Adventures will be ready to join in on the fun or the other features we have planned for the future.
+**玩家的安全性有保障吗？**
 
-**内测中将会有哪些 Minecraft Earth 的游戏元素？**
-
-在内测期间，我们计划上线可收集物、桌面建筑底板和等身大小的 AR（增强现实）特性。我们预计将随着时间推移逐步推出更多特性，不过这会慢慢来，以确保所有功能都在正常运作，所以我们无法给出**冒险功能**或是其他计划的特性上线的具体时间。
+我们很重视安全性，并且会采取各种措施以保证 Minecraft Earth 能为所有玩家带来有趣、有保障的游戏体验。玩家与家长将能够通过 **Xbox Live 帐号管理**来调整安全与隐私设置。玩家将能够在游戏内或网站上的反馈系统来反馈任何对游戏的担忧。此外，我们有一个管理团队 24/7 地工作，来管理并回复这些反馈。
 
 ---
 
-**I HAVE AN ANDROID DEVICE! WHEN WILL I BE ABLE TO PARTICIPATE IN THE BETA?**
+**作为家长我们采取什么措施？**
 
-Don’t worry! We have a beta planned for Android too. Our Closed Beta will be running first on iOS, and then once we are ready to add more people, we’ll be opening it up to Android players. Keep an eye on your e-mail inbox and stay tuned to the Minecraft Earth official twitter account at [@MinecraftEarth](https://twitter.com/minecraftearth?lang=en) for news on this.
+不论成人或儿童帐号都能游玩 Minecraft Earth。家长应该通过 Xbox 帐号管理设置来创建一个儿童帐号。我们也建议家长查看 Google Play Store 和 Apple App Store 的设置选项，找到最适合你和你的家人的设置。
 
-**我是安卓用户！什么时候我才能参与内测？**
+更多信息请查看：
 
-别担心！我们有针对安卓的测试计划。内测将首先在 iOS 平台上进行，当我们准备好让更多人加入以后，我们就会为安卓玩家开启内测。注意你的电子邮件收件箱，并关注 Minecraft Earth 的官方 Twitter 帐号[@MinecraftEarth](https://twitter.com/minecraftearth?lang=en) 以获得有关新闻。
+Xbox：https://support.xbox.com/en-US/browse/my-account/manage-account/Child%20accounts
+
+Apple：https://support.apple.com/en-us/HT201304
+
+Android：https://support.google.com/googleplay/answer/1075738?hl=en
+
+---
+
+**作为私有财产所有者或是公园管理者，我应当怎样报告一个位置？**
+
+如果你是一个公园的管理者并愿意报告你的营业时间，或者是一份私有财产的拥有者并且愿意报告在你所拥有财产上的游戏位置，请查看 http://aka.ms/mcearthsupport。
+ 
+---
+
+**可以在不合适的位置上玩吗？**
+
+Minecraft Earth 的游戏位置是在公共场所（例如公园和开放街区）上生成的。每个区域的游戏条件都取决于许多因素，例如时间、周边事物等。我们建议玩家能够时刻注意四周，不要到潜在危险场所游玩。
+
+如果你发现了一个不适合游玩的位置，请前往 http://aka.ms/mcearthsupport。
+
+---
+
+**我能举报玩家建造的内容吗？**
+
+如果你看到了一些想要举报的由用户建造的内容，请前往 http://aka.ms/mcearthsupport。为了帮助我们更好地鉴别内容，请附带上相关的身份信息，例如向你展示这些内容的玩家的 Xbox Live gamertag。
+
+**我怎么在周边找到更多的 Minecraft Earth 游戏位置呢？**
+
+我们通过多种渠道来决定在哪里放置 Minecraft Earth 游戏位置。其中一个渠道是 Open Street Map 的数据，这是一个由用户社区维护的地图。如果你想到看到更多你身边的游戏位置，一个很好的方式就是去帮助提高 Open Street Map 在你所在区域的准确性。
+
+未来，我们会探索更多的渠道来添加游戏位置 —— 保持关注！
+
+**我应当怎样与真实世界中的元素交互？**
+
+对于可收集物来说，你不需要走到地图上标识的图标上 —— 你可以看到在地图上看到哪些可收集物是在「范围内」的。这个范围有许多米，因此你在收集这些可收集物时应当确保自己处于安全的位置。对于冒险来说，你则需要接近地图上标识的位置来与它们进行交互。
+
+---
+
+# 隐私
+
+**Minecraft Earth 怎么使用我的位置数据？**
+
+位置数据将完全用于游戏。我们使用你的位置数据来在你附近放置事物和可交互物品，例如可收集物和冒险等。
+
+---
+
+**为什么 Minecraft Earth 要收集我的位置信息？**
+
+冒险与可收集物被放置在全世界上的特定位置，游戏会储存玩家附近能够交互的可收集物和/或冒险的地理位置。当你进入到范围内以后你可以通过点击屏幕上的图标来收集它们，或是与冒险进行交互。冒险能够让多名在同一位置附近的玩家一起游玩。这些特性都需要你的真实位置才能运作。
+
+整体的位置数据将会被用于改进游戏内的冒险。
+
+---
+
+**Minecraft Earth 怎么知道我的位置的？**
+
+Minecraft Earth 使用 Azure Spatial Anchors (ASA)。ASA 让我们能够感知空间，指定准确的地点，并从支持的设备上调用这些地点。准确的地点称为「空间锚点」（Spatial Anchors）。一些空间锚点的例子包括：
+
+多用户体验。它们使得让在同一地点的人们参与像 Minecraft Earth 这样的多用户混合现实应用变得更加简单。
+
+寻路。能够在它们之间建立联系，将它们连接到附近的锚点，并指引玩家前往任务的下一步。这使得玩家们能够更有效率地合作。
+
+---
+
+**Minecraft Earth 会把我的位置数据用到其他产品上吗？**
+
+尽管 Minecraft Earth 不会把你的位置数据用于其他任何产品，Azure Spatial Anchors (ASA) 是另外一个微软的产品，它是一个经常被使用的框架，能让多名用户在同一个物理位置放置内容以检测特定全息图像的位置。我们可能会向 ASA 发送匿名数据来帮助改进他们的产品。
+
+---
+
+**你们可以追踪我玩游戏的位置数据吗？**
+
+可以，我们需要知道你的位置来让游戏运作。所有获取的位置数据都会在 24 小时的期限，之后我们会移除个人信息标识，并将大体信息用于长期分析。
+
+---
+
+**你们收集或储存哪些个人数据？**
+
+我们收集玩家的设备 ID 以及 Xbox Live Gamertag。
+
+---
+
+**如果我在公共场所游玩需要注意什么？**
+
+你需要为你在公共场所的行为负责，遵守当地的法律法规，不应在玩该游戏时侵入他处或有不合适的表现。
+
+如果你发现了某人在公共场所有不合适的行为，请联系当地执法部门。
+
+---
+
+**Minecraft Earth 为什么要访问我的摄像机？**
+
+增强现实技术需要摄像机才能正常运作。这些技术是通过在你的摄像机画面上覆盖全息图像才能呈现的。Minecraft Earth 使用摄像机画面来放置全息图像，这样你才能与它们进行交互。
+
+---
+
+**你们会储存我摄像机排到的任何数据吗？**
+
+只有在游玩冒险时摄像机中收集的数据才会被储存，这些数据都是在公共场合下的。即使如此，从摄像机拍摄的画面也没有被直接储存在云端；相反，储存的是一系列从照片中解析出来的 3D 结构，这些数据使得玩家能够看到在真实世界中相同位置上的冒险并参与其中。此外，从摄像机中收集的数据没有附带任何用户或设备标识符，而是附带的地理位置元数据，并且这些数据不会被发送到其他设备上。
+
+---
+
+**Minecraft Earth 会获取我手机上的任何其他数据吗？**
+
+我们不会获取玩家设备上的任何其他数据。
+
+---
+
+**微软 / Minecraft Earth 会将我的个人注册信息用于营销目的吗？**
+
+当你注册 MSA 时我们会遵循你选择的有关营销信息的选项。此外，如果你选择了接受相关通知，我们会向你的手机推送有关游戏活动等的通知。
+
+---
+
+**Minecraft Earth 能知道我住在哪里吗？**
+
+Minecraft Earth 只能看到你登入游玩的位置。
+
+Minecraft Earth 追踪正在被交互的可收集物和/或冒险的位置以及频率，然而这并不直接对应到某个特定玩家的位置或住址。
+
+[点击这里](https://www.bilibili.com/video/av71601680) 获取更多安全提示！
 
 ---
 
