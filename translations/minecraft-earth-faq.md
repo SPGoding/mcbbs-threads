@@ -232,11 +232,15 @@ Minecraft Earth 的游戏位置是在公共场所（例如公园和开放街区�
 
 如果你看到了一些想要举报的由用户建造的内容，请前往 [http://aka.ms/mcearthsupport](http://aka.ms/mcearthsupport)。为了帮助我们更好地鉴别内容，请附带上相关的身份信息，例如向你展示这些内容的玩家的 Xbox Live gamertag。
 
+---
+
 ## 我怎么在周边找到更多的 Minecraft Earth 游戏位置呢？
 
 我们通过多种渠道来决定在哪里放置 Minecraft Earth 游戏位置。其中一个渠道是 Open Street Map 的数据，这是一个由用户社区维护的地图。如果你想到看到更多你身边的游戏位置，一个很好的方式就是去帮助提高 Open Street Map 在你所在区域的准确性。
 
 未来，我们会探索更多的渠道来添加游戏位置 —— 保持关注！
+
+---
 
 ## 我应当怎样与真实世界中的元素交互？
 
