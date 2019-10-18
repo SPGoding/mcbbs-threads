@@ -336,7 +336,7 @@ Minecraft Earth 追踪正在被交互的可收集物和/或冒险的位置以及
 
 # 译文信息
 
-原文：https://www.minecraft.net/en-us/earth/faq
+原文：https://help.minecraft.net/hc/en-us/articles/360033744412-Minecraft-Earth-FAQs
 
 译文：
 
