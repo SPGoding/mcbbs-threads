@@ -3,7 +3,7 @@
 [#2]准备  
 [#3]开始制作  
 *[#4]战利品表  
-*[#5]交易表  
+*[#5]交易　表  
 *[#6]生成规则  
 *[#7]实体行为  
 *[#8]添加实体  
@@ -14,11 +14,11 @@
 
 # 简介
 
-行为包（behavior pack），是 Minecraft 基岩版（本帖后文除非特别标注，Minecraft 一概指代基岩版）所独有的特性。利用行为包，可以在不改变游戏源代码的情况下修改许多东西，如修改生物的生成、行为和掉落物，村民的交易等，甚至可以增加新的实体。行为包与 Add-on 中的另一者「资源包」的区别在于，行为包修改的是服务端层面的内容，而资源包修改的则是客户端层面的内容，因此行为包只需要在服务器中启用，而资源包必须自己安装才能看到效果。
+行为包（behavior pack），是 Minecraft 基岩版（本帖后文除非特别标注，Minecraft 一概指代基岩版）所独有的特性。利用行为包，可以在不改变游戏源代码的情况下修改许多东西，包括：生物群系、方块、结构、物品、合成配方、实体行为等。行为包与 Add-on 中的另一者「资源包」的区别在于，行为包修改的是服务端层面的内容，而资源包修改的则是客户端层面的内容，因此行为包只需要在服务器中启用，而资源包必须自己安装才能看到效果。
 
-本教程顶部目录可点。
+本教程顶部目录可点。由于帖子内容十分之多，每一次更新都会卡顿几分钟，因此论坛这边不会经常更新。可以在 [GitHub](https://github.com/SPGoding/mcbbs-threads/blob/master/tutorials/behavior-pack/thread.md) 上查看最新版本。
 
-本教程使用版本为 1.14.0.2，将来版本可能会在细节上有细微变化，建议看教程时自己对照当时最新版本的原版行为包的格式（通常可以在[英文 wiki 的 Add-on 页面](https://minecraft.gamepedia.com/Add-on)找到原版行为包的下载地址）。
+本教程使用版本为 1.14.0.2，将来版本可能会在细节上有细微变化，建议看教程时自己对照当时最新版本的原版行为包的格式（通常可以在[英文 Wiki 的 Add-on 页面](https://minecraft.gamepedia.com/Add-on)找到原版行为包的下载地址）。
 
 本教程采用 CC BY-NC-SA 3.0 协议发布，因为其中大量使用到了英文 Wiki 的内容。
 
@@ -172,7 +172,7 @@ JSON 格式包含五种结构，分别是对象、字符串、布尔值、数字
 
 原版放置战利品表的位置是在行为包根目录下的 `loot_tables` 文件夹内。事实上，你可以放在行为包里任何你想要的地方，但建议大家按传统习惯行事。
 
-本章基本上都是私货。在 Java 版中同样也有战利品表，隔壁的教程也是我写的，有兴趣可以对比一下：[Java 版战利品表：从入门到重新入门](https://www.mcbbs.net/thread-831542-1-1.html)。
+在 Java 版中同样也有战利品表，隔壁的教程也是我写的，有兴趣可以对比一下：[Java 版战利品表：从入门到重新入门](https://www.mcbbs.net/thread-831542-1-1.html)。
 
 ## 文件格式
 
@@ -180,8 +180,12 @@ JSON 格式包含五种结构，分别是对象、字符串、布尔值、数字
     - *（对象）一个随机池*
         - `conditions`：（数组）可选。使用该随机池所需满足的条件列表。
             - *（对象）一个条件（有关条件的具体内容见下方介绍）*
-        - `rolls`：（整数）从该随机池中抽取物品的次数。
-        - `entries`：（数组）可以从该随机池中抽取的所有项。游戏会从这些项中随机抽取**一个**。
+        - `tiers`：（对象）可选。如果指定，将会忽略掉下方的 `rolls` 以及各项中的 `weight` 和 `quality`，把 `entries` 中的每一项看作一个层级。`entries` 中的第一个对象为第一层，第二个对象为第二层，以此类推。这几行的地方可能讲不明白，如果看不懂下面这三个参数的描述的话，下面有例子。
+            - `initial_range`：（数字）初始的选取范围。游戏将会默认从第 1 层一直到这一参数中指定的层中随机抽取一项。例如，把该参数设置为 `2`，则游戏会默认从 `entries` 中的第 1 项和第 2 项中随机抽取一个选择。由于设置了 `tiers` 后会忽略掉 `weight` 和 `quality`，每一项被选中的几率都是 50%。
+            - `bonus_chance`：（数字）将被选取的层级数再加上定义在 `bonus_rolls` 中的奖励的层数的几率。取值应在 [0.0, 1.0] 中。
+            - `bonus_rolls`：（数字）奖励层数。必须大于等于 `1`。当游戏根据 `initial_range` 定义的范围从 `entries` 中选取一层以后，有一定几率（该几率定义在 `bonus_chance` 中）把已经选取的层数再加上这个数字。
+        - `rolls`：（整数）可选。从该随机池中抽取物品的次数。
+        - `entries`：（数组）可以从该随机池中抽取的所有项。如果指定了 `rolls`，游戏会从这些项中随机抽取**一个**；如果指定了 `tiers`，则会按照层级的特性随机抽取**一个**。
             - *（对象）一项*
                 - `type`：（字符串）该项的类型，用于决定下面 `name` 参数的解析方式。`item` 表示是个物品，`loot_table` 表示是另一个战利品表，`empty` 表示什么都没有。
                 - `name`：（字符串）名字。会根据上面 `type` 的值来解析。例如 `type` 为 `item`，则会将此字段按照物品名解析。
@@ -206,7 +210,7 @@ JSON 格式包含五种结构，分别是对象、字符串、布尔值、数字
     "pools": [
         {
             // 第一个随机池。
-            "rolls": 1,
+            "rolls": 1, // 指定了 rolls，因此会从下面的 entries 中随机抽取一项。
             "entries": [
                 {
                     // 第一个随机池里的第一项。
@@ -278,7 +282,81 @@ JSON 格式包含五种结构，分别是对象、字符串、布尔值、数字
 
 这整个战利品表实现了僵尸的物品的掉落，简单描述为：一般会掉落腐肉，偶尔会再多掉一个铁锭/胡萝卜/马铃薯。与我们平时认知的一样。
 
-如果想查看更多的函数或条件，可以参考下文。以下内容多是私货。
+## Tiers 层级到底是什么
+
+这是上面僵尸的战利品表，经过我修改后的样子，使用到了 `tiers`：
+
+```json
+{
+    "pools": [
+        {
+            "tiers": {
+                "initial_range": 2,
+                "bonus_rolls": 1,
+                "bonus_chance": 0.01
+            },
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "minecraft:rotten_flesh"
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:carrot"
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:iron_ingot"
+                }
+            ]
+        }
+    ]
+}
+```
+
+`entries` 中定义的这三项变成了三个层级。`rotten_flesh`（腐肉）是第 1 层，`carrot`（胡萝卜）是第 2 层，`iron_ingot`（铁锭）是第 3 层。
+
+当游戏执行这个战利品表时，会首先从第 1 层到第 `initial_range` 层中随机抽取一层。以这个 JSON 为例，则是随机从 `rotten_flesh`（腐肉）和 `carrot`（胡萝卜）中随机抽取一个，这两个被抽到的概率都是 50%。
+
+当抽取好以后，又有 `bonus_chance` 的几率把这一层数加上 `bonus_rolls`。以这个 JSON 为例，有 1% 的几率把层数加 `1`。例如，原先抽取到了 `rotten_flesh`（腐肉），那么有 1% 的几率会返回 `carrot`（胡萝卜）；原先抽取到了 `carrot`（胡萝卜），那么有 1% 的几率会返回 `iron_ingot`（铁锭）。
+
+Tiers 这一特性原版主要将其用于生成怪物的盔甲。这是 `loot_tables/entities/skeleton_gear.json` 的一部分，它用于生成骷髅的盔甲：
+
+```json
+{
+  "tiers": {
+    "initial_range": 2,
+    "bonus_rolls": 3,
+    "bonus_chance": 0.095
+  },
+  "entries": [
+    {
+      "type": "loot_table",
+      "name": "loot_tables/entities/armor_set_leather.json"
+    },
+    {
+      "type": "loot_table",
+      "name": "loot_tables/entities/armor_set_gold.json"
+    },
+    {
+      "type": "loot_table",
+      "name": "loot_tables/entities/armor_set_chain.json"
+    },
+    {
+      "type": "loot_table",
+      "name": "loot_tables/entities/armor_set_iron.json"
+    },
+    {
+      "type": "loot_table",
+      "name": "loot_tables/entities/armor_set_diamond.json"
+    }
+  ]
+}
+```
+
+这一战利品表使得骷髅的盔甲通常为 `armor_set_leather`（皮革）或 `armor_set_gold`（金甲），但有 9.5% 的几率会变为 `armor_set_iron`（铁甲）或 `armor_set_diamond`（钻石甲）。
+
+Tiers 这个略为复杂的东西扯完了。
 
 [spoiler]以下是我自己用的东西，放别的地方怕被我弄丢了。没什么用，折叠吧。
 ```typescript
@@ -315,6 +393,8 @@ console.log(arr.length)
 console.log(arr.sort().join('\n'))
 ```
 [/spoiler]
+
+下文将列出战利品表中可用的所有函数和条件。
 
 ## 函数
 
@@ -423,7 +503,6 @@ console.log(arr.sort().join('\n'))
 
 示例（`loot_tables/chests/shipwrecksupply.json`）：
 ```json
-// 这是给 minecraft:suspicious_stew 设置的。另外在 loot_tables.economy_trades/wandering_trader_trades 中还有给 minecraft:dye 设置的。
 {
     "function": "random_aux_value",
     "values": {
@@ -700,13 +779,15 @@ console.log(arr.sort().join('\n'))
 
 ![](https://i.loli.net/2018/10/20/5bca0ae304212.gif)
 
-（这张动图是以前教程的，大体效果没错，就不重新录制了）
+（这张动图是上次写这篇教程时候录的，大体效果没错，就不重新录制了）
 
 ## 课后习题
 
 让玩家钓鱼能钓上来有随机附魔的钻石剑吧！
 
-提示: 可以在原版的行为包里找钓鱼相关战利品表的位置（找不到的话我告诉你，主钓鱼战利品表是 `loot_tables/gameplay/fishing.json`，它又引用了别的战利品表。带有随机附魔的钻石剑可以被认为是宝物，因此你需要修改的是钓鱼出宝物的战利品表，即 `loot_tables/gameplay/fishing/treasure.json`），在上方本人整理的所有可用函数中找你需要的函数。
+提示: 可以在原版的行为包里找钓鱼相关战利品表的位置（找不到的话我告诉你，主钓鱼战利品表是 `loot_tables/gameplay/fishing.json`，它又引用了别的战利品表。带有随机附魔的钻石剑可以被认为是宝物，因此你需要修改的是钓鱼出宝物的战利品表，即 `loot_tables/gameplay/fishing/treasure.json`），在上方本人整理的所有可用函数中找到你需要的函数。
+
+恭喜你，你看完了本教程中最简单的一章。本节完，点击论坛右侧的书签可以快速回到顶部。
 
 [page]
 
@@ -716,213 +797,236 @@ console.log(arr.sort().join('\n'))
 
 原版放置村民交易表的位置是在根目录下的 `trading` 文件夹内。事实上，你可以放在行为包里任何你想要的地方，但建议大家按传统习惯行事。
 
-首先我们了解一下村民交易的机制。村民的交易分为多个层级。首先只会解锁第一个层级的交易。当交易几次以后，会解锁下一个层级的交易。如此反复，直到所有层级的交易都解锁了为止。
+首先我们简单了解一下村民交易的机制。村民的交易分为多个层级。首先只会解锁第一个层级的交易。当交易几次以后，会解锁下一个层级的交易。如此反复，直到所有层级的交易都解锁了为止。
 
 好了，按照之前的套路，尝试通过行为包修改村民交易表！
 
 ## 文件格式
 
-
-- `tiers`：（数组）交易层级
-
-- *（对象）一层交易*
-
-- `trades`：（数组）交易
-
-- *（对象）一个交易*
-
-- `wants`：（数组）村民想要的物品。项数应小于等于 2，超出的物品会被无视。
-
-- *（对象）一个物品*
-
-- `item`：（字符串）物品 ID，如果有数据值，使用冒号分割。
-- `quantity`：（数字）物品数量。
-- `quantity`：（对象）物品数量，从最大和最小之间随机抽取。
-
-- `min`：（数字）最小数量。
-- `max`：（数字）最大数量。
-
-
-- `gives`：（数组）村民给予的物品。会从中随机抽取。
-
-- *（对象）一个物品*
-
-- `item`：（字符串）物品 ID，如果有数据值，使用冒号分割。
-- `quantity`：（数字）物品数量。
-- `quantity`：（对象）物品数量，从最大和最小之间随机抽取。
-
-- `min`：（数字）最小数量。
-- `max`：（数字）最大数量。
-- `functions`：（数组）函数。
-
-- *（对象）一个函数*
-
-- `function`：（字符串）使用的函数。
-- 其他参数（有关函数的具体内容见下文）。
-
-
-
-
-
-
-
-
+- `tiers`：（数组）储存该交易表中的所有交易层级。从上到下层级逐渐增高。
+    - *（对象）一层交易*
+        - `trades`：（数组）该层中具有的所有交易。
+        - *（对象）一个交易*
+            - `wants`：（数组）村民想要的物品。项数应小于等于 2，超出的物品会被无视。
+                - *（对象）一个物品*
+                    - `item`：（字符串）物品 ID，如果有数据值，使用冒号分割。
+                    - `quantity`：（数字或范围）物品数量。
+            - `gives`：（数组）村民给予的物品。会从中随机抽取。
+                - *（对象）一个物品*
+                    - `item`：（字符串）物品 ID，如果有数据值，使用冒号分割。
+                    - `quantity`：（数字或范围）物品数量。
+                    - `functions`：（数组）交易表函数。
+                        - *（对象）一个函数*
+                            - `function`：（字符串）使用的函数。
+                            - 其他参数（有关函数的具体内容见下文）。
 
 ## 学习原版
 
-这次我们以渔夫的交易 `./trading/fisherman_trades.json` 为例。
-
-```
-{
-  "tiers": [
-    {
-      "trades": [
-        {
-          "wants": [
-            {
-              "item": "minecraft:fish",
-              "quantity": 6
-            },
-            {
-              "item": "minecraft:emerald",
-              "quantity": 1
-            }
-          ],
-          "gives": [
-            {
-              "item": "minecraft:cooked_fish",
-              "quantity": 6
-            }
-          ]
-        },
-        {
-          "wants": [
-            {
-              "item": "minecraft:string",
-                "quantity": {
-                  "min": 15,
-                  "max": 20
-                }
-            }
-          ],
-          "gives": [
-            {
-              "item": "minecraft:emerald",
-              "quantity": 1
-            }
-          ]
-        },
-        {
-          "wants": [
-            {
-              "item": "minecraft:coal:0",
-              "quantity": {
-                "min": 16,
-                "max": 24
-              }
-            }
-          ],
-          "gives": [
-            {
-              "item": "minecraft:emerald",
-              "quantity": 1
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "trades": [
-        {
-          "wants": [
-            {
-              "item": "minecraft:emerald",
-              "quantity": {
-                "min": 7,
-                "max": 8
-              }
-            }
-          ],
-          "gives": [
-            {
-              "item": "minecraft:fishing_rod",
-              "quantity": 1,
-              "functions": [
-                {
-                  "function": "enchant_with_levels",
-                  "treasure": false,
-                  "levels": {
-                    "min": 5,
-                    "max": 19
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
-```
-### 函数
-
-物品在供交易前会执行指定的函数对物品进行操作。下面是交易中可用的全部函数。
-
-### enchant_book_for_trading
-
-附魔书。在原版的 `./tradings/librarian_trades.json` 中被使用。
-
-
-- `base_cost`：（数字）作用不可知。个人猜测可能和玩家使用附魔台附魔物品所消耗的经验等级有关。
-- `base_random_cost`：（数字）作用不可知。
-- `per_level_random_cost`：（数字）作用不可知。
-- `per_level_cost`：（数字）作用不可知。
-
-### enchant_with_levels
-
-指定等级的随机附魔。
-
-
-- `treasure`：（布尔值）如果为 `true`，将会给予宝藏魔咒。
-- `levels`：（数字）要设置的等级。
-- `levels`：（对象）随机设置的等级的范围。
-
-- `max`：（数字）要随机设置的等级的最大值。
-- `min`：（数字）要随机设置的等级的最小值。
-
-
-### exploration_map
-
-绘制探险地图。
-
-
-- `destination`：字符串。地图的目的地。
-
-### set_damage
-
-设置物品的损坏率。
-
-
-- `damage`：（数字）要设置的损坏率。取值应在 [0, 1] 之间。
-- `damage`：（对象）随机设置的损坏率的范围。
-
-- `max`：（数字）要随机设置的损坏率的最大值。取值应在 [0, 1] 之间。
-- `min`：（数字）要随机设置的损坏率的最小值。取值应在 [0, 1] 之间。
-
-
-## 自造轮子
-
-让奸商渔夫第三层交易为，绿宝石 + 钻石换取超级普通的钓鱼竿！
-
-在原有 `tiers` 后继续加入，让 `wants` 分别为 `minecraft:emerald`（绿宝石）和 `minecraft:diamond`（钻石），`gives` 为 `minecraft:fishing_rod`。即
+这次我们以渔夫的交易 `trading/fisherman_trades.json` 为例。删除了一小点儿内容，不然太长了。
 
 ```
 {
     "tiers": [
         {
-            ... // 原有的交易层级
+            // 第一层交易
+            "trades": [
+                {
+                    // 第一层交易的第一个交易：
+                    "wants": [
+                        // 该交易接受：
+                        {
+                            // 6 条鱼。
+                            "item": "minecraft:fish",
+                            "quantity": 6
+                        },
+                        {
+                            // 1 个绿宝石。
+                            "item": "minecraft:emerald",
+                            "quantity": 1
+                        }
+                    ],
+                    "gives": [
+                        // 该交易给出：
+                        {
+                            // 6 条熟鱼。
+                            "item": "minecraft:cooked_fish",
+                            "quantity": 6
+                        }
+                    ]
+                },
+                {
+                    // 第一层交易的第二个交易：
+                    "wants": [
+                        // 该交易接受：
+                        {
+                            // 15-20 根线，具体数量由游戏随机生成。
+                            "item": "minecraft:string",
+                            "quantity": {
+                                "min": 15,
+                                "max": 20
+                            }
+                        }
+                    ],
+                    "gives": [
+                        // 该交易给出：
+                        {
+                            // 1 个绿宝石。
+                            "item": "minecraft:emerald",
+                            "quantity": 1
+                        }
+                    ]
+                }
+            ]
         },
+        {
+            // 第二层交易
+            "trades": [
+                {
+                    // 第二层交易的第一个交易
+                    "wants": [
+                        // 该交易接受：
+                        {
+                            // 7-8 个绿宝石，具体数量由游戏随机生成。
+                            "item": "minecraft:emerald",
+                            "quantity": {
+                                "min": 7,
+                                "max": 8
+                            }
+                        }
+                    ],
+                    "gives": [
+                        // 该交易给出：
+                        {
+                            // 1 个用相当于 5-19 级经验附魔过的钓鱼杆。具体用几级经验由游戏随机决定。
+                            "item": "minecraft:fishing_rod",
+                            "quantity": 1,
+                            "functions": [
+                                {
+                                    "function": "enchant_with_levels",
+                                    "treasure": false,
+                                    "levels": {
+                                        "min": 5,
+                                        "max": 19
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+```
+
+### 函数
+
+在给出交易物品前会执行指定的函数对物品进行操作。下面是交易表中可用的全部函数。
+
+### enchant_book_for_trading
+
+给书附魔。
+
+- `base_cost`：（数字）不明。个人猜测可能和玩家使用附魔台附魔物品所消耗的经验等级有关。
+- `base_random_cost`：（数字）不明。
+- `per_level_random_cost`：（数字）不明。
+- `per_level_cost`：（数字）不明。
+
+示例（`trading/librarian_trades.json`）：
+```json
+{
+    "function": "enchant_book_for_trading",
+    "base_cost": 2,
+    "base_random_cost": 5,
+    "per_level_random_cost": 10,
+    "per_level_cost": 3
+}
+```
+
+### enchant_with_levels
+
+进行相当于指定经验等级的附魔。
+
+- `treasure`：（布尔值）如果为 `true`，将会给予宝藏魔咒。
+- `levels`：（数字或范围）要设置的等级。
+
+示例（`trading/leather_worker_trades.json`）：
+```json
+{
+    "function": "enchant_with_levels",
+    "treasure": false,
+    "levels": {
+        "min": 5,
+        "max": 19
+    }
+}
+```
+
+### exploration_map
+
+绘制探险地图。
+
+- `destination`：字符串。地图的目的地。需要是一个结构的 ID。全部结构的 ID 可以在 [Wiki](https://minecraft-zh.gamepedia.com/%E5%91%BD%E4%BB%A4/locate) 上查看。
+
+示例（`trading/cartographer_trades.json`）：
+```json
+{
+  "function": "exploration_map",
+  "destination": "monument"
+}
+```
+
+### random_aux_value
+
+随机生成一个辅助数值。不明。
+
+- `values`：（数字或范围）要设置的值。
+
+示例（`trading/economy_trades/wandering_trader_trades.json`）：
+```json
+{
+    // 这是给染料 minecraft:dye 设置的
+    "function": "random_aux_value",
+    "values": {
+        "min": 0,
+        "max": 15
+    }
+}
+```
+
+### random_block_state
+
+随机设置方块状态。
+
+- `block_state`：（字符串）要设置的方块状态名。
+- `values`：（数字或范围）要设置的方块状态的值。
+
+示例（`trading/economy_trades/wandering_trader_trades.json`）：
+```json
+{
+    // 这是给树苗 minecraft:sapling 设置的
+    "function": "random_block_state",
+    "block_state": "sapling_type",
+    "values": {
+        "min": 0,
+        "max": 5
+    }
+}
+```
+
+## 自造轮子
+
+让奸商渔夫第三层交易为，绿宝石 + 钻石换取超级普通的钓鱼竿！
+
+由于我们要修改的是原版就有的交易表，比较便捷的做法是直接在你的行为包中用同名同路径的文件把它覆盖掉。创建 `loot_tables/trading/fisherman_trades.json`，把原版交易表中的内容复制进去。
+
+接下来就可以加第三层交易了。在原有的两个交易层级后继续加入一个对象，设置 `wants` 为 `minecraft:emerald`（绿宝石）和 `minecraft:diamond`（钻石），`gives` 为 `minecraft:fishing_rod`。即
+
+```json
+{
+    "tiers": [
+        { ... },
+        { ... }, // 原有的两个交易层级
         {
             "trades": [
                 {
@@ -954,13 +1058,14 @@ console.log(arr.sort().join('\n'))
     ]
 }
 ```
+
 重载行为包，搞定。
 
 ![](https://i.loli.net/2018/10/20/5bca1fee0a1b0.png)
 
 ## 课后习题
 
-让 shepherd 村民可以拿羊毛换混凝土！【好无厘头的题目，没办法我只是想讲方块数据值。
+让 shepherd 村民（交易表位于 `trading/shepherd_trades.json`）可以拿羊毛换对应颜色的混凝土！【好无厘头的题目，没办法我只是想讲方块数据值。
 
 提示: 羊毛使用方块数据值来区分颜色。在写 `item` 时，把方块数据值用冒号 `:` 连接在方块 ID 的后面。例如: `minecraft:wool:0`。
 
@@ -6198,6 +6303,7 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 # 参考资料
 
 - [wiki - Add-on](https://minecraft.gamepedia.com/Add-on)
+- [Skylinerw - Loot Tables](https://github.com/skylinerw/guides/blob/master/bedrock/loot%20tables.md)
 - [ruhuasiyu - 【1.13】数据包(原版模组)入门教程](http://www.mcbbs.net/thread-784662-1-1.html) 【我很认真
 
 # 致谢
