@@ -1,15 +1,20 @@
 [index]  
-[#1]简介  
-[#2]准备  
+[#1]简　　介  
+[#2]准　　备  
 [#3]开始制作  
-*[#4]战利品表  
-*[#5]交易　表  
-*[#6]生成规则  
-*[#7]实体行为  
-*[#8]添加实体  
-[#9]发布  
-[#10]参考资料  
-[#11]后语  
+*[#4]实　　体  
+**[#5]战利品表  
+**[#6]交易　表  
+**[#7]生成规则  
+*[#8]物　　品  
+**[#9]配　　方  
+*[#10]生物群系  
+*[#11]结　　构  
+*[#12]方　　块  
+*[#13]脚　　本  
+[#14]发　　布  
+[#15]参考资料  
+[#16]后　　语
 [/index]
 
 # 简介
@@ -166,1139 +171,32 @@ JSON 格式包含五种结构，分别是对象、字符串、布尔值、数字
 
 [page]
 
-# 战利品表
 
-战利品表可以用来定义宝箱/实体/游戏行为等各种东西所能给玩家带来的物品，以及指定实体所能穿的装备等。
 
-原版放置战利品表的位置是在行为包根目录下的 `loot_tables` 文件夹内。事实上，你可以放在行为包里任何你想要的地方，但建议大家按传统习惯行事。
-
-在 Java 版中同样也有战利品表，隔壁的教程也是我写的，有兴趣可以对比一下：[Java 版战利品表：从入门到重新入门](https://www.mcbbs.net/thread-831542-1-1.html)。
-
-## 文件格式
-
-- `pools`：（数组）随机池们。游戏会从每一个随机池中**逐个**抽取物品。
-    - *（对象）一个随机池*
-        - `conditions`：（数组）可选。使用该随机池所需满足的条件列表。
-            - *（对象）一个条件（有关条件的具体内容见下方介绍）*
-        - `tiers`：（对象）可选。如果指定，将会忽略掉下方的 `rolls` 以及各项中的 `weight` 和 `quality`，把 `entries` 中的每一项看作一个层级。`entries` 中的第一个对象为第一层，第二个对象为第二层，以此类推。这几行的地方可能讲不明白，如果看不懂下面这三个参数的描述的话，下面有例子。
-            - `initial_range`：（数字）初始的选取范围。游戏将会默认从第 1 层一直到这一参数中指定的层中随机抽取一项。例如，把该参数设置为 `2`，则游戏会默认从 `entries` 中的第 1 项和第 2 项中随机抽取一个选择。由于设置了 `tiers` 后会忽略掉 `weight` 和 `quality`，每一项被选中的几率都是 50%。
-            - `bonus_chance`：（数字）将被选取的层级数再加上定义在 `bonus_rolls` 中的奖励的层数的几率。取值应在 [0.0, 1.0] 中。
-            - `bonus_rolls`：（数字）奖励层数。必须大于等于 `1`。当游戏根据 `initial_range` 定义的范围从 `entries` 中选取一层以后，有一定几率（该几率定义在 `bonus_chance` 中）把已经选取的层数再加上这个数字。
-        - `rolls`：（整数）可选。从该随机池中抽取物品的次数。
-        - `entries`：（数组）可以从该随机池中抽取的所有项。如果指定了 `rolls`，游戏会从这些项中随机抽取**一个**；如果指定了 `tiers`，则会按照层级的特性随机抽取**一个**。
-            - *（对象）一项*
-                - `type`：（字符串）该项的类型，用于决定下面 `name` 参数的解析方式。`item` 表示是个物品，`loot_table` 表示是另一个战利品表，`empty` 表示什么都没有。
-                - `name`：（字符串）名字。会根据上面 `type` 的值来解析。例如 `type` 为 `item`，则会将此字段按照物品名解析。
-                - `weight`：（整数）该项的权重。从随机池中抽到该项的几率为 `weight / (该随机池中所有满足条件的事物的 weight 的和)`。
-                - `quality`：（整数）可选。根据玩家的幸运等级影响该 `weight`。计算公式为，`floor(weight + (quality * <幸运等级>))`，其中 `floor` 为向下取整。
-                - `pools`：（数组）可选。该项的子随机池。在抽出该项后，游戏将从该项的这个子随机池中继续抽取物品。
-                    - *（对象）一个随机池。格式和根对象中随机池的格式完全一致。*
-                - `conditions`：（数组）可选。抽出该项所需满足的条件列表。
-                    - *（对象）一个条件（有关条件的具体内容见下方介绍）*
-                - `functions`：（函数）可选。抽出该项时对此项执行的战利品表函数（请与命令的函数做区分）。
-                    - *（对象）一个函数*
-                        - `function`：（字符串）该函数的名称（有关函数的具体内容见下方介绍）。
-                        - `conditions`：（数组）执行该函数所需满足的条件列表。
-                            - *（对象）一个条件（有关条件的具体内容见下方介绍）*
-
-## 学习原版
-
-以下是原版中僵尸的战利品表 `./loot_tables/entities/zombie.json`。注释是我自己加的。
-
-```json
-{
-    "pools": [
-        {
-            // 第一个随机池。
-            "rolls": 1, // 指定了 rolls，因此会从下面的 entries 中随机抽取一项。
-            "entries": [
-                {
-                    // 第一个随机池里的第一项。
-                    "type": "item", // 是个物品。
-                    "name": "minecraft:rotten_flesh", // 物品 ID 是腐肉的。
-                    "weight": 1, // 权重是 1。这个是几其实无所谓，因为这个随机池里面只有这一项，肯定会抽中这一项的。
-                    "functions": [
-                        {
-                            // 对这个腐肉执行的第一个函数。
-                            "function": "set_count", // 这个函数的作用是设置物品数量。详细函数列表可以看下面。
-                            "count": { // 数量随机设置为 0-2 中的一个。如果设置为 0，表明不会掉落。
-                                "min": 0,
-                                "max": 2
-                            }
-                        },
-                        {
-                            // 对这个腐肉执行的第二个函数。
-                            // 这个函数的作用是，玩家的武器每有一级抢夺附魔，就多掉落 0-1 个物品。
-                            "function": "looting_enchant", 
-                            "count": {
-                                "min": 0,
-                                "max": 1
-                            }
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            // 第二个随机池
-            "conditions": [
-                // 这个随机池设定了条件。只有以下条件全部满足时，才会从这个随机池中抽取物品。
-                {
-                    // 条件 1：僵尸是被玩家杀死的。
-                    "condition": "killed_by_player"
-                },
-                {
-                    // 条件 2：有 2.5% 的概率达成。玩家的武器每有一级抢夺附魔，就加 1% 的概率。
-                    "condition": "random_chance_with_looting",
-                    "chance": 0.025,
-                    "looting_multiplier": 0.01
-                }
-            ],
-            "rolls": 1,
-            "entries": [
-                // 当上述两个条件全部满足后，从这三项里随机抽取一个掉落。
-                // 这三项的权重 weight 都是 1，因此这三个掉落的概率相等。
-                // 这三项结构很简单，就不写注释了。
-                {
-                    "type": "item",
-                    "name": "minecraft:iron_ingot",
-                    "weight": 1
-                },
-                {
-                    "type": "item",
-                    "name": "minecraft:carrot",
-                    "weight": 1
-                },
-                {
-                    "type": "item",
-                    "name": "minecraft:potato",
-                    "weight": 1
-                }
-            ]
-        }
-    ]
-}
-```
-
-这整个战利品表实现了僵尸的物品的掉落，简单描述为：一般会掉落腐肉，偶尔会再多掉一个铁锭/胡萝卜/马铃薯。与我们平时认知的一样。
-
-## Tiers 层级到底是什么
-
-这是上面僵尸的战利品表，经过我修改后的样子，使用到了 `tiers`：
-
-```json
-{
-    "pools": [
-        {
-            "tiers": {
-                "initial_range": 2,
-                "bonus_rolls": 1,
-                "bonus_chance": 0.01
-            },
-            "entries": [
-                {
-                    "type": "item",
-                    "name": "minecraft:rotten_flesh"
-                },
-                {
-                    "type": "item",
-                    "name": "minecraft:carrot"
-                },
-                {
-                    "type": "item",
-                    "name": "minecraft:iron_ingot"
-                }
-            ]
-        }
-    ]
-}
-```
-
-`entries` 中定义的这三项变成了三个层级。`rotten_flesh`（腐肉）是第 1 层，`carrot`（胡萝卜）是第 2 层，`iron_ingot`（铁锭）是第 3 层。
-
-当游戏执行这个战利品表时，会首先从第 1 层到第 `initial_range` 层中随机抽取一层。以这个 JSON 为例，则是随机从 `rotten_flesh`（腐肉）和 `carrot`（胡萝卜）中随机抽取一个，这两个被抽到的概率都是 50%。
-
-当抽取好以后，又有 `bonus_chance` 的几率把这一层数加上 `bonus_rolls`。以这个 JSON 为例，有 1% 的几率把层数加 `1`。例如，原先抽取到了 `rotten_flesh`（腐肉），那么有 1% 的几率会返回 `carrot`（胡萝卜）；原先抽取到了 `carrot`（胡萝卜），那么有 1% 的几率会返回 `iron_ingot`（铁锭）。
-
-Tiers 这一特性原版主要将其用于生成怪物的盔甲。这是 `loot_tables/entities/skeleton_gear.json` 的一部分，它用于生成骷髅的盔甲：
-
-```json
-{
-  "tiers": {
-    "initial_range": 2,
-    "bonus_rolls": 3,
-    "bonus_chance": 0.095
-  },
-  "entries": [
-    {
-      "type": "loot_table",
-      "name": "loot_tables/entities/armor_set_leather.json"
-    },
-    {
-      "type": "loot_table",
-      "name": "loot_tables/entities/armor_set_gold.json"
-    },
-    {
-      "type": "loot_table",
-      "name": "loot_tables/entities/armor_set_chain.json"
-    },
-    {
-      "type": "loot_table",
-      "name": "loot_tables/entities/armor_set_iron.json"
-    },
-    {
-      "type": "loot_table",
-      "name": "loot_tables/entities/armor_set_diamond.json"
-    }
-  ]
-}
-```
-
-这一战利品表使得骷髅的盔甲通常为 `armor_set_leather`（皮革）或 `armor_set_gold`（金甲），但有 9.5% 的几率会变为 `armor_set_iron`（铁甲）或 `armor_set_diamond`（钻石甲）。
-
-Tiers 这个略为复杂的东西扯完了。
-
-[spoiler]以下是我自己用的东西，放别的地方怕被我弄丢了。没什么用，折叠吧。
-```typescript
-import * as fs from 'fs'
-import { join } from 'path'
-
-const walker = (path: string, cb: (content: string) => any) => {
-    const files = fs.readdirSync(path)
-    for (const file of files) {
-        const child = join(path, file)
-        if (fs.statSync(child).isDirectory()) {
-            walker(child, cb)
-        } else if (child.endsWith('.json')) {
-            cb(fs.readFileSync(child, { encoding: 'utf8' }))
-        }
-    }
-}
-
-const arr: string[] = []
-
-walker(__dirname, (content: string) => {
-    const trim = (val: string, prefix = 'minecraft:') => val.startsWith(prefix) ? val.slice(prefix.length) : val
-    const regex = /"function": "(.*?)"/g
-    let match = regex.exec(content)
-    while (match) {
-        if (arr.indexOf(trim(match[1])) === -1) {
-            arr.push(trim(match[1]))
-        }
-        match = regex.exec(content)
-    }
-})
-
-console.log(arr.length)
-console.log(arr.sort().join('\n'))
-```
-[/spoiler]
-
-下文将列出战利品表中可用的所有函数和条件。
-
-## 函数
-
-下面是战利品表中可用的全部函数。这些函数可以根据需求添加到每一项的 `functions` 数组中。函数的名称可以带 `minecraft:` 前缀，也可以不带，看你的喜好。例如，`set_count` 和 `minecraft:set_count` 都是表示设置物品数量的函数，执行起来没有区别。
-
-在开始介绍前，先简单说明一下「数字或范围」这一格式的意思。这一格式在之后的章节中也有可能会出现，到时就不再赘言了。
-
-### 数字或范围
-
-很简单。当一个参数的类型被我写为「数字或范围」时，表明它既可以是一个精确的数字，也可以是一个形如 `{ "min": 最小值, "max": 最大值 }` 的表明随机数的对象。
-
-### enchant_random_gear
-
-对装备随机附魔。Minecraft 使用战利品表来决定实体在生成时所装备的物品，每个生物具体使用哪个战利品表，可以在实体行为中定义（有关实体行为的具体内容，见「实体行为」章节）。
-
-- `chance`：（数字）进行附魔的概率。例如 `0.25` 表示 `25%`。
-
-示例（`loot_tables/entities/armor_set_chain.json`）：
-```json
-{
-    "function": "enchant_random_gear",
-    "chance": 0.25
-}
-```
-
-### enchant_randomly
-
-对物品进行随机附魔。
-
-- `treasure`：（布尔值）是否给予宝藏魔咒。
-
-示例（`loot_tables/chests/pillager_outpost.json`）：
-```json
-{
-    "function": "minecraft:enchant_randomly"
-}
-```
-
-### enchant_with_levels
-
-对物品进行相当于使用了指定经验等级的附魔。
-
-- `treasure`：（布尔值）是否给予宝藏魔咒。
-- `levels`：（数字或范围）要设置的等级。
-
-示例（`loot_tables/chests/end_city_treasure.json`）：
-```json
-{
-    "function": "enchant_with_levels",
-    "treasure": true,
-    "levels": {
-        "min": 20,
-        "max": 39
-    }
-}
-```
-
-### exploration_map
-
-将该物品变为探险地图。指定的物品需要是地图。
-
-- `destination`：（字符串）地图的目的地。需要是一个结构的 ID。全部结构的 ID 可以在 [Wiki](https://minecraft-zh.gamepedia.com/%E5%91%BD%E4%BB%A4/locate) 上查看。
-
-示例（`loot_tables/chests/shipwreck.json`）：
-```json
-{
-    "function": "exploration_map",
-    "destination": "buriedtreasure"
-}
-```
-
-### furnace_smelt
-
-对该物品进行熔炼。得到的结果与将物品放置熔炉中熔炼产生的结果一致。为该函数添加 `entity_properties` 条件可以做到实体被烧死时掉落熟食。
-
-示例（`loot_tables/entities/chicken.json`）：
-```json
-{
-    "function": "furnace_smelt"
-}
-```
-
-### looting_enchant
-
-设置抢夺魔咒对数量的影响。
-
-- `count`：（数字或范围）每一级抢夺魔咒增加的数量。
-- `limit`：（数字）抢夺魔咒所增加的数量的上限。
-
-示例（`loot_tables/entities/blaze.json`）：
-```json
-{
-    "function": "looting_enchant",
-    "count": {
-        "min": 0,
-        "max": 1
-    }
-}
-```
-
-### random_aux_value
-
-随机生成一个辅助数值。不明。
-
-- `values`：（数字或范围）要设置的值。
-
-示例（`loot_tables/chests/shipwrecksupply.json`）：
-```json
-{
-    "function": "random_aux_value",
-    "values": {
-        "min": 0,
-        "max": 6
-    }
-}
-```
-
-### set_banner_details
-
-设置旗帜的图案。指定的物品需要是旗帜。
-
-- `type`：（数字）旗帜图案的类型。已知数值只有 `1`，代表掠夺者首领头上的旗帜。
-
-示例（`loot_tables/entities/pillager_captain_equipment.json`）：
-```json
-{
-    "function": "set_banner_details",
-    "type": 1
-}
-```
-
-### set_count
-
-设置物品的数量。
-
-- `count`：（数字或范围）要设置的数量。
-
-示例（`loot_tables/chests/buriedtreasure.json`）：
-```json
-{
-    "function": "set_count",
-    "count": {
-        "min": 1,
-        "max": 5
-    }
-}
-```
-
-### set_damage
-
-设置物品的损坏率。
-
-- `damage`：（数字或范围）要设置的损坏率。取值应在 [0, 1] 之间。
-
-示例（`loot_tables/entities/drowned.json`）：
-```json
-{
-    "function": "set_damage",
-    "damage": {
-        "min": 0.2,
-        "max": 0.9
-    }
-}
-```
-
-### set_data
-
-设置物品的数据值。
-
-- `data`：（数字）要设置的数据值。
-
-示例（`loot_tables/chests/buriedtreasure.json`）：
-```json
-{
-    "function": "set_data",
-    "data": 19
-}
-```
-
-### set_data_from_color_index
-
-根据当前实体的颜色设置物品的数据值。只有在当前实体为羊且物品为羊毛，或当前实体为哞菇且当前物品为蘑菇时有用。
-
-示例（`loot_tables/entities/sheep.json`）：
-```json
-{
-    "function": "minecraft:set_data_from_color_index"
-}
-```
-
-## 条件
-
-当你指定的条件全部达成时，才有可能会使用你所设置的随机池（`pool`）、项（`entry`）或是函数（`function`）。下面是战利品表中可用的全部条件。
-
-### entity_properties
-
-指定实体的属性匹配时达成条件。
-
-
-- `entity`：（字符串）要检测的实体。`this` 指代死亡的这个实体，`killer` 指代杀了这个实体的实体，`killer_player` 指代杀了这个实体的玩家。
-- `properties`：（对象）要检测的属性。
-    - `on_fire`：（布尔值）指定实体是否着火。
-
-示例（`loot_tables/entities/chicken.json`）：
-```json
-{
-    "condition": "entity_properties",
-    "entity": "this",
-    "properties": {
-        "on_fire": true
-    }
-}
-```
-
-### has_mark_variant
-
-检测该实体是否是某个变种。不明。
-
-- `value`：（数字）
-
-示例（`loot_tables/entities/mooshroom_milking.json`）：
-```json
-{
-    "condition": "has_mark_variant",
-    "value": -1
-}
-```
-
-### killed_by_entity
-
-被指定类型的实体击杀时达成条件。
-
-- `entity_type`：（字符串）指定实体的 ID。
-
-示例（`loot_tables/entities/creeper.json`）：
-```json
-{
-    "condition": "killed_by_entity",
-    "entity_type": "minecraft:skeleton"
-}
-```
-
-### killed_by_player
-
-被玩家击杀时达成条件。
-
-示例（`loot_tables/entities/cave_spider.json`）：
-```json
-{
-    "condition": "killed_by_player"
-}
-```
-
-### killed_by_player_or_pets
-
-被玩家或玩家的宠物击杀时达成条件。
-
-示例（`loot_tables/entities/blaze.json`）：
-```json
-{
-    "condition": "killed_by_player_or_pets"
-}
-```
-
-### random_chance
-
-有一定几率达成。
-
-- `chance`：（数字）条件达成的几率。取值应当在 [0, 1] 的范围内。
-
-示例（`loot_tables/entities/drowned_equipment.json`）：
-```json
-{
-    "condition": "random_chance",
-    "chance": 0.01
-}
-```
-
-### random_chance_with_looting
-
-有一定几率达成。该几率可以被「抢夺」附魔提高。
-
-- `chance`：（数字）条件达成的基础几率。取值应当在 [0, 1] 的范围内。
-- `looting_multiplier`：（数字）每一级「抢夺」魔咒所增加的几率。取值应当在 [0, 1] 的范围内。
-
-示例（`loot_tables/entities/drowned.json`）：
-```json
-{
-    "condition": "random_chance_with_looting",
-    "chance": 0.11,
-    "looting_multiplier": 0.02
-}
-```
-
-### random_difficulty_chance
-
-有一定几率达成。可以指定在不同难度下的几率。
-
-- `default_chance`：（数字）条件达成的默认几率。取值应当在 [0, 1] 的范围内。
-- `peaceful`：（数字）和平模式下条件达成的几率。取值应当在 [0, 1] 的范围内。
-- `easy`：（数字）简单模式下条件达成的几率。取值应当在 [0, 1] 的范围内。
-- `normal`：（数字）普通模式下条件达成的几率。取值应当在 [0, 1] 的范围内。
-- `hard`：（数字）困难模式下条件达成的几率。取值应当在 [0, 1] 的范围内。
-
-示例（`loot_tables/entities/armor_set_chain.json`）：
-```json
-{
-    "condition": "random_difficulty_chance",
-    "default_chance": 0.50,
-    "peaceful": 0,
-    "hard": 0.6
-}
-```
-
-### random_regional_difficulty_chance
-
-有一定几率达成。该几率随着区域难度提高而提高。
-
-- `max_chance`：（数字）条件达成的最大几率。取值应当在 [0, 1] 的范围内。
-
-示例（`loot_tables/entities/skeleton_gear.json`）：
-```json
-{
-    "condition": "random_regional_difficulty_chance",
-    "max_chance": 0.15
-}
-```
-
-## 自造轮子
-
-我想让僵尸在被烧死的时候掉烈焰粉！
-
-首先，我们要修改的是原版就有的僵尸的战利品表，比较便捷的做法是直接在你的行为包中用同名同路径的文件把它覆盖掉。创建 `loot_tables/entities/zombie.json`，把原版战利品表中的内容复制进去（你可以直接从我开头「学习原版」部分的代码框里复制，注释删不删无所谓，因为就像我开篇说的那样，Minecraft 会自动忽略掉那些注释）。
-
-接下来就可以加烈焰粉了。在原来的两个随机池下面多加一个随机池（注意逗号），设置条件为 `entity_properties`，指定 `entity` 为 `this`（即探测僵尸自身），指定 `on_fire` 为 `true`（即需要被探测的实体着火）。设置给予的物品为 `minecraft:blaze_powder`（烈焰粉），数量从 1 至 2 随机。即: 
-
-```
-{
-    "pools": [
-        { ... }, 
-        { ... }, // 原有的两个随机池，这里省略不写。
-        {
-            "conditions": [
-                {
-                    "condition": "entity_properties",
-                    "entity": "this",
-                    "properties": {
-                        "on_fire": true
-                    }
-                }
-            ],
-            "rolls": 1,
-            "entries": [
-                {
-                    "type": "item",
-                    "name": "minecraft:blaze_powder",
-                    "weight": 1,
-                    "functions": [
-                        {
-                            "function": "set_count",
-                            "count": {
-                                "min": 1,
-                                "max": 2
-                            }
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
-}
-```
-
-重载行为包。
-
-> 提示: 如何重载行为包
->
-> 退出世界，重进。  
-> 没错，很蠢，但没有别的办法。
-
-可以看到僵尸被烧死后产生了烈焰粉。
-
-![](https://i.loli.net/2018/10/20/5bca0ae304212.gif)
-
-（这张动图是上次写这篇教程时候录的，大体效果没错，就不重新录制了）
-
-## 课后习题
-
-让玩家钓鱼能钓上来有随机附魔的钻石剑吧！
-
-提示: 可以在原版的行为包里找钓鱼相关战利品表的位置（找不到的话我告诉你，主钓鱼战利品表是 `loot_tables/gameplay/fishing.json`，它又引用了别的战利品表。带有随机附魔的钻石剑可以被认为是宝物，因此你需要修改的是钓鱼出宝物的战利品表，即 `loot_tables/gameplay/fishing/treasure.json`），在上方本人整理的所有可用函数中找到你需要的函数。
-
-恭喜你，你看完了本教程中最简单的一章。本节完，点击论坛右侧的书签可以快速回到顶部。
-
-[page]
-
-# 交易表
-
-行为包可以定义村民的交易表。
-
-原版放置村民交易表的位置是在根目录下的 `trading` 文件夹内。事实上，你可以放在行为包里任何你想要的地方，但建议大家按传统习惯行事。
-
-首先我们简单了解一下村民交易的机制。村民的交易分为多个层级。首先只会解锁第一个层级的交易。当交易几次以后，会解锁下一个层级的交易。如此反复，直到所有层级的交易都解锁了为止。
-
-好了，按照之前的套路，尝试通过行为包修改村民交易表！
-
-## 文件格式
-
-- `tiers`：（数组）储存该交易表中的所有交易层级。从上到下层级逐渐增高。
-    - *（对象）一层交易*
-        - `trades`：（数组）该层中具有的所有交易。
-        - *（对象）一个交易*
-            - `wants`：（数组）村民想要的物品。项数应小于等于 2，超出的物品会被无视。
-                - *（对象）一个物品*
-                    - `item`：（字符串）物品 ID，如果有数据值，使用冒号分割。
-                    - `quantity`：（数字或范围）物品数量。
-            - `gives`：（数组）村民给予的物品。会从中随机抽取。
-                - *（对象）一个物品*
-                    - `item`：（字符串）物品 ID，如果有数据值，使用冒号分割。
-                    - `quantity`：（数字或范围）物品数量。
-                    - `functions`：（数组）交易表函数。
-                        - *（对象）一个函数*
-                            - `function`：（字符串）使用的函数。
-                            - 其他参数（有关函数的具体内容见下文）。
-
-## 学习原版
-
-这次我们以渔夫的交易 `trading/fisherman_trades.json` 为例。删除了一小点儿内容，不然太长了。
-
-```
-{
-    "tiers": [
-        {
-            // 第一层交易
-            "trades": [
-                {
-                    // 第一层交易的第一个交易：
-                    "wants": [
-                        // 该交易接受：
-                        {
-                            // 6 条鱼。
-                            "item": "minecraft:fish",
-                            "quantity": 6
-                        },
-                        {
-                            // 1 个绿宝石。
-                            "item": "minecraft:emerald",
-                            "quantity": 1
-                        }
-                    ],
-                    "gives": [
-                        // 该交易给出：
-                        {
-                            // 6 条熟鱼。
-                            "item": "minecraft:cooked_fish",
-                            "quantity": 6
-                        }
-                    ]
-                },
-                {
-                    // 第一层交易的第二个交易：
-                    "wants": [
-                        // 该交易接受：
-                        {
-                            // 15-20 根线，具体数量由游戏随机生成。
-                            "item": "minecraft:string",
-                            "quantity": {
-                                "min": 15,
-                                "max": 20
-                            }
-                        }
-                    ],
-                    "gives": [
-                        // 该交易给出：
-                        {
-                            // 1 个绿宝石。
-                            "item": "minecraft:emerald",
-                            "quantity": 1
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            // 第二层交易
-            "trades": [
-                {
-                    // 第二层交易的第一个交易
-                    "wants": [
-                        // 该交易接受：
-                        {
-                            // 7-8 个绿宝石，具体数量由游戏随机生成。
-                            "item": "minecraft:emerald",
-                            "quantity": {
-                                "min": 7,
-                                "max": 8
-                            }
-                        }
-                    ],
-                    "gives": [
-                        // 该交易给出：
-                        {
-                            // 1 个用相当于 5-19 级经验附魔过的钓鱼杆。具体用几级经验由游戏随机决定。
-                            "item": "minecraft:fishing_rod",
-                            "quantity": 1,
-                            "functions": [
-                                {
-                                    "function": "enchant_with_levels",
-                                    "treasure": false,
-                                    "levels": {
-                                        "min": 5,
-                                        "max": 19
-                                    }
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
-}
-```
-
-### 函数
-
-在给出交易物品前会执行指定的函数对物品进行操作。下面是交易表中可用的全部函数。
-
-### enchant_book_for_trading
-
-给书附魔。
-
-- `base_cost`：（数字）不明。个人猜测可能和玩家使用附魔台附魔物品所消耗的经验等级有关。
-- `base_random_cost`：（数字）不明。
-- `per_level_random_cost`：（数字）不明。
-- `per_level_cost`：（数字）不明。
-
-示例（`trading/librarian_trades.json`）：
-```json
-{
-    "function": "enchant_book_for_trading",
-    "base_cost": 2,
-    "base_random_cost": 5,
-    "per_level_random_cost": 10,
-    "per_level_cost": 3
-}
-```
-
-### enchant_with_levels
-
-进行相当于指定经验等级的附魔。
-
-- `treasure`：（布尔值）如果为 `true`，将会给予宝藏魔咒。
-- `levels`：（数字或范围）要设置的等级。
-
-示例（`trading/leather_worker_trades.json`）：
-```json
-{
-    "function": "enchant_with_levels",
-    "treasure": false,
-    "levels": {
-        "min": 5,
-        "max": 19
-    }
-}
-```
-
-### exploration_map
-
-绘制探险地图。
-
-- `destination`：字符串。地图的目的地。需要是一个结构的 ID。全部结构的 ID 可以在 [Wiki](https://minecraft-zh.gamepedia.com/%E5%91%BD%E4%BB%A4/locate) 上查看。
-
-示例（`trading/cartographer_trades.json`）：
-```json
-{
-  "function": "exploration_map",
-  "destination": "monument"
-}
-```
-
-### random_aux_value
-
-随机生成一个辅助数值。不明。
-
-- `values`：（数字或范围）要设置的值。
-
-示例（`trading/economy_trades/wandering_trader_trades.json`）：
-```json
-{
-    // 这是给染料 minecraft:dye 设置的
-    "function": "random_aux_value",
-    "values": {
-        "min": 0,
-        "max": 15
-    }
-}
-```
-
-### random_block_state
-
-随机设置方块状态。
-
-- `block_state`：（字符串）要设置的方块状态名。
-- `values`：（数字或范围）要设置的方块状态的值。
-
-示例（`trading/economy_trades/wandering_trader_trades.json`）：
-```json
-{
-    // 这是给树苗 minecraft:sapling 设置的
-    "function": "random_block_state",
-    "block_state": "sapling_type",
-    "values": {
-        "min": 0,
-        "max": 5
-    }
-}
-```
-
-## 自造轮子
-
-让奸商渔夫第三层交易为，绿宝石 + 钻石换取超级普通的钓鱼竿！
-
-由于我们要修改的是原版就有的交易表，比较便捷的做法是直接在你的行为包中用同名同路径的文件把它覆盖掉。创建 `loot_tables/trading/fisherman_trades.json`，把原版交易表中的内容复制进去。
-
-接下来就可以加第三层交易了。在原有的两个交易层级后继续加入一个对象，设置 `wants` 为 `minecraft:emerald`（绿宝石）和 `minecraft:diamond`（钻石），`gives` 为 `minecraft:fishing_rod`。即
-
-```json
-{
-    "tiers": [
-        { ... },
-        { ... }, // 原有的两个交易层级
-        {
-            "trades": [
-                {
-                    "wants": [
-                        {
-                            "item": "minecraft:emerald",
-                            "quantity": {
-                                "min": 10,
-                                "max": 14
-                            }
-                        },
-                        {
-                            "item": "minecraft:diamond",
-                            "quantity": {
-                                "min": 5,
-                                "max": 7
-                            }
-                        }
-                    ],
-                    "gives": [
-                        {
-                            "item": "minecraft:fishing_rod",
-                            "quantity": 1
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
-}
-```
-
-重载行为包，搞定。
-
-![](https://i.loli.net/2018/10/20/5bca1fee0a1b0.png)
-
-## 课后习题
-
-让 shepherd 村民（交易表位于 `trading/shepherd_trades.json`）可以拿羊毛换对应颜色的混凝土！【好无厘头的题目，没办法我只是想讲方块数据值。
-
-提示: 羊毛使用方块数据值来区分颜色。在写 `item` 时，把方块数据值用冒号 `:` 连接在方块 ID 的后面。例如: `minecraft:wool:0`。
-
-[page]
-
-# 生成规则
-
-行为包可以设置实体的生成规则。
-
-放置生成规则的位置是在根目录下的 `spawn_rules` 文件夹内。
-
-## 文件格式
-
-
-- `format_version`：（字符串）文件格式版本。必须是 `1.8.0-beta.1`。
-- `minecraft:spawn_rules`：（对象）定义生成规则。
-
-- `description`：（对象）描述。
-
-- `identifier`：（字符串）实体 ID。决定该生成规则对谁适用。
-- `population_control`：（字符串）数量控制。为了避免卡顿，Minecraft 会分别限制不同种类的实体的总数量，该值用于确定实体的种类。可填写`ambient`（环境）、`animal`（动物）、`monster`（怪物）或`water_animal`（水生动物）。（wiki 文档此处内容不全。）
-- `conditions`：（数组）生成条件。只需达成一组条件即会生成。
-
-- *（对象）一组条件（有关条件的具体内容见下方介绍）*
-
-- `minecraft:条件 1`：（对象）一个条件。
-- `minecraft:条件 2`：（对象）一个条件。
-- ···
-
-
-
-
-## 学习原版
-
-以下是僵尸的生成规则 `./spawn_rules/zombie.json`。
-
-```
-{
-    "format_version": "1.8.0-beta.1",
-    "minecraft:spawn_rules": {
-        "description": {
-            "identifier": "minecraft:zombie",
-            "population_control": "monster"
-        },
-        "conditions": [
-            {
-                "minecraft:spawns_on_surface": {},
-                "minecraft:brightness_filter": {
-                    "min": 0,
-                    "max": 7,
-                    "adjust_for_weather": true
-                },
-                "minecraft:difficulty_filter": {
-                    "min": "easy",
-                    "max": "hard"
-                },
-                "minecraft:weight": {
-                    "default": 100
-                },
-                "minecraft:herd": {
-                    "min_size": 2,
-                    "max_size": 4
-                },
-                "minecraft:permute_type": [
-                    {
-                        "weight": 95
-                    },
-                    {
-                        "weight": 5,
-                        "entity_type": "minecraft:zombie_villager"
-                    }
-                ],
-                "minecraft:biome_filter": {
-                    "test": "has_biome_tag",
-                    "operator": "==",
-                    "value": "monster"
-                }
-            }
-        ]
-    }
-}
-```
-### 条件
-
-当达成指定条件时，实体才会生成。wiki 文档上只写了 7 个，事实上有 13 个条件。
-
-特别指明，此处的条件要用 `minecraft:` 命名空间前缀。
-
-### minecraft:biome_filter
-
-指定允许该实体生成的生态群系。其格式与滤器一致。有关滤器的内容，请看「实体行为」章节的「滤器」部分。
-
-### minecraft:brightness_filter
-
-指定允许该实体生成的光照等级范围。
-
-
-- `max`：（数字）指定该实体能够生成的最高光照等级。
-- `min`：（数字）指定该实体能够生成的最低光照等级。
-- `adjust_for_weather`：（布尔值）指定天气是否能够影响亮度，进而导致该实体生成（可用于让敌对生物在下雨的白天生成）。
-
-### minecraft:density_limit
-
-限制实体的密度。
-
-
-- `surface`：（数字）在地面上的密度限制。
-- `underground`：（数字）在地下的密度限制。
-
-### minecraft:difficulty_filter
-
-指定允许该实体生成的难度范围。
-
-
-- `max`：（字符串）指定该实体能够生成的最高难度。可为 `peaceful`、`easy`、`normal`、`hard` 中的一种。
-- `min`：（字符串）指定该实体能够生成的最低难度。可为 `peaceful`、`easy`、`normal`、`hard` 中的一种。
-
-### minecraft:distance_filter
-
-指定允许该实体生成的与玩家的距离。
-
-
-- `max`：（数字）允许该实体生成的与玩家距离的最大值。
-- `min`：（数字）允许该实体生成的与玩家距离的最小值。
-
-### minecraft:height_filter
-
-指定允许该实体生成的高度。
-
-
-- `max`：（数字）允许该实体生成的高度的最大值。
-- `min`：（数字）允许该实体生成的高度的最小值。
-
-### minecraft:herd
-
-指定实体按群生成。
-
-
-- `max_size`：（数字）生成的一群实体的数量的最大值。
-- `min_size`：（数字）生成的一群实体的数量的最小值。
-- `event`：（字符串）生成实体所执行的事件（有关事件的内容，会在下一章「实体行为」进行讲解）。
-- `event_skip_count`：（数字）在触发 `event` 前允许生成的实体数量。
-
-### minecraft:permute_type
-
-生成时使该实体成为它的变种（该条件应一个数组，见下方例子）。
-
-
-- *（对象）一个变种*
-
-- `weight`：（数字）该变种的权重。
-- `entity_type`：（字符串）变种的实体 ID。如不指定则表明不变为变种。
-
-
-举个从僵尸的文件里扣出来的例子：
-
-```
-"minecraft:permute_type": [
-    {
-        "weight": 95
-    },
-    {
-        "weight": 5,
-        "entity_type": "minecraft:zombie_villager"
-    }
-]
-```
-这个条件指定了有 `95 / (95 + 5)` 也就是 95% 的几率保持不变，有 `5 / (95 + 5)` 也就是 5% 的几率变为 `minecraft:zombie_villager`（僵尸村民）。
-
-### minecraft:spawn_event
-
-生成时执行事件（有关事件的内容，会在下一章「实体行为」进行讲解）。
-
-
-- `event`:（字符串）生成实体所执行的事件。
-
-### minecraft:spawns_on_surface
-
-通过添加该对象，实体将必须生成在地面上。如果不添加则没有这种限制。
-
-### minecraft:spawns_underground
-
-通过添加该对象，实体将必须生成在地下。如果不添加则没有这种限制。
-
-### minecraft:spawns_underwater
-
-通过添加该对象，实体将必须生成在水里。如果不添加则没有这种限制。
-
-### minecraft:weight
-
-指定实体生成的权重。
-
-
-- `default`：（数字）该实体生成的权重。值越**高**，生成率越**低**。
-
-
-[page]
-
-# 实体行为
+# 实体
 
 「行为」包，最重要的便是可以定义实体的行为。
 
-原版将行为定义文件放置在行为包根目录下的 `entities` 文件夹内。
+实体定义文件应放置在根目录下的 `entities` 文件夹内。
 
 ## 文件格式
 
-
-- `format_version`：（字符串）格式版本。必须为 `1.8.0-beta.1`。
+- `format_version`：（字符串）格式版本。本教程介绍的是 1.14.0 的写法，因此这里写为 `1.14.0`。写为旧版本的格式也仍然能在最新版游戏中使用，例如原版的药水云的定义文件的格式版本在发帖时仍为 `1.8.0`。事实上，这个参数存在的意义就是为了能够保持向后兼容。
 - `minecraft:entity`：（对象）定义实体。
-
-- `description`：（对象）对实体的宏观概述。
-
-- `identifier`：（字符串）实体的 ID。
-- `minecraft:is_experimental`：（对象）是否为实验性特性。
-
-- `value`：（布尔值）如果设置为 `true`，只有在世界选项里勾选「启月实验玩法」，该实体才会能够使用。
-- `minecraft:is_summonable`：（对象）是否可以生成。
-
-- `value`：（布尔值）如果设置为 `true`，将可以通过 `/summon <identifier>` 命令生成该实体。
-- `minecraft:runtime_identifier`：（对象）BACKUP时标识符。Minecraft 中有一些实体的行为是硬编码的（即写死在代码里面不能改动），例如鸡下蛋（尽管有组件可以做出下蛋的效果，但是鸡并没有使用那个组件）。这个字段可以将已有的硬编码行为赋予给任意实体。
-
-- `id`：（字符串）要赋予的硬编码行为的实体 ID，例如 `minecraft:chicken`（鸡）就可以让这个实体会下蛋。
-- `minecraft:spawn_egg`：（对象）是否拥有刷怪蛋。
-
-- `value`：（布尔值）如果设置为 `true`，在创造模式物品栏中将会有该实体的对应刷怪蛋。
-
-- `components`：（对象）该实体的「组件」。**实体的行为可以理解为搭积木，提供了某个「组件」就可以让其拥有那个组件所拥有的行为**。
-- `component_groups`：（对象）该实体的「组件」组，每一个对象下面都储存了一些组件。一些较为复杂的实体会有多个状态，比如牛的「成年状态」、「幼年状态」和「被栓绳拴住」等。Minecraft 会根据你所提供的条件，在某些情况下启用一组组件，或禁用一组组件，来达到实体在特殊状态下有特殊的行为。
-- `events`：（对象）该实体的所有事件。事件可以在指定条件下执行，执行以后可以禁用/启用在 `component_groups` 中定义的组件组。
-
-- `事件名`：（对象）一个事件（有关事件的具体介绍见下）。
-
-
+    - `description`：（对象）对实体的宏观概述。
+        - `identifier`：（字符串）实体的 ID。
+        - `minecraft:is_experimental`：（对象）是否为实验性特性。
+            - `value`：（布尔值）如果设置为 `true`，只有在世界选项里勾选「启用实验玩法」，该实体才会能够使用。
+        - `minecraft:is_summonable`：（对象）是否可以生成。
+            - `value`：（布尔值）如果设置为 `true`，将可以通过 `/summon <identifier>` 命令生成该实体。
+        - `minecraft:runtime_identifier`：（对象）运行时标识符。Minecraft 中有一些实体的行为是硬编码的（即写死在代码里面不能改动），例如鸡下蛋（尽管有组件可以做出下蛋的效果，但是鸡并没有使用那个组件）。这个字段可以将已有的硬编码行为赋予给任意实体。
+            - `id`：（字符串）要赋予的硬编码行为的实体 ID，例如 `minecraft:chicken`（鸡）就可以让这个实体会下蛋。
+        - `minecraft:spawn_egg`：（对象）是否拥有刷怪蛋。
+            - `value`：（布尔值）如果设置为 `true`，在创造模式物品栏中将会有该实体的对应刷怪蛋。
+    - `components`：（对象）该实体的「组件」。**实体的行为可以理解为搭积木，提供了某个「组件」就可以让其拥有那个组件所拥有的行为**。
+    - `component_groups`：（对象）该实体的「组件」组，每一个对象下面都储存了一些组件。一些较为复杂的实体会有多个状态，比如牛的「成年状态」、「幼年状态」和「被栓绳拴住」等。Minecraft 会根据你所提供的条件，在某些情况下启用一组组件，或禁用一组组件，来达到实体在特殊状态下有特殊的行为。
+    - `events`：（对象）该实体的所有事件。事件可以在指定条件下执行，执行以后可以禁用/启用在 `component_groups` 中定义的组件组。
+        - `事件名`：（对象）一个事件（有关事件的具体介绍见下）。
 
 `components`（组件）与 `component_groups`（组件组）的区别在于，前者中定义的是该实体的基础行为，而后者中则有一些与特定状态有关的行为。另外，如果组件组修改了和组件中相同的行为，在这个组件组被启用时，组件组里定义的值会覆盖掉组件中的值。
 
@@ -6286,11 +5184,1123 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 
 [page]
 
-# 添加实体
+# 战利品表
 
-如果你熬过了上一个章节，添加实体已经没有什么好怕的了（并不是）。在 `entities` 下面新建一个名称不同于已有实体的 JSON 文件，将 `description` 里的 `identifier` 写为你要添加的实体的标识符（由 `命名空间:实体名` 构成），其中命名空间请使用你自己的命名空间，可以是这个行为包的名字或是你自己的名字等等，不过必须是纯小写英文字母 + 下划线的组合。例如 `spgoding:foo_bar` 等。
+战利品表可以用来定义宝箱/实体/游戏行为等各种东西所能给玩家带来的物品，以及指定实体所能穿的装备等。
 
-然后你需要在资源包里面定义一个同样 `identifier` 的实体，由这个资源包来决定实体的外观（如材质、动画等）。本教程只涉及行为包部分的内容，不会讲解资源包的具体内容，所以不再继续深入。（你要问我以后会不会写资源包的教程，嗯…大概会吧，因为一个教程拿不到基岩版爱好者勋章…是的，我就是来骗勋章的。
+原版放置战利品表的位置是在行为包根目录下的 `loot_tables` 文件夹内。事实上，你可以放在行为包里任何你想要的地方，但建议大家按传统习惯行事。
+
+在 Java 版中同样也有战利品表，隔壁的教程也是我写的，有兴趣可以对比一下：[Java 版战利品表：从入门到重新入门](https://www.mcbbs.net/thread-831542-1-1.html)。
+
+## 文件格式
+
+- `pools`：（数组）随机池们。游戏会从每一个随机池中**逐个**抽取物品。
+    - *（对象）一个随机池*
+        - `conditions`：（数组）可选。使用该随机池所需满足的条件列表。
+            - *（对象）一个条件（有关条件的具体内容见下方介绍）*
+        - `tiers`：（对象）可选。如果指定，将会忽略掉下方的 `rolls` 以及各项中的 `weight` 和 `quality`，把 `entries` 中的每一项看作一个层级。`entries` 中的第一个对象为第一层，第二个对象为第二层，以此类推。这几行的地方可能讲不明白，如果看不懂下面这三个参数的描述的话，下面有例子。
+            - `initial_range`：（数字）初始的选取范围。游戏将会默认从第 1 层一直到这一参数中指定的层中随机抽取一项。例如，把该参数设置为 `2`，则游戏会默认从 `entries` 中的第 1 项和第 2 项中随机抽取一个选择。由于设置了 `tiers` 后会忽略掉 `weight` 和 `quality`，每一项被选中的几率都是 50%。
+            - `bonus_chance`：（数字）将被选取的层级数再加上定义在 `bonus_rolls` 中的奖励的层数的几率。取值应在 [0.0, 1.0] 中。
+            - `bonus_rolls`：（数字）奖励层数。必须大于等于 `1`。当游戏根据 `initial_range` 定义的范围从 `entries` 中选取一层以后，有一定几率（该几率定义在 `bonus_chance` 中）把已经选取的层数再加上这个数字。
+        - `rolls`：（整数）可选。从该随机池中抽取物品的次数。
+        - `entries`：（数组）可以从该随机池中抽取的所有项。如果指定了 `rolls`，游戏会从这些项中随机抽取**一个**；如果指定了 `tiers`，则会按照层级的特性随机抽取**一个**。
+            - *（对象）一项*
+                - `type`：（字符串）该项的类型，用于决定下面 `name` 参数的解析方式。`item` 表示是个物品，`loot_table` 表示是另一个战利品表，`empty` 表示什么都没有。
+                - `name`：（字符串）名字。会根据上面 `type` 的值来解析。例如 `type` 为 `item`，则会将此字段按照物品名解析。
+                - `weight`：（整数）该项的权重。从随机池中抽到该项的几率为 `weight / (该随机池中所有满足条件的事物的 weight 的和)`。
+                - `quality`：（整数）可选。根据玩家的幸运等级影响该 `weight`。计算公式为，`floor(weight + (quality * <幸运等级>))`，其中 `floor` 为向下取整。
+                - `pools`：（数组）可选。该项的子随机池。在抽出该项后，游戏将从该项的这个子随机池中继续抽取物品。
+                    - *（对象）一个随机池。格式和根对象中随机池的格式完全一致。*
+                - `conditions`：（数组）可选。抽出该项所需满足的条件列表。
+                    - *（对象）一个条件（有关条件的具体内容见下方介绍）*
+                - `functions`：（函数）可选。抽出该项时对此项执行的战利品表函数（请与命令的函数做区分）。
+                    - *（对象）一个函数*
+                        - `function`：（字符串）该函数的名称（有关函数的具体内容见下方介绍）。
+                        - `conditions`：（数组）执行该函数所需满足的条件列表。
+                            - *（对象）一个条件（有关条件的具体内容见下方介绍）*
+
+## 学习原版
+
+以下是原版中僵尸的战利品表 `./loot_tables/entities/zombie.json`。注释是我自己加的。
+
+```json
+{
+    "pools": [
+        {
+            // 第一个随机池。
+            "rolls": 1, // 指定了 rolls，因此会从下面的 entries 中随机抽取一项。
+            "entries": [
+                {
+                    // 第一个随机池里的第一项。
+                    "type": "item", // 是个物品。
+                    "name": "minecraft:rotten_flesh", // 物品 ID 是腐肉的。
+                    "weight": 1, // 权重是 1。这个是几其实无所谓，因为这个随机池里面只有这一项，肯定会抽中这一项的。
+                    "functions": [
+                        {
+                            // 对这个腐肉执行的第一个函数。
+                            "function": "set_count", // 这个函数的作用是设置物品数量。详细函数列表可以看下面。
+                            "count": { // 数量随机设置为 0-2 中的一个。如果设置为 0，表明不会掉落。
+                                "min": 0,
+                                "max": 2
+                            }
+                        },
+                        {
+                            // 对这个腐肉执行的第二个函数。
+                            // 这个函数的作用是，玩家的武器每有一级抢夺附魔，就多掉落 0-1 个物品。
+                            "function": "looting_enchant", 
+                            "count": {
+                                "min": 0,
+                                "max": 1
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            // 第二个随机池
+            "conditions": [
+                // 这个随机池设定了条件。只有以下条件全部满足时，才会从这个随机池中抽取物品。
+                {
+                    // 条件 1：僵尸是被玩家杀死的。
+                    "condition": "killed_by_player"
+                },
+                {
+                    // 条件 2：有 2.5% 的概率达成。玩家的武器每有一级抢夺附魔，就加 1% 的概率。
+                    "condition": "random_chance_with_looting",
+                    "chance": 0.025,
+                    "looting_multiplier": 0.01
+                }
+            ],
+            "rolls": 1,
+            "entries": [
+                // 当上述两个条件全部满足后，从这三项里随机抽取一个掉落。
+                // 这三项的权重 weight 都是 1，因此这三个掉落的概率相等。
+                // 这三项结构很简单，就不写注释了。
+                {
+                    "type": "item",
+                    "name": "minecraft:iron_ingot",
+                    "weight": 1
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:carrot",
+                    "weight": 1
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:potato",
+                    "weight": 1
+                }
+            ]
+        }
+    ]
+}
+```
+
+这整个战利品表实现了僵尸的物品的掉落，简单描述为：一般会掉落腐肉，偶尔会再多掉一个铁锭/胡萝卜/马铃薯。与我们平时认知的一样。
+
+## Tiers 层级到底是什么
+
+这是上面僵尸的战利品表，经过我修改后的样子，使用到了 `tiers`：
+
+```json
+{
+    "pools": [
+        {
+            "tiers": {
+                "initial_range": 2,
+                "bonus_rolls": 1,
+                "bonus_chance": 0.01
+            },
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "minecraft:rotten_flesh"
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:carrot"
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:iron_ingot"
+                }
+            ]
+        }
+    ]
+}
+```
+
+`entries` 中定义的这三项变成了三个层级。`rotten_flesh`（腐肉）是第 1 层，`carrot`（胡萝卜）是第 2 层，`iron_ingot`（铁锭）是第 3 层。
+
+当游戏执行这个战利品表时，会首先从第 1 层到第 `initial_range` 层中随机抽取一层。以这个 JSON 为例，则是随机从 `rotten_flesh`（腐肉）和 `carrot`（胡萝卜）中随机抽取一个，这两个被抽到的概率都是 50%。
+
+当抽取好以后，又有 `bonus_chance` 的几率把这一层数加上 `bonus_rolls`。以这个 JSON 为例，有 1% 的几率把层数加 `1`。例如，原先抽取到了 `rotten_flesh`（腐肉），那么有 1% 的几率会返回 `carrot`（胡萝卜）；原先抽取到了 `carrot`（胡萝卜），那么有 1% 的几率会返回 `iron_ingot`（铁锭）。
+
+Tiers 这一特性原版主要将其用于生成怪物的盔甲。这是 `loot_tables/entities/skeleton_gear.json` 的一部分，它用于生成骷髅的盔甲：
+
+```json
+{
+  "tiers": {
+    "initial_range": 2,
+    "bonus_rolls": 3,
+    "bonus_chance": 0.095
+  },
+  "entries": [
+    {
+      "type": "loot_table",
+      "name": "loot_tables/entities/armor_set_leather.json"
+    },
+    {
+      "type": "loot_table",
+      "name": "loot_tables/entities/armor_set_gold.json"
+    },
+    {
+      "type": "loot_table",
+      "name": "loot_tables/entities/armor_set_chain.json"
+    },
+    {
+      "type": "loot_table",
+      "name": "loot_tables/entities/armor_set_iron.json"
+    },
+    {
+      "type": "loot_table",
+      "name": "loot_tables/entities/armor_set_diamond.json"
+    }
+  ]
+}
+```
+
+这一战利品表使得骷髅的盔甲通常为 `armor_set_leather`（皮革）或 `armor_set_gold`（金甲），但有 9.5% 的几率会变为 `armor_set_iron`（铁甲）或 `armor_set_diamond`（钻石甲）。
+
+Tiers 这个略为复杂的东西扯完了。
+
+[spoiler]以下是我自己用的东西，放别的地方怕被我弄丢了。没什么用，折叠吧。
+```typescript
+import * as fs from 'fs'
+import { join } from 'path'
+
+const walker = (path: string, cb: (content: string) => any) => {
+    const files = fs.readdirSync(path)
+    for (const file of files) {
+        const child = join(path, file)
+        if (fs.statSync(child).isDirectory()) {
+            walker(child, cb)
+        } else if (child.endsWith('.json')) {
+            cb(fs.readFileSync(child, { encoding: 'utf8' }))
+        }
+    }
+}
+
+const arr: string[] = []
+
+walker(__dirname, (content: string) => {
+    const trim = (val: string, prefix = 'minecraft:') => val.startsWith(prefix) ? val.slice(prefix.length) : val
+    const regex = /"function": "(.*?)"/g
+    let match = regex.exec(content)
+    while (match) {
+        if (arr.indexOf(trim(match[1])) === -1) {
+            arr.push(trim(match[1]))
+        }
+        match = regex.exec(content)
+    }
+})
+
+console.log(arr.length)
+console.log(arr.sort().join('\n'))
+```
+[/spoiler]
+
+下文将列出战利品表中可用的所有函数和条件。
+
+## 函数
+
+下面是战利品表中可用的全部函数。这些函数可以根据需求添加到每一项的 `functions` 数组中。函数的名称可以带 `minecraft:` 前缀，也可以不带，看你的喜好。例如，`set_count` 和 `minecraft:set_count` 都是表示设置物品数量的函数，执行起来没有区别。
+
+在开始介绍前，先简单说明一下「数字或范围」这一格式的意思。这一格式在之后的章节中也有可能会出现，到时就不再赘言了。
+
+### 数字或范围
+
+很简单。当一个参数的类型被我写为「数字或范围」时，表明它既可以是一个精确的数字，也可以是一个形如 `{ "min": 最小值, "max": 最大值 }` 的表明随机数的对象。
+
+### enchant_random_gear
+
+对装备随机附魔。Minecraft 使用战利品表来决定实体在生成时所装备的物品，每个生物具体使用哪个战利品表，可以在实体行为中定义（有关实体行为的具体内容，见「实体行为」章节）。
+
+- `chance`：（数字）进行附魔的概率。例如 `0.25` 表示 `25%`。
+
+示例（`loot_tables/entities/armor_set_chain.json`）：
+```json
+{
+    "function": "enchant_random_gear",
+    "chance": 0.25
+}
+```
+
+### enchant_randomly
+
+对物品进行随机附魔。
+
+- `treasure`：（布尔值）是否给予宝藏魔咒。
+
+示例（`loot_tables/chests/pillager_outpost.json`）：
+```json
+{
+    "function": "minecraft:enchant_randomly"
+}
+```
+
+### enchant_with_levels
+
+对物品进行相当于使用了指定经验等级的附魔。
+
+- `treasure`：（布尔值）是否给予宝藏魔咒。
+- `levels`：（数字或范围）要设置的等级。
+
+示例（`loot_tables/chests/end_city_treasure.json`）：
+```json
+{
+    "function": "enchant_with_levels",
+    "treasure": true,
+    "levels": {
+        "min": 20,
+        "max": 39
+    }
+}
+```
+
+### exploration_map
+
+将该物品变为探险地图。指定的物品需要是地图。
+
+- `destination`：（字符串）地图的目的地。需要是一个结构的 ID。全部结构的 ID 可以在 [Wiki](https://minecraft-zh.gamepedia.com/%E5%91%BD%E4%BB%A4/locate) 上查看。
+
+示例（`loot_tables/chests/shipwreck.json`）：
+```json
+{
+    "function": "exploration_map",
+    "destination": "buriedtreasure"
+}
+```
+
+### furnace_smelt
+
+对该物品进行熔炼。得到的结果与将物品放置熔炉中熔炼产生的结果一致。为该函数添加 `entity_properties` 条件可以做到实体被烧死时掉落熟食。
+
+示例（`loot_tables/entities/chicken.json`）：
+```json
+{
+    "function": "furnace_smelt"
+}
+```
+
+### looting_enchant
+
+设置抢夺魔咒对数量的影响。
+
+- `count`：（数字或范围）每一级抢夺魔咒增加的数量。
+- `limit`：（数字）抢夺魔咒所增加的数量的上限。
+
+示例（`loot_tables/entities/blaze.json`）：
+```json
+{
+    "function": "looting_enchant",
+    "count": {
+        "min": 0,
+        "max": 1
+    }
+}
+```
+
+### random_aux_value
+
+随机生成一个辅助数值。不明。
+
+- `values`：（数字或范围）要设置的值。
+
+示例（`loot_tables/chests/shipwrecksupply.json`）：
+```json
+{
+    "function": "random_aux_value",
+    "values": {
+        "min": 0,
+        "max": 6
+    }
+}
+```
+
+### set_banner_details
+
+设置旗帜的图案。指定的物品需要是旗帜。
+
+- `type`：（数字）旗帜图案的类型。已知数值只有 `1`，代表掠夺者首领头上的旗帜。
+
+示例（`loot_tables/entities/pillager_captain_equipment.json`）：
+```json
+{
+    "function": "set_banner_details",
+    "type": 1
+}
+```
+
+### set_count
+
+设置物品的数量。
+
+- `count`：（数字或范围）要设置的数量。
+
+示例（`loot_tables/chests/buriedtreasure.json`）：
+```json
+{
+    "function": "set_count",
+    "count": {
+        "min": 1,
+        "max": 5
+    }
+}
+```
+
+### set_damage
+
+设置物品的损坏率。
+
+- `damage`：（数字或范围）要设置的损坏率。取值应在 [0, 1] 之间。
+
+示例（`loot_tables/entities/drowned.json`）：
+```json
+{
+    "function": "set_damage",
+    "damage": {
+        "min": 0.2,
+        "max": 0.9
+    }
+}
+```
+
+### set_data
+
+设置物品的数据值。
+
+- `data`：（数字）要设置的数据值。
+
+示例（`loot_tables/chests/buriedtreasure.json`）：
+```json
+{
+    "function": "set_data",
+    "data": 19
+}
+```
+
+### set_data_from_color_index
+
+根据当前实体的颜色设置物品的数据值。只有在当前实体为羊且物品为羊毛，或当前实体为哞菇且当前物品为蘑菇时有用。
+
+示例（`loot_tables/entities/sheep.json`）：
+```json
+{
+    "function": "minecraft:set_data_from_color_index"
+}
+```
+
+## 条件
+
+当你指定的条件全部达成时，才有可能会使用你所设置的随机池（`pool`）、项（`entry`）或是函数（`function`）。下面是战利品表中可用的全部条件。
+
+### entity_properties
+
+指定实体的属性匹配时达成条件。
+
+
+- `entity`：（字符串）要检测的实体。`this` 指代死亡的这个实体，`killer` 指代杀了这个实体的实体，`killer_player` 指代杀了这个实体的玩家。
+- `properties`：（对象）要检测的属性。
+    - `on_fire`：（布尔值）指定实体是否着火。
+
+示例（`loot_tables/entities/chicken.json`）：
+```json
+{
+    "condition": "entity_properties",
+    "entity": "this",
+    "properties": {
+        "on_fire": true
+    }
+}
+```
+
+### has_mark_variant
+
+检测该实体是否是某个变种。不明。
+
+- `value`：（数字）
+
+示例（`loot_tables/entities/mooshroom_milking.json`）：
+```json
+{
+    "condition": "has_mark_variant",
+    "value": -1
+}
+```
+
+### killed_by_entity
+
+被指定类型的实体击杀时达成条件。
+
+- `entity_type`：（字符串）指定实体的 ID。
+
+示例（`loot_tables/entities/creeper.json`）：
+```json
+{
+    "condition": "killed_by_entity",
+    "entity_type": "minecraft:skeleton"
+}
+```
+
+### killed_by_player
+
+被玩家击杀时达成条件。
+
+示例（`loot_tables/entities/cave_spider.json`）：
+```json
+{
+    "condition": "killed_by_player"
+}
+```
+
+### killed_by_player_or_pets
+
+被玩家或玩家的宠物击杀时达成条件。
+
+示例（`loot_tables/entities/blaze.json`）：
+```json
+{
+    "condition": "killed_by_player_or_pets"
+}
+```
+
+### random_chance
+
+有一定几率达成。
+
+- `chance`：（数字）条件达成的几率。取值应当在 [0, 1] 的范围内。
+
+示例（`loot_tables/entities/drowned_equipment.json`）：
+```json
+{
+    "condition": "random_chance",
+    "chance": 0.01
+}
+```
+
+### random_chance_with_looting
+
+有一定几率达成。该几率可以被「抢夺」附魔提高。
+
+- `chance`：（数字）条件达成的基础几率。取值应当在 [0, 1] 的范围内。
+- `looting_multiplier`：（数字）每一级「抢夺」魔咒所增加的几率。取值应当在 [0, 1] 的范围内。
+
+示例（`loot_tables/entities/drowned.json`）：
+```json
+{
+    "condition": "random_chance_with_looting",
+    "chance": 0.11,
+    "looting_multiplier": 0.02
+}
+```
+
+### random_difficulty_chance
+
+有一定几率达成。可以指定在不同难度下的几率。
+
+- `default_chance`：（数字）条件达成的默认几率。取值应当在 [0, 1] 的范围内。
+- `peaceful`：（数字）和平模式下条件达成的几率。取值应当在 [0, 1] 的范围内。
+- `easy`：（数字）简单模式下条件达成的几率。取值应当在 [0, 1] 的范围内。
+- `normal`：（数字）普通模式下条件达成的几率。取值应当在 [0, 1] 的范围内。
+- `hard`：（数字）困难模式下条件达成的几率。取值应当在 [0, 1] 的范围内。
+
+示例（`loot_tables/entities/armor_set_chain.json`）：
+```json
+{
+    "condition": "random_difficulty_chance",
+    "default_chance": 0.50,
+    "peaceful": 0,
+    "hard": 0.6
+}
+```
+
+### random_regional_difficulty_chance
+
+有一定几率达成。该几率随着区域难度提高而提高。
+
+- `max_chance`：（数字）条件达成的最大几率。取值应当在 [0, 1] 的范围内。
+
+示例（`loot_tables/entities/skeleton_gear.json`）：
+```json
+{
+    "condition": "random_regional_difficulty_chance",
+    "max_chance": 0.15
+}
+```
+
+## 自造轮子
+
+我想让僵尸在被烧死的时候掉烈焰粉！
+
+首先，我们要修改的是原版就有的僵尸的战利品表，比较便捷的做法是直接在你的行为包中用同名同路径的文件把它覆盖掉。创建 `loot_tables/entities/zombie.json`，把原版战利品表中的内容复制进去（你可以直接从我开头「学习原版」部分的代码框里复制，注释删不删无所谓，因为就像我开篇说的那样，Minecraft 会自动忽略掉那些注释）。
+
+接下来就可以加烈焰粉了。在原来的两个随机池下面多加一个随机池（注意逗号），设置条件为 `entity_properties`，指定 `entity` 为 `this`（即探测僵尸自身），指定 `on_fire` 为 `true`（即需要被探测的实体着火）。设置给予的物品为 `minecraft:blaze_powder`（烈焰粉），数量从 1 至 2 随机。即: 
+
+```
+{
+    "pools": [
+        { ... }, 
+        { ... }, // 原有的两个随机池，这里省略不写。
+        {
+            "conditions": [
+                {
+                    "condition": "entity_properties",
+                    "entity": "this",
+                    "properties": {
+                        "on_fire": true
+                    }
+                }
+            ],
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "minecraft:blaze_powder",
+                    "weight": 1,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 2
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+```
+
+重载行为包。
+
+> 提示: 如何重载行为包
+>
+> 退出世界，重进。  
+> 没错，很蠢，但没有别的办法。
+
+可以看到僵尸被烧死后产生了烈焰粉。
+
+![](https://i.loli.net/2018/10/20/5bca0ae304212.gif)
+
+（这张动图是上次写这篇教程时候录的，大体效果没错，就不重新录制了）
+
+## 课后习题
+
+让玩家钓鱼能钓上来有随机附魔的钻石剑吧！
+
+提示: 可以在原版的行为包里找钓鱼相关战利品表的位置（找不到的话我告诉你，主钓鱼战利品表是 `loot_tables/gameplay/fishing.json`，它又引用了别的战利品表。带有随机附魔的钻石剑可以被认为是宝物，因此你需要修改的是钓鱼出宝物的战利品表，即 `loot_tables/gameplay/fishing/treasure.json`），在上方本人整理的所有可用函数中找到你需要的函数。
+
+恭喜你，你看完了本教程中最简单的一章。本节完，点击论坛右侧的书签可以快速回到顶部。
+
+[page]
+
+# 交易表
+
+行为包可以定义村民的交易表。
+
+原版放置村民交易表的位置是在根目录下的 `trading` 文件夹内。事实上，你可以放在行为包里任何你想要的地方，但建议大家按传统习惯行事。
+
+首先我们简单了解一下村民交易的机制。村民的交易分为多个层级。首先只会解锁第一个层级的交易。当交易几次以后，会解锁下一个层级的交易。如此反复，直到所有层级的交易都解锁了为止。
+
+好了，按照之前的套路，尝试通过行为包修改村民交易表！
+
+## 文件格式
+
+- `tiers`：（数组）储存该交易表中的所有交易层级。从上到下层级逐渐增高。
+    - *（对象）一层交易*
+        - `trades`：（数组）该层中具有的所有交易。
+        - *（对象）一个交易*
+            - `wants`：（数组）村民想要的物品。项数应小于等于 2，超出的物品会被无视。
+                - *（对象）一个物品*
+                    - `item`：（字符串）物品 ID，如果有数据值，使用冒号分割。
+                    - `quantity`：（数字或范围）物品数量。
+            - `gives`：（数组）村民给予的物品。会从中随机抽取。
+                - *（对象）一个物品*
+                    - `item`：（字符串）物品 ID，如果有数据值，使用冒号分割。
+                    - `quantity`：（数字或范围）物品数量。
+                    - `functions`：（数组）交易表函数。
+                        - *（对象）一个函数*
+                            - `function`：（字符串）使用的函数。
+                            - 其他参数（有关函数的具体内容见下文）。
+
+## 学习原版
+
+这次我们以渔夫的交易 `trading/fisherman_trades.json` 为例。删除了一小点儿内容，不然太长了。
+
+```
+{
+    "tiers": [
+        {
+            // 第一层交易
+            "trades": [
+                {
+                    // 第一层交易的第一个交易：
+                    "wants": [
+                        // 该交易接受：
+                        {
+                            // 6 条鱼。
+                            "item": "minecraft:fish",
+                            "quantity": 6
+                        },
+                        {
+                            // 1 个绿宝石。
+                            "item": "minecraft:emerald",
+                            "quantity": 1
+                        }
+                    ],
+                    "gives": [
+                        // 该交易给出：
+                        {
+                            // 6 条熟鱼。
+                            "item": "minecraft:cooked_fish",
+                            "quantity": 6
+                        }
+                    ]
+                },
+                {
+                    // 第一层交易的第二个交易：
+                    "wants": [
+                        // 该交易接受：
+                        {
+                            // 15-20 根线，具体数量由游戏随机生成。
+                            "item": "minecraft:string",
+                            "quantity": {
+                                "min": 15,
+                                "max": 20
+                            }
+                        }
+                    ],
+                    "gives": [
+                        // 该交易给出：
+                        {
+                            // 1 个绿宝石。
+                            "item": "minecraft:emerald",
+                            "quantity": 1
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            // 第二层交易
+            "trades": [
+                {
+                    // 第二层交易的第一个交易
+                    "wants": [
+                        // 该交易接受：
+                        {
+                            // 7-8 个绿宝石，具体数量由游戏随机生成。
+                            "item": "minecraft:emerald",
+                            "quantity": {
+                                "min": 7,
+                                "max": 8
+                            }
+                        }
+                    ],
+                    "gives": [
+                        // 该交易给出：
+                        {
+                            // 1 个用相当于 5-19 级经验附魔过的钓鱼杆。具体用几级经验由游戏随机决定。
+                            "item": "minecraft:fishing_rod",
+                            "quantity": 1,
+                            "functions": [
+                                {
+                                    "function": "enchant_with_levels",
+                                    "treasure": false,
+                                    "levels": {
+                                        "min": 5,
+                                        "max": 19
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+```
+
+### 函数
+
+在给出交易物品前会执行指定的函数对物品进行操作。下面是交易表中可用的全部函数。
+
+### enchant_book_for_trading
+
+给书附魔。
+
+- `base_cost`：（数字）不明。个人猜测可能和玩家使用附魔台附魔物品所消耗的经验等级有关。
+- `base_random_cost`：（数字）不明。
+- `per_level_random_cost`：（数字）不明。
+- `per_level_cost`：（数字）不明。
+
+示例（`trading/librarian_trades.json`）：
+```json
+{
+    "function": "enchant_book_for_trading",
+    "base_cost": 2,
+    "base_random_cost": 5,
+    "per_level_random_cost": 10,
+    "per_level_cost": 3
+}
+```
+
+### enchant_with_levels
+
+进行相当于指定经验等级的附魔。
+
+- `treasure`：（布尔值）如果为 `true`，将会给予宝藏魔咒。
+- `levels`：（数字或范围）要设置的等级。
+
+示例（`trading/leather_worker_trades.json`）：
+```json
+{
+    "function": "enchant_with_levels",
+    "treasure": false,
+    "levels": {
+        "min": 5,
+        "max": 19
+    }
+}
+```
+
+### exploration_map
+
+绘制探险地图。
+
+- `destination`：字符串。地图的目的地。需要是一个结构的 ID。全部结构的 ID 可以在 [Wiki](https://minecraft-zh.gamepedia.com/%E5%91%BD%E4%BB%A4/locate) 上查看。
+
+示例（`trading/cartographer_trades.json`）：
+```json
+{
+  "function": "exploration_map",
+  "destination": "monument"
+}
+```
+
+### random_aux_value
+
+随机生成一个辅助数值。不明。
+
+- `values`：（数字或范围）要设置的值。
+
+示例（`trading/economy_trades/wandering_trader_trades.json`）：
+```json
+{
+    // 这是给染料 minecraft:dye 设置的
+    "function": "random_aux_value",
+    "values": {
+        "min": 0,
+        "max": 15
+    }
+}
+```
+
+### random_block_state
+
+随机设置方块状态。
+
+- `block_state`：（字符串）要设置的方块状态名。
+- `values`：（数字或范围）要设置的方块状态的值。
+
+示例（`trading/economy_trades/wandering_trader_trades.json`）：
+```json
+{
+    // 这是给树苗 minecraft:sapling 设置的
+    "function": "random_block_state",
+    "block_state": "sapling_type",
+    "values": {
+        "min": 0,
+        "max": 5
+    }
+}
+```
+
+## 自造轮子
+
+让奸商渔夫第三层交易为，绿宝石 + 钻石换取超级普通的钓鱼竿！
+
+由于我们要修改的是原版就有的交易表，比较便捷的做法是直接在你的行为包中用同名同路径的文件把它覆盖掉。创建 `loot_tables/trading/fisherman_trades.json`，把原版交易表中的内容复制进去。
+
+接下来就可以加第三层交易了。在原有的两个交易层级后继续加入一个对象，设置 `wants` 为 `minecraft:emerald`（绿宝石）和 `minecraft:diamond`（钻石），`gives` 为 `minecraft:fishing_rod`。即
+
+```json
+{
+    "tiers": [
+        { ... },
+        { ... }, // 原有的两个交易层级
+        {
+            "trades": [
+                {
+                    "wants": [
+                        {
+                            "item": "minecraft:emerald",
+                            "quantity": {
+                                "min": 10,
+                                "max": 14
+                            }
+                        },
+                        {
+                            "item": "minecraft:diamond",
+                            "quantity": {
+                                "min": 5,
+                                "max": 7
+                            }
+                        }
+                    ],
+                    "gives": [
+                        {
+                            "item": "minecraft:fishing_rod",
+                            "quantity": 1
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+```
+
+重载行为包，搞定。
+
+![](https://i.loli.net/2018/10/20/5bca1fee0a1b0.png)
+
+## 课后习题
+
+让 shepherd 村民（交易表位于 `trading/shepherd_trades.json`）可以拿羊毛换对应颜色的混凝土！【好无厘头的题目，没办法我只是想讲方块数据值。
+
+提示: 羊毛使用方块数据值来区分颜色。在写 `item` 时，把方块数据值用冒号 `:` 连接在方块 ID 的后面。例如: `minecraft:wool:0`。
+
+[page]
+
+# 生成规则
+
+行为包可以设置实体的生成规则。只有在满足了生成规则的情况下，该实体才有可能会生成。
+
+放置生成规则的位置是在根目录下的 `spawn_rules` 文件夹内。
+
+## 文件格式
+
+- `format_version`：（字符串）文件格式版本。必须是 `1.8.0-beta.1`。
+- `minecraft:spawn_rules`：（对象）定义生成规则。
+
+- `description`：（对象）描述。
+
+- `identifier`：（字符串）实体 ID。决定该生成规则对谁适用。
+- `population_control`：（字符串）数量控制。为了避免卡顿，Minecraft 会分别限制不同种类的实体的总数量，该值用于确定实体的种类。可填写`ambient`（环境）、`animal`（动物）、`monster`（怪物）或`water_animal`（水生动物）。（wiki 文档此处内容不全。）
+- `conditions`：（数组）生成条件。只需达成一组条件即会生成。
+
+- *（对象）一组条件（有关条件的具体内容见下方介绍）*
+
+- `minecraft:条件 1`：（对象）一个条件。
+- `minecraft:条件 2`：（对象）一个条件。
+- ···
+
+
+
+
+## 学习原版
+
+以下是僵尸的生成规则 `./spawn_rules/zombie.json`。
+
+```
+{
+    "format_version": "1.8.0-beta.1",
+    "minecraft:spawn_rules": {
+        "description": {
+            "identifier": "minecraft:zombie",
+            "population_control": "monster"
+        },
+        "conditions": [
+            {
+                "minecraft:spawns_on_surface": {},
+                "minecraft:brightness_filter": {
+                    "min": 0,
+                    "max": 7,
+                    "adjust_for_weather": true
+                },
+                "minecraft:difficulty_filter": {
+                    "min": "easy",
+                    "max": "hard"
+                },
+                "minecraft:weight": {
+                    "default": 100
+                },
+                "minecraft:herd": {
+                    "min_size": 2,
+                    "max_size": 4
+                },
+                "minecraft:permute_type": [
+                    {
+                        "weight": 95
+                    },
+                    {
+                        "weight": 5,
+                        "entity_type": "minecraft:zombie_villager"
+                    }
+                ],
+                "minecraft:biome_filter": {
+                    "test": "has_biome_tag",
+                    "operator": "==",
+                    "value": "monster"
+                }
+            }
+        ]
+    }
+}
+```
+
+### 条件
+
+当达成指定条件时，实体才会生成。wiki 文档上只写了 7 个，事实上有 13 个条件。
+
+特别指明，此处的条件要用 `minecraft:` 命名空间前缀。
+
+### minecraft:biome_filter
+
+指定允许该实体生成的生态群系。其格式与滤器一致。有关滤器的内容，请看「实体行为」章节的「滤器」部分。
+
+### minecraft:brightness_filter
+
+指定允许该实体生成的光照等级范围。
+
+
+- `max`：（数字）指定该实体能够生成的最高光照等级。
+- `min`：（数字）指定该实体能够生成的最低光照等级。
+- `adjust_for_weather`：（布尔值）指定天气是否能够影响亮度，进而导致该实体生成（可用于让敌对生物在下雨的白天生成）。
+
+### minecraft:density_limit
+
+限制实体的密度。
+
+
+- `surface`：（数字）在地面上的密度限制。
+- `underground`：（数字）在地下的密度限制。
+
+### minecraft:difficulty_filter
+
+指定允许该实体生成的难度范围。
+
+
+- `max`：（字符串）指定该实体能够生成的最高难度。可为 `peaceful`、`easy`、`normal`、`hard` 中的一种。
+- `min`：（字符串）指定该实体能够生成的最低难度。可为 `peaceful`、`easy`、`normal`、`hard` 中的一种。
+
+### minecraft:distance_filter
+
+指定允许该实体生成的与玩家的距离。
+
+
+- `max`：（数字）允许该实体生成的与玩家距离的最大值。
+- `min`：（数字）允许该实体生成的与玩家距离的最小值。
+
+### minecraft:height_filter
+
+指定允许该实体生成的高度。
+
+
+- `max`：（数字）允许该实体生成的高度的最大值。
+- `min`：（数字）允许该实体生成的高度的最小值。
+
+### minecraft:herd
+
+指定实体按群生成。
+
+
+- `max_size`：（数字）生成的一群实体的数量的最大值。
+- `min_size`：（数字）生成的一群实体的数量的最小值。
+- `event`：（字符串）生成实体所执行的事件（有关事件的内容，会在下一章「实体行为」进行讲解）。
+- `event_skip_count`：（数字）在触发 `event` 前允许生成的实体数量。
+
+### minecraft:permute_type
+
+生成时使该实体成为它的变种（该条件应一个数组，见下方例子）。
+
+
+- *（对象）一个变种*
+
+- `weight`：（数字）该变种的权重。
+- `entity_type`：（字符串）变种的实体 ID。如不指定则表明不变为变种。
+
+
+举个从僵尸的文件里扣出来的例子：
+
+```
+"minecraft:permute_type": [
+    {
+        "weight": 95
+    },
+    {
+        "weight": 5,
+        "entity_type": "minecraft:zombie_villager"
+    }
+]
+```
+这个条件指定了有 `95 / (95 + 5)` 也就是 95% 的几率保持不变，有 `5 / (95 + 5)` 也就是 5% 的几率变为 `minecraft:zombie_villager`（僵尸村民）。
+
+### minecraft:spawn_event
+
+生成时执行事件（有关事件的内容，会在下一章「实体行为」进行讲解）。
+
+
+- `event`:（字符串）生成实体所执行的事件。
+
+### minecraft:spawns_on_surface
+
+通过添加该对象，实体将必须生成在地面上。如果不添加则没有这种限制。
+
+### minecraft:spawns_underground
+
+通过添加该对象，实体将必须生成在地下。如果不添加则没有这种限制。
+
+### minecraft:spawns_underwater
+
+通过添加该对象，实体将必须生成在水里。如果不添加则没有这种限制。
+
+### minecraft:weight
+
+指定实体生成的权重。
+
+- `default`：（数字）该实体生成的权重。值越**高**，生成率越**低**。
+
+[page]
+
+# 物品
+
+[page]
+
+# 配方
+
+[page]
+
+# 生物群系
+
+[page]
+
+# 结构
+
+[page]
+
+# 方块
+
+[page]
+
+# 脚本
 
 [page]
 
@@ -6318,6 +6328,6 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 
 ~~教程中有许多内容没有官方文档依据，仅靠测试与查看原版行为包文件推断而出的，如有错误请务必指正。~~
 
-文档在我第二次更新帖子时已经较为完善，本帖大部分内容为翻译自 Minecraft 英文 Wiki，并且零零碎碎地加了点儿私货。
+文档在我第二次更新帖子时已经较为完善，本帖大部分内容为翻译自 Minecraft 英文 Wiki，并且零零碎碎地加了不少私货。
 
-
+后续还会视情况发布有关资源包的教程，加入动画、粒子效果、UI 界面等内容。将行为包与资源包结合到一起以后，便可自行任意添加新方块、物品、实体等，十分愉快。
