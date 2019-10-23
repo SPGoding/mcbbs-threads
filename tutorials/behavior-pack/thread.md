@@ -4627,8 +4627,8 @@ JSON 格式包含五种结构，分别是对象、字符串、布尔值、数字
 ### 比较方式
 
 
-- `==`、`===` 和 `equals`：等于。当主体的项目与给定数据完全一致时，测试通过。
-- `!==`、`<>` 和 `not`：不等于。当主体的项目与给定数据完全不一致时，测试通过。
+- `==`、`===`、`equals`：等于。当主体的项目与给定数据完全一致时，测试通过。
+- `!==`、`<>`、`not`：不等于。当主体的项目与给定数据不一致时，测试通过。
 - `<`：小于。当主体的项目小于给定数据时，测试通过。
 - `<==`：小于等于。当主体的项目小于或等于给定数据时，测试通过。
 - `>`：大于。当主体的项目大于给定数据时，测试通过。
@@ -5192,7 +5192,15 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 
 在 Java 版中同样也有战利品表，隔壁的教程也是我写的，有兴趣可以对比一下：[Java 版战利品表：从入门到重新入门](https://www.mcbbs.net/thread-831542-1-1.html)。
 
+## 简述
+
+> 在「简述」部分中，我会尽我所能用诡异的配图来简单地说明，这个东西是怎么运作的。
+
+![image.png](https://i.loli.net/2019/10/23/4b2a8QiIMvVWFx6.png)
+
 ## 文件格式
+
+> 在「文件格式」部分中，我会直接像列大纲一样地列出这个 JSON 文件的结构。如果有看不懂的地方，可以对照上方简述与下方的示例。
 
 - `pools`：（数组）随机池们。游戏会从每一个随机池中**逐个**抽取物品。
     - *（对象）一个随机池*
@@ -5209,7 +5217,7 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
                 - `name`：（字符串）名字。会根据上面 `type` 的值来解析。例如 `type` 为 `item`，则会将此字段按照物品名解析。
                 - `weight`：（整数）该项的权重。从随机池中抽到该项的几率为 `weight / (该随机池中所有满足条件的事物的 weight 的和)`。
                 - `quality`：（整数）可选。根据玩家的幸运等级影响该 `weight`。计算公式为，`floor(weight + (quality * <幸运等级>))`，其中 `floor` 为向下取整。
-                - `pools`：（数组）可选。该项的子随机池。在抽出该项后，游戏将从该项的这个子随机池中继续抽取物品。
+                - `pools`：（数组）可选。该项的子随机池。在抽出该项后，游戏会从该项的这个子随机池中继续抽取物品。
                     - *（对象）一个随机池。格式和根对象中随机池的格式完全一致。*
                 - `conditions`：（数组）可选。抽出该项所需满足的条件列表。
                     - *（对象）一个条件（有关条件的具体内容见下方介绍）*
@@ -5220,6 +5228,8 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
                             - *（对象）一个条件（有关条件的具体内容见下方介绍）*
 
 ## 学习原版
+
+> 在「学习原版」部分中，我将挑出最简单或最有标志性的一个原版的文件，帮助理解。
 
 以下是原版中僵尸的战利品表 `./loot_tables/entities/zombie.json`。注释是我自己加的。
 
@@ -5815,9 +5825,11 @@ console.log(arr.sort().join('\n'))
 
 原版放置村民交易表的位置是在根目录下的 `trading` 文件夹内。事实上，你可以放在行为包里任何你想要的地方，但建议大家按传统习惯行事。
 
-首先我们简单了解一下村民交易的机制。村民的交易分为多个层级。首先只会解锁第一个层级的交易。当交易几次以后，会解锁下一个层级的交易。如此反复，直到所有层级的交易都解锁了为止。
+## 简述
 
-好了，按照之前的套路，尝试通过行为包修改村民交易表！
+因为比较好理解，就没有诡异的图了。
+
+简单介绍一下村民交易的机制：村民的交易分为多个层级。首先只会解锁第一个层级的交易。当交易几次以后，会解锁下一个层级的交易。如此反复，直到所有层级的交易都解锁了为止。
 
 ## 文件格式
 
@@ -6095,41 +6107,44 @@ console.log(arr.sort().join('\n'))
 
 放置生成规则的位置是在根目录下的 `spawn_rules` 文件夹内。
 
+## 简述
+
+![image.png](https://i.loli.net/2019/10/23/yKEd8uxQpl9ODXV.png)
+
 ## 文件格式
 
-- `format_version`：（字符串）文件格式版本。必须是 `1.8.0-beta.1`。
-- `minecraft:spawn_rules`：（对象）定义生成规则。
-
-- `description`：（对象）描述。
-
-- `identifier`：（字符串）实体 ID。决定该生成规则对谁适用。
-- `population_control`：（字符串）数量控制。为了避免卡顿，Minecraft 会分别限制不同种类的实体的总数量，该值用于确定实体的种类。可填写`ambient`（环境）、`animal`（动物）、`monster`（怪物）或`water_animal`（水生动物）。（wiki 文档此处内容不全。）
-- `conditions`：（数组）生成条件。只需达成一组条件即会生成。
-
-- *（对象）一组条件（有关条件的具体内容见下方介绍）*
-
-- `minecraft:条件 1`：（对象）一个条件。
-- `minecraft:条件 2`：（对象）一个条件。
-- ···
-
-
-
+- `format_version`：（字符串）文件格式版本。本帖一致写为 `1.14.0`。
+- `minecraft:spawn_rules`：（对象）表明该文件定义了生成规则。
+    - `description`：（对象）描述。
+        - `identifier`：（字符串）该生成规则的 ID。在实体的定义文件中可以通过指定该 ID 来使用该规则。
+        - `population_control`：（字符串）实体数量控制。为了避免卡顿，Minecraft 会分别限制不同种类的实体的总数量。该参数正是被用于确定实体种类的。可填写`ambient`（环境，如蝙蝠）、`animal`（动物，如蜜蜂、羊等）、`cat`（猫）、`monster`（怪物，如僵尸等）、`pillager`（掠夺者）、`water_animal`（水生动物，如鱼等）。（Wiki 此处内容严重不全）
+    - `conditions`：（数组）生成条件。只需达成一组条件即会生成。
+        - *（对象）一组条件（有关条件的具体内容见下方介绍）。需要达成这下面的所有的条件才算达成了这一组条件。*
+            - `minecraft:条件 1`：（对象）一个条件。
+            - `minecraft:条件 2`：（对象）一个条件。
+            - ···
 
 ## 学习原版
 
 以下是僵尸的生成规则 `./spawn_rules/zombie.json`。
 
-```
+```json
 {
-    "format_version": "1.8.0-beta.1",
+    "format_version": "1.8.0",
     "minecraft:spawn_rules": {
         "description": {
+            // 该生成规则的 ID 为 minecraft:zombie。
+            // 在僵尸的实体定义文件中可以通过 minecraft:zombie 来引用这个生成规则。
             "identifier": "minecraft:zombie",
+            // 生成与否受到怪物总数的控制。
             "population_control": "monster"
         },
         "conditions": [
             {
+                // 一组条件。只有这些条件全部满足才能生成。
+                // 具体的条件列表可在下方查看。
                 "minecraft:spawns_on_surface": {},
+                "minecraft:spawns_underground": {},
                 "minecraft:brightness_filter": {
                     "min": 0,
                     "max": 7,
@@ -6156,9 +6171,7 @@ console.log(arr.sort().join('\n'))
                     }
                 ],
                 "minecraft:biome_filter": {
-                    "test": "has_biome_tag",
-                    "operator": "==",
-                    "value": "monster"
+                    "test": "has_biome_tag", "operator": "==", "value": "monster"
                 }
             }
         ]
@@ -6168,115 +6181,315 @@ console.log(arr.sort().join('\n'))
 
 ### 条件
 
-当达成指定条件时，实体才会生成。wiki 文档上只写了 7 个，事实上有 13 个条件。
+当达成指定条件时，实体才会生成。
 
-特别指明，此处的条件要用 `minecraft:` 命名空间前缀。
+特别指明，此处的条件必须要加 `minecraft:` 命名空间前缀，否则不会被读取。
 
 ### minecraft:biome_filter
 
-指定允许该实体生成的生态群系。其格式与滤器一致。有关滤器的内容，请看「实体行为」章节的「滤器」部分。
+限制允许该实体生成的生态群系。其格式与滤器一致。有关滤器的详细内容，请看「实体」章节的「滤器」部分。
+
+示例（`spawn_rules/bat.json`）：
+```json
+{
+    "minecraft:biome_filter": {
+        "test": "has_biome_tag", "operator":"==", "value": "animal"
+    }
+}
+```
 
 ### minecraft:brightness_filter
 
-指定允许该实体生成的光照等级范围。
+限制允许该实体生成的光照等级范围。
 
 
-- `max`：（数字）指定该实体能够生成的最高光照等级。
 - `min`：（数字）指定该实体能够生成的最低光照等级。
-- `adjust_for_weather`：（布尔值）指定天气是否能够影响亮度，进而导致该实体生成（可用于让敌对生物在下雨的白天生成）。
+- `max`：（数字）指定该实体能够生成的最高光照等级。
+- `adjust_for_weather`：（布尔值）指定天气是否能够影响亮度，进而让该实体生成（可用于让敌对生物在下雨的白天生成）。
+
+示例（`spawn_rules/bat.json`）：
+```json
+{
+    "minecraft:brightness_filter": {
+        "min": 0,
+        "max": 4,
+        "adjust_for_weather": true
+    }
+}
+```
+
+### minecraft:delay_filter
+
+限制两次尝试生成之间的间隔。
+
+- `min`：（数字）两次尝试生成的最短间隔。单位为秒。
+- `max`：（数字）两次尝试生成的最长间隔。单位为秒。
+- `identifier`：（数字）不明。推测是一个计时器的标识符。
+- `spawn_chance`：（数字）每次尝试成功的几率。取值应当在 [0, 100] 之间。
+
+示例（`spawn_rules/pillager_patrol.json`）：
+```json
+{
+    "minecraft:delay_filter": {
+        "min": 600,
+        "max": 660,
+        "identifier": "minecraft:pillager_patrol_easy",
+        "spawn_chance": 20
+    }
+}
+```
+该条件使得灾厄巡逻队会每 10 至 11 分钟尝试生成一次，每次尝试生成有 20% 的几率成功。
 
 ### minecraft:density_limit
 
 限制实体的密度。
 
-
 - `surface`：（数字）在地面上的密度限制。
 - `underground`：（数字）在地下的密度限制。
 
+示例（`spawn_rules/bat.json`）：
+```json
+{
+    "minecraft:density_limit": {
+        "surface": 5
+    }
+}
+```
+
 ### minecraft:difficulty_filter
 
-指定允许该实体生成的难度范围。
+限制允许该实体生成的难度范围。
 
+- `min`：（字符串）该实体能够生成的最低难度。可为 `peaceful`、`easy`、`normal`、`hard` 中的一种。
+- `max`：（字符串）该实体能够生成的最高难度。可为 `peaceful`、`easy`、`normal`、`hard` 中的一种。
 
-- `max`：（字符串）指定该实体能够生成的最高难度。可为 `peaceful`、`easy`、`normal`、`hard` 中的一种。
-- `min`：（字符串）指定该实体能够生成的最低难度。可为 `peaceful`、`easy`、`normal`、`hard` 中的一种。
+示例（`spawn_rules/creeper.json`）：
+```json
+{
+    "minecraft:difficulty_filter": {
+        "min": "easy",
+        "max": "hard"
+    }
+}
+```
 
 ### minecraft:distance_filter
 
-指定允许该实体生成的与玩家的距离。
+限制允许该实体生成的与玩家的距离。
 
-
-- `max`：（数字）允许该实体生成的与玩家距离的最大值。
 - `min`：（数字）允许该实体生成的与玩家距离的最小值。
+- `max`：（数字）允许该实体生成的与玩家距离的最大值。
+
+示例（`spawn_rules/cod.json`）：
+```json
+{
+    "minecraft:distance_filter": {
+        "min": 12,
+        "max": 32
+    }
+}
+```
 
 ### minecraft:height_filter
 
-指定允许该实体生成的高度。
+限制允许该实体生成的高度。
 
-
-- `max`：（数字）允许该实体生成的高度的最大值。
 - `min`：（数字）允许该实体生成的高度的最小值。
+- `max`：（数字）允许该实体生成的高度的最大值。
+
+示例（`spawn_rules/bat.json`）：
+```json
+{
+    "minecraft:height_filter": {
+        "min": 0,
+        "max": 63
+    }
+}
+```
 
 ### minecraft:herd
 
-指定实体按群生成。
+指定该实体按群生成。
 
-
-- `max_size`：（数字）生成的一群实体的数量的最大值。
 - `min_size`：（数字）生成的一群实体的数量的最小值。
-- `event`：（字符串）生成实体所执行的事件（有关事件的内容，会在下一章「实体行为」进行讲解）。
-- `event_skip_count`：（数字）在触发 `event` 前允许生成的实体数量。
+- `max_size`：（数字）生成的一群实体的数量的最大值。
+- `event`：（字符串）生成实体所执行的事件（有关事件的详细介绍，请查看「实体」章节）。
+- `event_skip_count`：（数字）在触发 `event` 前生成的实体数量。当实体数量达到这个值以后，才会触发上面 `event` 中指定的事件。
+
+示例（`spawn_rules/fox.json`）：
+```json
+{
+    "minecraft:herd": {
+        "min_size": 2,
+        "max_size": 4,
+        "event": "minecraft:entity_born",
+        "event_skip_count": 2
+    }
+}
+```
+
+### minecraft:mob_event_filter
+
+不明。
+
+- `event`：（字符串）不明。
+
+示例（`spawn_rules/pillager_patrol.json`）：
+```json
+{
+    "minecraft:mob_event_filter": {
+        "event": "minecraft:pillager_patrols_event"
+    }
+}
+```
 
 ### minecraft:permute_type
 
-生成时使该实体成为它的变种（该条件应一个数组，见下方例子）。
-
+生成时使该实体成为它的变种（该条件应为一个数组，见下方示例）。
 
 - *（对象）一个变种*
+    - `weight`：（数字）该变种的权重。
+    - `entity_type`：（字符串）变种的实体 ID。如不指定则表明不进行任何变化。在该 ID 后可以再追加一个尖括号（`<>`），其中放置一个事件名，会在变为该变种后触发该事件。有关事件的详细内容请查看「实体」章节。
 
-- `weight`：（数字）该变种的权重。
-- `entity_type`：（字符串）变种的实体 ID。如不指定则表明不变为变种。
-
-
-举个从僵尸的文件里扣出来的例子：
-
+示例一（`spawn_rules/zombie.json`）：
+```json
+{
+    "minecraft:permute_type": [
+        {
+            "weight": 95
+        },
+        {
+            "weight": 5,
+            "entity_type": "minecraft:zombie_villager"
+        }
+    ]
+}
 ```
-"minecraft:permute_type": [
-    {
-        "weight": 95
-    },
-    {
-        "weight": 5,
-        "entity_type": "minecraft:zombie_villager"
+这个条件指定了僵尸在生成后有 `95 / (95 + 5)` 也就是 95% 的几率保持不变，有 `5 / (95 + 5)` 也就是 5% 的几率变为 `minecraft:zombie_villager`（僵尸村民）。
+
+示例二（`spawn_rules/pillager_patrol.json`）：
+```json
+{
+    "minecraft:permute_type": [
+        {
+            "weight": 20,
+            "entity_type": "minecraft:vindicator"
+        },
+        {
+            "weight": 80,
+            "entity_type": "minecraft:pillager<minecraft:spawn_as_patrol_follower>"
+        }
+    ]
+}
+```
+这个条件指定了灾厄巡逻队在生成后有 20% 的几率变为卫道士（`vindicator`），有 80% 的几率变为掠夺者（`pillager`）并触发 `minecraft:spawn_as_patrol_follower` 事件。
+
+### minecraft:player_in_village_filter
+
+不明。
+
+- `distance`：（数字）不明。
+- `village_border_tolerance`：（数字）不明。
+
+示例（`spawn_rules/pillager_patrol.json`）：
+```json
+{
+    "minecraft:player_in_village_filter": {
+        "distance": 48,
+        "village_border_tolerance": 10
     }
-]
+}
 ```
-这个条件指定了有 `95 / (95 + 5)` 也就是 95% 的几率保持不变，有 `5 / (95 + 5)` 也就是 5% 的几率变为 `minecraft:zombie_villager`（僵尸村民）。
 
 ### minecraft:spawn_event
 
-生成时执行事件（有关事件的内容，会在下一章「实体行为」进行讲解）。
+当该实体生成后执行的事件。有关事件的详细介绍请看「实体」章节。可以通过这一事件来让该实体在生成后进行一些条件判断，以及进行一些变换等。
 
+- `event`：（字符串）要执行的事件。
 
-- `event`:（字符串）生成实体所执行的事件。
+示例（`spawn_rules/stray.json`）：
+```json
+{
+    "minecraft:spawn_event": {
+        "event": "change_to_skeleton"
+    }
+}
+```
+
+### minecraft:spawns_on_block_filter
+
+限制该生物只能生成在指定方块上（该条件应为一个表明方块 ID 的字符串，见下方示例）。
+
+示例（`spawn_rules/chicken.json`）：
+```json
+{
+    "minecraft:spawns_on_block_filter": "minecraft:grass"
+}
+```
 
 ### minecraft:spawns_on_surface
 
-通过添加该对象，实体将必须生成在地面上。如果不添加则没有这种限制。
+通过添加该对象，实体将可以生成在地表上。如果不添加则不能生成。
+
+示例（`spawn_rules/bee.json`）：
+```json
+{
+    "minecraft:spawns_on_surface": {}
+}
+```
 
 ### minecraft:spawns_underground
 
-通过添加该对象，实体将必须生成在地下。如果不添加则没有这种限制。
+通过添加该对象，实体将可以生成在地下。如果不添加则不能生成。
+
+示例（`spawn_rules/bat.json`）：
+```json
+{
+    "minecraft:spawns_underground": {}
+}
+```
 
 ### minecraft:spawns_underwater
 
-通过添加该对象，实体将必须生成在水里。如果不添加则没有这种限制。
+通过添加该对象，实体将可以生成在水里。如果不添加则不能生成。
+
+示例（`spawn_rules/cod.json`）：
+```json
+{
+    "minecraft:spawns_underwater": {}
+}
+```
 
 ### minecraft:weight
 
 指定实体生成的权重。
 
 - `default`：（数字）该实体生成的权重。值越**高**，生成率越**低**。
+
+示例（`spawn_rules/bat.json`）：
+```json
+{
+    "minecraft:weight": {
+        "default": 10
+    }
+}
+```
+
+### minecraft:world_age_filter
+
+限制只有当玩家在该世界的游戏时间达到一定长度以后该实体才能生成。
+
+- `min`：（数字）玩家在该世界的游戏时间的最小值。
+- `max`：（数字）玩家在该世界的游戏时间的最大值。
+
+示例（`spawn_rules/pillager_patrol.json`）：
+```json
+{
+    "minecraft:world_age_filter": {
+        "min": 6000
+    }
+}
+```
 
 [page]
 
