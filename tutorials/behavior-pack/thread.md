@@ -6785,11 +6785,489 @@ console.log(arr.sort().join('\n'))
 
 ## 课后习题
 
-我不知道。改点儿你自己喜欢的物品吧 <3。如果你会做资源包的话，甚至可以自己试试加新物品。
+我不知道。改点儿你自己喜欢的物品吧。如果你会做资源包的话，甚至可以自己试试加新物品。
+
+之后章节会把「课后习题」这一部分直接删掉了 <3。
 
 # 配方
 
+行为包可以修改各种配方，包括有序合成配方、无序合成配方（工作台、制图台、切石机）、熔炼配方（熔炉、烟熏炉、高炉、营火）、混合酿造配方、换容酿造配方等。
+
+## 有序合成配方
+
+### 简述
+
+有序合成，指的是材料必须在工作台内按照一定顺序摆放才能获得输出物品的合成方式。
+
+### 文件结构
+
+- `format_version`：（字符串）文件格式版本。本帖一律写为 `1.14.0`。
+- `minecraft:recipe_shaped`：（对象）表明该文件是一个有序合成配方。
+    - `description`：（对象）描述。
+        - `identifier`：（字符串）该配方的 ID。
+    - `group`：（字符串）该配方所属的分组。分组可以是任意字符串，具有相同分组的配方会在配方书中被显示在一起。
+    - `tags`：（字符串数组）该配方可以用于的位置。位置只能是 `crafting_table`（工作台），因为目前只有工作台能接受有序合成配方。
+    - `key`：（对象）该配方用到的字符和物品的对应。
+        - *字符*：（对象）该字符对应的物品。
+            - `item`：物品 ID。
+            - `data`：物品数据值。
+    - `pattern`：（字符串数组）该配方的形状。用字符来表示一个物品。需要把指定物品这么摆才能合成。此处不好用语言描述，见下方示例即可。
+    - `result`：（对象）该配方产生的结果。
+        - `item`：物品 ID。
+        - `data`：物品数据值。
+        - `count`：物品数量。
+
+### 学习原版
+
+以金合欢船（`recipes/acacia_boat.json`）的合成配方为例：
+
+```json
+{
+    "format_version": "1.12",
+    "minecraft:recipe_shaped": {
+        "description": {
+            "identifier": "minecraft:acacia_boat"
+        },
+        "tags": ["crafting_table"], // 该配方可用于工作台。
+        "key": {
+            "P": {
+                // 将 P 这个字符对应为木锹。
+                "item": "minecraft:wooden_shovel"
+            },
+            "#": {
+                // 将 # 这个字符对应为数据值为 4 的木板（即金合欢木板）
+                "item": "minecraft:planks",
+                "data": 4
+            }
+        },
+        "pattern": [
+            // 在这里用 # 和 P 两个字符来拼出船的合成配方的图案。
+            // # 和 P 分别代表的物品定义在上面的 `key` 里面。
+            // 如果你想要表示空的栏位，使用空格即可。
+            "#P#",
+            "###"
+            // 需要注意的是，这个数组里面最多只能有三个字符串，最少要有一个字符串。每个字符串中包含的字符数应该相同，并且字符数要位于 1 至 3 之间。
+        ],
+        "result": {
+            // 合成结果是数据值为 4 的船，即金合欢船。
+            "item": "minecraft:boat",
+            "data": 4
+        }
+    }    
+}
+```
+
+### 自造轮子
+
+这回我们不覆盖原有的东西了。我们直接加新的有序合成配方！
+
+目标：用草和土块能够合成出草方块。
+
+> 基岩版中，草（不管是一格高的还是两格高的）都是 `tall_grass`，草方块叫做 `grass`，挺反人类的。
+
+在你的行为包下创建文件 `recipes/grass_from_dirt_and_tallgrass.json`（文件名其实可以随意，只要是小写英文 + 下划线的组合就行）。
+
+先搭好架子：
+
+```json
+{
+    "format_version": "1.14.0",
+    "minecraft:recipe_shaped": {
+        "description": {
+            "identifier": "spgoding:grass_from_dirt_and_tallgrass"
+        },
+        "tags": ["crafting_table"],
+        "key": {
+            
+        },
+        "pattern": [
+
+        ],
+        "result": {
+            "item": "minecraft:grass"
+        }
+    }
+}
+```
+
+涉及到的材料有草和土块，因此我们首先在 `key` 中定义这两个物品所对应的字符。就让 `w` 对应草，`#` 对应土块好了 wwwww：
+
+```json
+"key": {
+    "w": {
+        "item": "minecraft:tallgrass"
+    },
+    "#": {
+        "item": "minecraft:dirt"
+    }
+}
+```
+
+然后把图案设计成草（`w`）要放在土块（`#`）上面：
+
+```json
+"pattern": [
+    "w",
+    "#"
+]
+```
+
+然后，就没有然后了！最终结果：
+
+```json
+{
+    "format_version": "1.14.0",
+    "minecraft:recipe_shaped": {
+        "description": {
+            "identifier": "spgoding:grass_block_from_dirt_and_grass"
+        },
+        "tags": ["crafting_table"],
+        "key": {
+            "w": {
+                "item": "minecraft:tallgrass"
+            },
+            "#": {
+                "item": "minecraft:dirt"
+            }
+        },
+        "pattern": [
+            "w",
+            "#"
+        ],
+        "result": {
+            "item": "minecraft:grass"
+        }
+    }
+}
+```
+
+重载行为包。
+
+游戏会自动读取 `recipes` 目录下的所有配方，因此我们不需要在别的什么文件里面设置就可以直接在工作台里使用这个配方了！这一点和前面的战利品表、交易表、生成规则等不同。
+
+> 题外话：事实上实体和物品也是会自动读取的，不过因为它们还需要配合资源包才能有该有的效果，而资源包又不属于本教程的范畴，因此我没有在前文提及。
+
+![image.png](https://i.loli.net/2019/10/24/JIKv84ZuGaT1EPO.png)
+
 [page]
+
+## 无序合成配方
+
+### 简述
+
+无序合成，指的是只要材料的种类、数目够了，就可以获得输出物品的配方。
+
+### 文件结构
+
+- `format_version`：（字符串）文件格式版本。本帖一律写为 `1.14.0`。
+- `minecraft:recipe_shapeless`：（对象）表明该文件是一个无序合成配方。
+    - `description`：（对象）描述。
+        - `identifier`：（字符串）该配方的 ID。
+    - `group`：（字符串）该配方所属的分组。分组可以是任意字符串，具有相同分组的配方会在配方书中被显示在一起。
+    - `tags`：（字符串数组）该配方可以用于的位置。位置可以是 `crafting_table`（工作台）、`cartography_table`（制图台）或 `stonecutter`（切石机）。
+    - `ingredients`：（数组）该配方用到的所有材料。如果用于工作台，最多可以有九个材料；如果用于制图台，最多可以有两个材料；如果用于切石机，必须有且只有一个材料。如果材料的数目与 `tags` 中定义的位置不符合，则该配方不会被加载。
+        - *（对象）一个材料物品*
+            - `item`：物品 ID。
+            - `data`：物品数据值。
+    - `result`：（对象）该配方产生的结果。
+        - `item`：物品 ID。
+        - `data`：物品数据值。
+        - `count`：物品数量。
+
+### 学习原版
+
+以砖块旗帜图案的合成配方（`recipes/banner_pattern_bricks.json`）为例，只要工作台的合成栏中放有一格纸和一格砖块即可合成旗帜图案：
+
+```json
+{
+    "format_version": "1.12",
+    "minecraft:recipe_shapeless": {
+        "description": {
+            "identifier": "minecraft:banner_pattern_bricks"
+        },
+        "tags": ["crafting_table"],
+        "group": "banner_pattern",
+        "ingredients": [
+            {
+                "item": "minecraft:paper"
+            },
+            {
+                "item": "minecraft:brick_block"
+            }
+        ],
+        "result": {
+            "item": "minecraft:banner_pattern",
+            "data": 4
+        }
+    }
+}
+```
+
+以圆石台阶的切石机配方（`recipes/stonecutter_cobblestone_slab.json`）为例，只要在切石机中放置 1 个圆石即可合成 2 个圆石台阶：
+
+```json
+{
+    "format_version": "1.12",
+    "minecraft:recipe_shapeless": {
+        "description": {
+            "identifier": "minecraft:stonecutter_cobbledouble_stone_slab"
+        },        
+        "tags": ["stonecutter"],
+        "priority": 0,
+        "ingredients": [
+            {
+                "item": "minecraft:cobblestone",
+                "data": 0
+            }
+        ],
+        "result": {
+            "item": "minecraft:double_stone_slab",
+            "data": 3,
+            "count": 2
+        }
+    }    
+}
+```
+
+以空地图的制图台配方（`recipes/cartography_table_map.json`）为例，只要在制图台的两个输入格中任一格放入纸即可合成空地图：
+
+```json
+{
+    "format_version": "1.12",
+    "minecraft:recipe_shapeless": {
+        "description": {
+            "identifier": "minecraft:cartography_table_map"
+        },        
+        "tags": ["cartography_table"],
+        "ingredients": [
+            {
+                "item": "minecraft:paper"
+            }
+        ],
+        "result": {
+            "item": "minecraft:emptymap",
+            "data": 0
+        }
+    }
+}
+```
+
+### 自造轮子
+
+目标：用切石机能把草方块切碎为草。
+
+在你的行为包下创建文件 `recipes/stonecutter_tallgrass_from_grass.json`（文件名其实可以随意，只要是小写英文 + 下划线的组合就行。切石机的配方以 `stonecutter_` 开头是原版行为包中做的事情，遵循传统总是好的）。
+
+非常简单，一步到位：
+
+```json
+{
+    "format_version": "1.14.0",
+    "minecraft:recipe_shapeless": {
+        "description": {
+            "identifier": "spgoding:stonecutter_tallgrass_from_grass"
+        },
+        "tags": ["stonecutter"],
+        "ingredients": [
+            {
+                "item": "minecraft:grass"
+            }
+        ],
+        "result": {
+            "item": "minecraft:tallgrass"
+        }
+    }
+}
+```
+
+重载行为包。
+
+![image.png](https://i.loli.net/2019/10/24/MHLE9GJoNi2TPF4.png)
+
+## 熔炼配方
+
+### 简述
+
+熔炼配方，指的是放到炉子（广义，包含熔炉、高炉、烟熏炉、营火）里面能得到物品的配方。
+
+### 文件结构
+
+- `format_version`：（字符串）文件格式版本。本帖一律写为 `1.14.0`。
+- `minecraft:recipe_furnace`：（对象）表明该文件是一个熔炼配方。
+    - `description`：（对象）描述。
+        - `identifier`：（字符串）该配方的 ID。
+    - `group`：（字符串）该配方所属的分组。分组可以是任意字符串，具有相同分组的配方会在配方书中被显示在一起。
+    - `tags`：（字符串数组）该配方可以用于的位置。位置可以是 `furnace`（熔炉）、`blast_furnace`（高炉）、`smoker`（烟熏炉）或 `campfire`（营火）。
+    - `input`：（字符串）一个物品 ID。该熔炼配方的输入物品。
+    - `output`：（字符串）一个物品 ID。该熔炼配方的输出物品。
+
+### 学习原版
+
+以牛排的熔炼配方（`recipes/furnace_beef.json`）为例，生牛排（`beef`）可以在熔炉、烟熏炉或营火中烤成熟牛排（`cooked_beef`）：
+
+```json
+{
+    "format_version": "1.12",
+    "minecraft:recipe_furnace": {
+        "description": {
+            "identifier": "minecraft:furnace_beef"
+        },
+        "tags": ["furnace", "smoker", "campfire"],
+        "input": "minecraft:beef",
+        "output": "minecraft:cooked_beef"
+    }
+}
+```
+
+### 自造轮子
+
+目标：用熔炉、高炉能把草方块烤成土块。
+
+在你的行为包下创建文件 `recipes/furnace_dirt_from_grass.json`（文件名其实可以随意，只要是小写英文 + 下划线的组合就行。熔炼配方以 `furnace_` 开头是原版行为包中做的事情，遵循传统总是好的）。
+
+非常简单，一步到位：
+
+```json
+{
+    "format_version": "1.14.0",
+    "minecraft:recipe_furnace": {
+        "description": {
+            "identifier": "spgoding:furnace_dirt_from_grass"
+        },
+        "tags": ["furnace", "blast_furnace"],
+        "input": "minecraft:grass",
+        "output": "minecraft:dirt"
+    }
+}
+```
+
+重载行为包。
+
+![image.png](https://i.loli.net/2019/10/24/oLYAHysl6umgbpq.png)
+
+## 混合酿造配方
+
+### 简述
+
+混合酿造配方，指的是将一个具有某种状态效果的药水放入酿造台后，再加入某个物品，可以酿造出具有另一种状态效果的药水的配方。
+
+### 文件结构
+
+- `format_version`：（字符串）文件格式版本。本帖一律写为 `1.14.0`。
+- `minecraft:recipe_brewing_mix`：（对象）表明该文件是一个混合酿造配方。
+    - `description`：（对象）描述。
+        - `identifier`：（字符串）该配方的 ID。
+    - `group`：（字符串）该配方所属的分组。分组可以是任意字符串，具有相同分组的配方会在配方书中被显示在一起。
+    - `tags`：（字符串数组）该配方可以用于的位置。位置只能是 `brewing_stand`（酿造台）。
+    - `input`：（字符串）一个形如 `minecraft:potion_type:<药水类型>` 的药水类型 ID。该配方接受的药水类型。
+    - `reagent`：（字符串）一个物品 ID。进行该酿造所需要添加的额外物品。
+    - `output`：（字符串）一个形如 `minecraft:potion_type:<药水类型>` 的药水类型 ID。该配方的输出的药水类型。
+
+### 学习原版
+
+以力量药水的酿造配方（`recipes/brew_awkward_blaze_powder.json`）为例，当放入粗制的药水以及烈焰粉时，能够酿造出力量药水：
+
+```json
+{
+    "format_version": "1.12",
+    "minecraft:recipe_brewing_mix": {
+        "description": {
+            "identifier": "minecraft:brew_awkward_blaze_powder"
+        },
+        "tags": ["brewing_stand"],
+        "input": "minecraft:potion_type:awkward",
+        "reagent": "minecraft:blaze_powder",
+        "output": "minecraft:potion_type:strength"
+    }
+}
+```
+
+以延长版力量药水的酿造配方（`recipes/brew_strength_redstone.json`）为例，当放入普通的力量药水以及红石粉后，能够酿造出延长版力量药水：
+
+```json
+{
+    "format_version": "1.12",
+    "minecraft:recipe_brewing_mix": {
+        "description": {
+            "identifier": "minecraft:brew_strength_redstone"
+        },
+        "tags": ["brewing_stand"],
+        "input": "minecraft:potion_type:strength",
+        "reagent": "minecraft:redstone",
+        "output": "minecraft:potion_type:long_strength"
+    }
+}
+```
+
+### 自造轮子
+
+不造了，酿造没意思。
+
+## 换容酿造配方
+
+### 简述
+
+换容酿造配方，指的是一瓶药水被酿造后将会改变容器的配方。例如从普通玻璃瓶转换为喷溅型玻璃瓶或滞留型玻璃瓶等。
+
+### 文件结构
+
+- `format_version`：（字符串）文件格式版本。本帖一律写为 `1.14.0`。
+- `minecraft:recipe_brewing_container`：（对象）表明该文件是一个换容酿造配方。
+    - `description`：（对象）描述。
+        - `identifier`：（字符串）该配方的 ID。
+    - `group`：（字符串）该配方所属的分组。分组可以是任意字符串，具有相同分组的配方会在配方书中被显示在一起。
+    - `tags`：（字符串数组）该配方可以用于的位置。位置只能是 `brewing_stand`（酿造台）。
+    - `input`：（字符串）一个物品 ID。该配方接受的药水瓶的 ID。可选：`minecraft:potion`（普通玻璃瓶）、`minecraft:splash_potion`（喷溅型）、`minecraft:lingering_potion`（滞留型）。
+    - `reagent`：（字符串）一个物品 ID。进行该酿造所需要添加的额外物品。
+    - `output`：（字符串）一个物品 ID。该配方输出的药水瓶的 ID。可选：`minecraft:potion`（普通玻璃瓶）、`minecraft:splash_potion`（喷溅型）、`minecraft:lingering_potion`（滞留型）。
+
+### 学习原版
+
+以喷溅型药水的酿造配方（`recipes/brew_potion_sulphur.json`）为例，当放入普通的玻璃瓶乘装的药水以及火药时，能够酿造出喷溅型的对应药水：
+
+```json
+{
+    "format_version": "1.12",
+    "minecraft:recipe_brewing_container": {
+        "description": {
+            "identifier": "minecraft:brew_potion_sulphur"
+        },
+        "tags": ["brewing_stand"],
+        "input": "minecraft:potion",
+        "reagent": "minecraft:gunpowder",
+        "output": "minecraft:splash_potion"
+    }
+}
+```
+
+### 自造轮子
+
+目标：用草能把喷溅型药水变回普通药水。（没错，我和草杠上了）。
+
+在你的行为包下创建文件 `recipes/brew_splash_potion_tallgrass.json`（文件名其实可以随意，只要是小写英文 + 下划线的组合就行。酿造配方以 `brew_` 开头、中间写输入的药水、最后写额外添加的物品是原版行为包中做的事情，遵循传统总是好的）。
+
+非常简单，一步到位：
+
+```json
+{
+    "format_version": "1.14.0",
+    "minecraft:recipe_furnace": {
+        "description": {
+            "identifier": "spgoding:brew_splash_potion_tallgrass"
+        },
+        "tags": ["brewing_stand"],
+        "input": "minecraft:splash_potion",
+        "reagent": "minecraft:tallgrass",
+        "output": "minecraft:potion"
+    }
+}
+```
+
+重载行为包。
+
+好，遗憾的是，并没有用。酿造台的那几个格子所能接受的物品是写死的，即使你在配方中写了 `tallgrass`，草也照样放不进去。这一目标以失败告终。
+
+由此可见，酿造相关的配方其实可操作性并不强。它既不可以添加原版没有的药水，也不能让原版不支持的物品参与到酿造当中。
 
 # 生物群系
 
