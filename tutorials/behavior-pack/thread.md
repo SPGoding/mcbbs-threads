@@ -107,7 +107,7 @@ JSON 格式包含五种结构，分别是对象、字符串、布尔值、数字
 
 打开 `%localappdata%\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\LocalState\games\com.mojang\development_behavior_packs`，这里放置的是正在开发的行为包。在该目录下新建一个文件夹，它将是你的第一个行为包。Mojang 建议文件名采用英文小写字母 + 下划线分割单词，总长度控制在 10 个字符以内，本教程以 `spg_best` 命名该文件夹。
 
-之所以在 `development_behavior_packs` 内建立我们的行为包，而不是在 `behavior_packs`，是因为游戏会在加载行为包时自动把外部的行为包在存档内做一个缓冲。这会导致你对行为包的改动不能实时反应到游戏里，造成调试的困难。当你把行为包建立在 `development_behavior_packs` 里面以后，游戏不会进行缓存，想要重载行为包只需要退出世界再重进即可。不过，如果你在行为包内新建了文件，需要彻底关闭游戏再打开才能正确加载那个文件。很遗憾，Minecraft 基岩版没有提供方便的完全重载行为包的方式。
+之所以在 `development_behavior_packs` 内建立我们的行为包，而不是在 `behavior_packs`，是因为游戏会在加载行为包时自动把外部的行为包在存档内做一个缓存。这会导致你对行为包的改动不能实时反应到游戏里，造成调试困难。当你把行为包建立在 `development_behavior_packs` 里面以后，游戏不会进行缓存，想要重载行为包只需要退出世界再重进即可。很遗憾，Minecraft 基岩版没有提供方便的在世界内完全重载行为包的方式。
 
 接下来你需要在行为包内的根目录放置一个 `manifest.json` 文件，否则游戏不会把它当作行为包。
 
@@ -3573,6 +3573,64 @@ console.log(arr.sort().join('\n'))
 [page]
 
 # 函数
+
+行为包中可以像 Java 版的数据包一样放置命令函数（简称函数）。函数实际上就是由一系列命令组成的文件，格式十分简单，每行一条命令，可以有空行，可以有注释。
+
+所有函数应该放置在行为包根目录的 `functions` 文件夹及它的子文件夹下，文件名后缀为 `.mcfunction`。
+
+## 创建第一个函数
+
+首先，创建文件 `functions/test.mcfunction`。在其中书写以下内容：
+
+```mcfunction
+# 这是我的第一个函数
+
+say Hello,
+say World!
+```
+
+重载数据包。
+
+在游戏中输入命令 `/function test`，观察聊天栏：
+
+![test.png](https://i.loli.net/2019/10/24/3ieVHjpJk5hUxRf.png)
+
+恭喜你，在基岩版中写出了第一个命令函数。
+
+## 文件格式
+
+`mcfunction` 文件的格式很简单，每行写一条命令，可以有空行，可以有 `#` 开头的行。`#` 开头的行会被认为是注释，游戏会直接跳过这一行的内容。使用注释可以给自己留一些备注，方便后续更改。或者是在调试时临时把一条命令注释掉，使这条命令不执行。
+
+函数中的命令会按顺序从上到下执行，因此刚刚那个函数执行后你先看到的是 `Hello,`，后看到的是 `World!`。
+
+## `function` 命令
+
+`function` 命令可以用于执行行为包中放置的函数。该命令有一个参数，表明的是要执行的函数的路径。在刚刚的例子中，你的函数路径是 `functions/test.mcfunction`，因此 `test` 即为它的路径。假设你的函数放到了 `functions/a/b/c/d.mcfunction`，则 `a/b/c/d` 是它的路径，需要使用 `/function a/b/c/d` 来执行该函数。
+
+在函数内部同样可以执行 `function` 命令，你可以借此做出递归等操作。
+
+## `reload` 命令
+
+使用 `reload` 命令可以在不退出游戏的情况下重载**已经被加载的函数**。
+
+例如，在刚刚的示例中，我们在 `test.mcfunction` 里面再加一行命令：
+
+```mcfunction
+# 这是我的第一个函数
+# 修改过的
+
+say Hello,
+say World!
+say ======
+```
+
+只需要在游戏里面输入 `/reload` 即可重新加载这个函数的内容，执行 `/function test` 就可以看到改动了。
+
+但是，如果你新加了一个函数文件（例如 `functions/test114514.mcfunction`），执行 `reload` 命令并不能加载它，必须要退出存档再重进才能加载这个函数。
+
+## 基岩版命令
+
+所有基岩版命令可以在 [Wiki][https://minecraft-zh.gamepedia.com/%E5%91%BD%E4%BB%A4#.E5.91.BD.E4.BB.A4.E5.88.97.E8.A1.A8.E5.8F.8A.E5.85.B6.E6.A6.82.E8.BF.B0] 上查询，本文不再赘言。
 
 [page]
 
