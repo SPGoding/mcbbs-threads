@@ -2,17 +2,17 @@
 [#1]简介  
 [#2]准备  
 [#3]开始制作  
-[#4]实体  
-*[#TID,PID]附录：组件  
-*[#5]附录：滤器  
-*[#6]附录：事件  
-[#7]战利品表  
+[#4]战利品表  
+*[#5]附录：函数  
+*[#6]附录：条件  
+[#7]交易表  
 *[#8]附录：函数  
-*[#9]附录：条件  
-[#10]交易表  
-*[#11]附录：函数  
-[#12]生成规则  
-*[#13]附录：条件  
+[#9]生成规则  
+*[#10]附录：条件  
+[#11]实体  
+*[#829760,15760754]附录：组件  
+*[#12]附录：滤器  
+*[#13]附录：事件  
 [#14]物品  
 *[#15]附录：组件  
 [#16]配方  
@@ -21,29 +21,30 @@
 *[#19]熔炼配方  
 *[#20]混合酿造配方  
 *[#21]换容酿造配方  
-[#22]生物群系  
-[#23]结构  
 [#24]方块  
+[#23]结构  
+[#22]生物群系  
 [#25]函数  
 [#26]脚本（WIP）  
 [#27]发布  
 [#28]参考资料  
-[#29]后语
+[#29]后语  
+友情提示：点击论坛页面右侧偏下的粉红小书签能快速回到本目录  
 [/index]
 
 # 本帖目前仍在进行大幅变动，请几天后再看
 
 # 简介
 
-行为包（behavior pack），是 Minecraft 基岩版（本帖后文除非特别标注，Minecraft 一概指代基岩版）所独有的特性。利用行为包，可以在不改变游戏源代码的情况下修改许多东西，包括：生物群系、方块、结构、物品、合成配方、实体行为等。行为包与 Add-on 中的另一者「资源包」的区别在于，行为包修改的是服务端层面的内容，而资源包修改的则是客户端层面的内容，因此行为包只需要在服务器中启用，而资源包必须自己安装才能看到效果。
+行为包（behavior pack），是 Minecraft 基岩版（本帖后文除非特别标注，Minecraft 一概指代基岩版）所独有的特性。利用行为包，可以在不改变游戏源代码的情况下修改许多东西，包括：生物群系、方块、结构、物品、配方、实体行为等。行为包与 Add-on 中的另一者「资源包」的区别在于，行为包修改的是服务端层面的内容，而资源包修改的则是客户端层面的内容，因此行为包只需要在服务器中启用，而资源包必须自己安装才能看到效果。
 
-本教程顶部目录可点。由于帖子内容十分之多，每一次更新都会卡顿几分钟，因此论坛这边不会经常更新。可以在 [GitHub](https://github.com/SPGoding/mcbbs-threads/blob/master/tutorials/behavior-pack/thread.md) 上查看最新版本。
+可以看出，行为包是一个非常复杂的机制。我不指望、也不可能在这一帖中用仅仅十几万的字符就彻底讲明白这到底是个什么东西。看完这一帖后我能保证你会对行为包有一个大致的了解，知道它能做到什么，以及怎么做。不过再往后的内容，例如怎么在现有框架内运用各种黑科技做出惊人的效果，就不是我这种大篇幅的教程能教的了，还是需要靠自己研究。研究结果可以直接发布在[基岩版技巧教程版](https://www.mcbbs.net/forum-pe-1.html)，让这个版能有点儿仙气。本萌新在这里期待各位 dalaoes 的成果！
+
+本教程顶部目录可点。本教程同时也在 [GitHub](https://github.com/SPGoding/mcbbs-threads/blob/master/tutorials/behavior-pack/thread.md) 上发布，那边没有目录，不过格式可能更好看一些，看你的喜好了。
 
 本教程使用版本为 1.14.0.2，将来版本可能会在细节上有细微变化，建议看教程时自己对照当时最新版本的原版行为包的格式（通常可以在[英文 Wiki 的 Add-on 页面](https://minecraft.gamepedia.com/Add-on)找到原版行为包的下载地址）。
 
-本教程采用 CC BY-NC-SA 3.0 协议发布，因为其中大量使用到了英文 Wiki 的内容。
-
-> 在本人编写教程时，1.14.0.2 仍为 beta 测试版。想要参与 beta 测试，需要在微软商城中搜索 Xbox Insider Hub 并安装。如果你的微软帐号中年龄并不是成年，可以注册另一个成年微软帐号并把该帐号加入家庭，给予权限。基本操作，暂且不言。
+本教程采用 CC BY-NC-SA 3.0 协议发布，因为其中使用到了不少英文 Wiki 的内容。
 
 [page]
 
@@ -51,23 +52,23 @@
 
 ## 文本编辑器
 
-行为包中涉及到了大量的 JSON 文件，个人并不推荐使用系统自带的记事本进行编辑，一是因为编码问题，还有就是因为没有语法高亮以及缩进，很容易出错。所以建议下载一个专门的文本编辑器。
+行为包中涉及到了大量的 JSON 文件，个人并不推荐使用系统自带的记事本进行编辑，主要是因为没有语法高亮以及缩进，很容易出错。此外旧版本的记事本还有着编码问题。建议下载一个专门的文本编辑器。
 
 个人偏爱微软的 [VSCode](https://code.visualstudio.com/)，如果你已经习惯了诸如 [Notepad++](url=https://notepad-plus-plus.org/download/) 之类的文本编辑器也是可以的。
 
-在编辑文件时，**请使用 `UTF-8 无 BOM` 编码**，否则可能会出现一些诡异的问题。
+在编辑文件时，请使用 `UTF-8 无 BOM` 编码，否则可能会出现一些诡异的问题，例如中文乱码、不能读取文件等。目前的文本编辑器都会默认设置为 `UTF-8`，通常不需要手动设置，不过这里还是给出两种编辑器的设置方式。
 
-### VSCode 设置方法
+### VSCode 设置编码方法
 
 输入 `Ctrl + Shift + P`，输入 `>Change File Encoding`，选择 `Save With Encoding`，选择 `UTF-8`。
 
-### Notepad++ 设置方法
+### Notepad++ 设置编码方法
 
 在上方展开「格式」，选择「转为 UTF-8 编码格式」。
 
 ## 显示文件拓展名
 
-为了方便以后处理，建议开启文件拓展名显示。点击「查看」，勾选「文件拓展名」。
+为了方便以后处理，强烈建议开启文件拓展名显示。点击「查看」，勾选「文件拓展名」。
 
 ![](https://i.loli.net/2018/10/19/5bc9dd909e73d.png)
 
@@ -191,89 +192,1417 @@ JSON 格式包含五种结构，分别是对象、字符串、布尔值、数字
 
 [page]
 
+# 战利品表
+
+战利品表可以用来定义宝箱/实体/游戏行为等各种东西所能给玩家带来的物品，以及指定实体所能穿的装备等。
+
+原版放置战利品表的位置是在行为包根目录下的 `loot_tables` 文件夹内。事实上，你可以放在行为包里任何你想要的地方，但建议大家按传统习惯行事。
+
+在 Java 版中同样也有战利品表，隔壁的教程也是我写的，有兴趣可以对比一下：[Java 版战利品表：从入门到重新入门](https://www.mcbbs.net/thread-831542-1-1.html)。
+
+## 简述
+
+![image.png](https://i.loli.net/2019/10/23/4b2a8QiIMvVWFx6.png)
+
+## 文件格式
+
+- `pools`：（数组）随机池们。游戏会从每一个随机池中**逐个**抽取物品。
+    - *（对象）一个随机池*
+        - `conditions`：（数组）可选。使用该随机池所需满足的条件列表。
+            - *（对象）一个条件（有关条件的具体内容见下方介绍）*
+        - `tiers`：（对象）可选。如果指定，将会忽略掉下方的 `rolls` 以及各项中的 `weight` 和 `quality`，把 `entries` 中的每一项看作一个层级。`entries` 中的第一个对象为第一层，第二个对象为第二层，以此类推。这几行的地方可能讲不明白，如果看不懂下面这三个参数的描述的话，下面有例子。
+            - `initial_range`：（数字）初始的选取范围。游戏将会默认从第 1 层一直到这一参数中指定的层中随机抽取一项。例如，把该参数设置为 `2`，则游戏会默认从 `entries` 中的第 1 项和第 2 项中随机抽取一个选择。由于设置了 `tiers` 后会忽略掉 `weight` 和 `quality`，每一项被选中的几率都是 50%。
+            - `bonus_chance`：（数字）将被选取的层级数再加上定义在 `bonus_rolls` 中的奖励的层数的几率。取值应在 [0.0, 1.0] 中。
+            - `bonus_rolls`：（数字）奖励层数。必须大于等于 `1`。当游戏根据 `initial_range` 定义的范围从 `entries` 中选取一层以后，有一定几率（该几率定义在 `bonus_chance` 中）把已经选取的层数再加上这个数字。
+        - `rolls`：（整数）可选。从该随机池中抽取物品的次数。
+        - `entries`：（数组）可以从该随机池中抽取的所有项。如果指定了 `rolls`，游戏会从这些项中随机抽取**一个**；如果指定了 `tiers`，则会按照层级的特性随机抽取**一个**。
+            - *（对象）一项*
+                - `type`：（字符串）该项的类型，用于决定下面 `name` 参数的解析方式。`item` 表示是个物品，`loot_table` 表示是另一个战利品表，`empty` 表示什么都没有。
+                - `name`：（字符串）名字。会根据上面 `type` 的值来解析。例如 `type` 为 `item`，则会将此字段按照物品名解析。
+                - `weight`：（整数）该项的权重。从随机池中抽到该项的几率为 `weight / (该随机池中所有满足条件的事物的 weight 的和)`。
+                - `quality`：（整数）可选。根据玩家的幸运等级影响该 `weight`。计算公式为，`floor(weight + (quality * <幸运等级>))`，其中 `floor` 为向下取整。
+                - `pools`：（数组）可选。该项的子随机池。在抽出该项后，游戏会从该项的这个子随机池中继续抽取物品。
+                    - *（对象）一个随机池。格式和根对象中随机池的格式完全一致。*
+                - `conditions`：（数组）可选。抽出该项所需满足的条件列表。
+                    - *（对象）一个条件（有关条件的具体内容见下方介绍）*
+                - `functions`：（函数）可选。抽出该项时对此项执行的战利品表函数（请与命令的函数做区分）。
+                    - *（对象）一个函数*
+                        - `function`：（字符串）该函数的名称（有关函数的具体内容见下方介绍）。
+                        - `conditions`：（数组）执行该函数所需满足的条件列表。
+                            - *（对象）一个条件（有关条件的具体内容见下方介绍）*
+
+## 学习原版
+
+以下是原版中僵尸的战利品表 `./loot_tables/entities/zombie.json`。注释是我自己加的。
+
+```json
+{
+    "pools": [
+        {
+            // 第一个随机池。
+            "rolls": 1, // 指定了 rolls，因此会从下面的 entries 中随机抽取一项。
+            "entries": [
+                {
+                    // 第一个随机池里的第一项。
+                    "type": "item", // 是个物品。
+                    "name": "minecraft:rotten_flesh", // 物品 ID 是腐肉的。
+                    "weight": 1, // 权重是 1。这个是几其实无所谓，因为这个随机池里面只有这一项，肯定会抽中这一项的。
+                    "functions": [
+                        {
+                            // 对这个腐肉执行的第一个函数。
+                            "function": "set_count", // 这个函数的作用是设置物品数量。详细函数列表可以看下面。
+                            "count": { // 数量随机设置为 0-2 中的一个。如果设置为 0，表明不会掉落。
+                                "min": 0,
+                                "max": 2
+                            }
+                        },
+                        {
+                            // 对这个腐肉执行的第二个函数。
+                            // 这个函数的作用是，玩家的武器每有一级抢夺附魔，就多掉落 0-1 个物品。
+                            "function": "looting_enchant", 
+                            "count": {
+                                "min": 0,
+                                "max": 1
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            // 第二个随机池
+            "conditions": [
+                // 这个随机池设定了条件。只有以下条件全部满足时，才会从这个随机池中抽取物品。
+                {
+                    // 条件 1：僵尸是被玩家杀死的。
+                    "condition": "killed_by_player"
+                },
+                {
+                    // 条件 2：有 2.5% 的概率达成。玩家的武器每有一级抢夺附魔，就加 1% 的概率。
+                    "condition": "random_chance_with_looting",
+                    "chance": 0.025,
+                    "looting_multiplier": 0.01
+                }
+            ],
+            "rolls": 1,
+            "entries": [
+                // 当上述两个条件全部满足后，从这三项里随机抽取一个掉落。
+                // 这三项的权重 weight 都是 1，因此这三个掉落的概率相等。
+                // 这三项结构很简单，就不写注释了。
+                {
+                    "type": "item",
+                    "name": "minecraft:iron_ingot",
+                    "weight": 1
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:carrot",
+                    "weight": 1
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:potato",
+                    "weight": 1
+                }
+            ]
+        }
+    ]
+}
+```
+
+这整个战利品表实现了僵尸的物品的掉落，简单描述为：一般会掉落腐肉，偶尔会再多掉一个铁锭/胡萝卜/马铃薯。与我们平时认知的一样。
+
+## Tiers 层级到底是什么
+
+这是上面僵尸的战利品表，经过我修改后的样子，使用到了 `tiers`：
+
+```json
+{
+    "pools": [
+        {
+            "tiers": {
+                "initial_range": 2,
+                "bonus_rolls": 1,
+                "bonus_chance": 0.01
+            },
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "minecraft:rotten_flesh"
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:carrot"
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:iron_ingot"
+                }
+            ]
+        }
+    ]
+}
+```
+
+`entries` 中定义的这三项变成了三个层级。`rotten_flesh`（腐肉）是第 1 层，`carrot`（胡萝卜）是第 2 层，`iron_ingot`（铁锭）是第 3 层。
+
+当游戏执行这个战利品表时，会首先从第 1 层到第 `initial_range` 层中随机抽取一层。以这个 JSON 为例，则是随机从 `rotten_flesh`（腐肉）和 `carrot`（胡萝卜）中随机抽取一个，这两个被抽到的概率都是 50%。
+
+当抽取好以后，又有 `bonus_chance` 的几率把这一层数加上 `bonus_rolls`。以这个 JSON 为例，有 1% 的几率把层数加 `1`。例如，原先抽取到了 `rotten_flesh`（腐肉），那么有 1% 的几率会返回 `carrot`（胡萝卜）；原先抽取到了 `carrot`（胡萝卜），那么有 1% 的几率会返回 `iron_ingot`（铁锭）。
+
+Tiers 这一特性原版主要将其用于生成怪物的盔甲。这是 `loot_tables/entities/skeleton_gear.json` 的一部分，它用于生成骷髅的盔甲：
+
+```json
+{
+    "tiers": {
+        "initial_range": 2,
+        "bonus_rolls": 3,
+        "bonus_chance": 0.095
+    },
+    "entries": [
+        {
+            "type": "loot_table",
+            "name": "loot_tables/entities/armor_set_leather.json"
+        },
+        {
+            "type": "loot_table",
+            "name": "loot_tables/entities/armor_set_gold.json"
+        },
+        {
+            "type": "loot_table",
+            "name": "loot_tables/entities/armor_set_chain.json"
+        },
+        {
+            "type": "loot_table",
+            "name": "loot_tables/entities/armor_set_iron.json"
+        },
+        {
+            "type": "loot_table",
+            "name": "loot_tables/entities/armor_set_diamond.json"
+        }
+    ]
+}
+```
+
+这一战利品表使得骷髅的盔甲通常为 `armor_set_leather`（皮革）或 `armor_set_gold`（金甲），但有 9.5% 的几率会变为 `armor_set_iron`（铁甲）或 `armor_set_diamond`（钻石甲）。
+
+Tiers 这个略为复杂的东西扯完了。
+
+[spoiler]以下是我自己用的东西，放别的地方怕被我弄丢了。没什么用，折叠吧。
+```typescript
+import * as fs from 'fs'
+import { join } from 'path'
+
+const walker = (path: string, cb: (content: string) => any) => {
+    const files = fs.readdirSync(path)
+    for (const file of files) {
+        const child = join(path, file)
+        if (fs.statSync(child).isDirectory()) {
+            walker(child, cb)
+        } else if (child.endsWith('.json')) {
+            cb(fs.readFileSync(child, { encoding: 'utf8' }))
+        }
+    }
+}
+
+const arr: string[] = []
+
+walker(__dirname, (content: string) => {
+    const trim = (val: string, prefix = 'minecraft:') => val.startsWith(prefix) ? val.slice(prefix.length) : val
+    const regex = /"function": "(.*?)"/g
+    let match = regex.exec(content)
+    while (match) {
+        if (arr.indexOf(trim(match[1])) === -1) {
+            arr.push(trim(match[1]))
+        }
+        match = regex.exec(content)
+    }
+})
+
+console.log(arr.length)
+console.log(arr.sort().join('\n'))
+```
+[/spoiler]
+
+## 自造轮子
+
+我想让僵尸在被烧死的时候掉烈焰粉！
+
+所有你需要的战利品表函数、条件都可以在附录里找到。不过如果找不到，可以考虑用别的方案替代。
+
+首先，我们要修改的是原版就有的僵尸的战利品表，比较便捷的做法是直接在你的行为包中用同名同路径的文件把它覆盖掉。创建 `loot_tables/entities/zombie.json`，把原版战利品表中的内容复制进去（你可以直接从我开头「学习原版」部分的代码框里复制，注释删不删无所谓，因为就像我开篇说的那样，Minecraft 会自动忽略掉那些注释）。
+
+接下来就可以加烈焰粉了。在原来的两个随机池下面多加一个随机池（注意逗号），设置条件为 `entity_properties`，指定 `entity` 为 `this`（即探测僵尸自身），指定 `on_fire` 为 `true`（即需要被探测的实体着火）。设置给予的物品为 `minecraft:blaze_powder`（烈焰粉），数量从 1 至 2 随机。即: 
+
+```
+{
+    "pools": [
+        { ... }, 
+        { ... }, // 原有的两个随机池，这里省略不写。
+        {
+            "conditions": [
+                {
+                    "condition": "entity_properties",
+                    "entity": "this",
+                    "properties": {
+                        "on_fire": true
+                    }
+                }
+            ],
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "minecraft:blaze_powder",
+                    "weight": 1,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 2
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+```
+
+退出再重进世界。
+
+可以看到僵尸被烧死后产生了烈焰粉。
+
+![](https://i.loli.net/2018/10/20/5bca0ae304212.gif)
+
+（这张动图是上次写这篇教程时候录的，大体效果没错，就不重新录制了）
+
+好的，一个悲伤的故事是，僵尸就算不是被烧死的也会掉烈焰粉。这并不是我的问题，我已经将该漏洞反馈：[MCPE-54162](https://bugs.mojang.com/browse/MCPE-54162)。哦对了，顺带一提，本教程所有「自造轮子」节的内容最后都会打包到一个行为包里面，行为包会放置在「发布」章节，你需要的话可以先去那个章节下载。
+
+## 课后习题
+
+让玩家钓鱼能钓上来有随机附魔的钻石剑吧！
+
+提示: 可以在原版的行为包里找钓鱼相关战利品表的位置（找不到的话我告诉你，主钓鱼战利品表是 `loot_tables/gameplay/fishing.json`，它又引用了别的战利品表。带有随机附魔的钻石剑可以被认为是宝物，因此你需要修改的是钓鱼出宝物的战利品表，即 `loot_tables/gameplay/fishing/treasure.json`），在本人整理的附录中找到你需要的函数。
+
+本节完，点击论坛右侧的书签可以快速回到顶部。
+
+[page]
+
+## 附录：函数
+
+下面是战利品表中可用的全部函数。这些函数可以根据需求添加到每一项的 `functions` 数组中。函数的名称可以带 `minecraft:` 前缀，也可以不带，看你的喜好。例如，`set_count` 和 `minecraft:set_count` 都是表示设置物品数量的函数，执行起来没有区别。
+
+在开始介绍前，先简单说明一下「数字或范围」这一格式的意思。这一格式在之后的章节中也有可能会出现，到时就不再赘言了。
+
+### 数字或范围
+
+很简单。当一个参数的类型被我写为「数字或范围」时，表明它既可以是一个精确的数字，也可以是一个形如 `{ "min": 最小值, "max": 最大值 }` 的表明随机数的对象。
+
+### enchant_random_gear
+
+对装备随机附魔。Minecraft 使用战利品表来决定实体在生成时所装备的物品，每个生物具体使用哪个战利品表，可以在实体行为中定义（有关实体行为的具体内容，见「实体行为」章节）。
+
+- `chance`：（数字）进行附魔的概率。例如 `0.25` 表示 `25%`。
+
+示例（`loot_tables/entities/armor_set_chain.json`）：
+```json
+{
+    "function": "enchant_random_gear",
+    "chance": 0.25
+}
+```
+
+### enchant_randomly
+
+对物品进行随机附魔。
+
+- `treasure`：（布尔值）是否给予宝藏魔咒。
+
+示例（`loot_tables/chests/pillager_outpost.json`）：
+```json
+{
+    "function": "minecraft:enchant_randomly"
+}
+```
+
+### enchant_with_levels
+
+对物品进行相当于使用了指定经验等级的附魔。
+
+- `treasure`：（布尔值）是否给予宝藏魔咒。
+- `levels`：（数字或范围）要设置的等级。
+
+示例（`loot_tables/chests/end_city_treasure.json`）：
+```json
+{
+    "function": "enchant_with_levels",
+    "treasure": true,
+    "levels": {
+        "min": 20,
+        "max": 39
+    }
+}
+```
+
+### exploration_map
+
+将该物品变为探险地图。指定的物品需要是地图。
+
+- `destination`：（字符串）地图的目的地。需要是一个结构的 ID。全部结构的 ID 可以在 [Wiki](https://minecraft-zh.gamepedia.com/%E5%91%BD%E4%BB%A4/locate) 上查看。
+
+示例（`loot_tables/chests/shipwreck.json`）：
+```json
+{
+    "function": "exploration_map",
+    "destination": "buriedtreasure"
+}
+```
+
+### furnace_smelt
+
+对该物品进行熔炼。得到的结果与将物品放置熔炉中熔炼产生的结果一致。为该函数添加 `entity_properties` 条件可以做到实体被烧死时掉落熟食。
+
+示例（`loot_tables/entities/chicken.json`）：
+```json
+{
+    "function": "furnace_smelt"
+}
+```
+
+### looting_enchant
+
+设置抢夺魔咒对数量的影响。
+
+- `count`：（数字或范围）每一级抢夺魔咒增加的数量。
+- `limit`：（数字）抢夺魔咒所增加的数量的上限。
+
+示例（`loot_tables/entities/blaze.json`）：
+```json
+{
+    "function": "looting_enchant",
+    "count": {
+        "min": 0,
+        "max": 1
+    }
+}
+```
+
+### random_aux_value
+
+随机生成一个辅助数值。不明。
+
+- `values`：（数字或范围）要设置的值。
+
+示例（`loot_tables/chests/shipwrecksupply.json`）：
+```json
+{
+    "function": "random_aux_value",
+    "values": {
+        "min": 0,
+        "max": 6
+    }
+}
+```
+
+### set_banner_details
+
+设置旗帜的图案。指定的物品需要是旗帜。
+
+- `type`：（数字）旗帜图案的类型。已知数值只有 `1`，代表掠夺者首领头上的旗帜。
+
+示例（`loot_tables/entities/pillager_captain_equipment.json`）：
+```json
+{
+    "function": "set_banner_details",
+    "type": 1
+}
+```
+
+### set_count
+
+设置物品的数量。
+
+- `count`：（数字或范围）要设置的数量。
+
+示例（`loot_tables/chests/buriedtreasure.json`）：
+```json
+{
+    "function": "set_count",
+    "count": {
+        "min": 1,
+        "max": 5
+    }
+}
+```
+
+### set_damage
+
+设置物品的损坏率。
+
+- `damage`：（数字或范围）要设置的损坏率。取值应在 [0, 1] 之间。
+
+示例（`loot_tables/entities/drowned.json`）：
+```json
+{
+    "function": "set_damage",
+    "damage": {
+        "min": 0.2,
+        "max": 0.9
+    }
+}
+```
+
+### set_data
+
+设置物品的数据值。
+
+- `data`：（数字）要设置的数据值。
+
+示例（`loot_tables/chests/buriedtreasure.json`）：
+```json
+{
+    "function": "set_data",
+    "data": 19
+}
+```
+
+### set_data_from_color_index
+
+根据当前实体的颜色设置物品的数据值。只有在当前实体为羊且物品具有颜色（如羊毛、混凝土等），或当前实体为哞菇且当前物品为蘑菇时有用。
+
+示例（`loot_tables/entities/sheep.json`）：
+```json
+{
+    "function": "minecraft:set_data_from_color_index"
+}
+```
+
+[page]
+
+## 附录：条件
+
+当你指定的条件全部达成时，才有可能会使用你所设置的随机池（`pool`）、项（`entry`）或是函数（`function`）。下面是战利品表中可用的全部条件。
+
+### entity_properties
+
+指定实体的属性匹配时达成条件。
+
+
+- `entity`：（字符串）要检测的实体。`this` 指代死亡的这个实体，`killer` 指代杀了这个实体的实体，`killer_player` 指代杀了这个实体的玩家。
+- `properties`：（对象）要检测的属性。
+    - `on_fire`：（布尔值）指定实体是否着火。
+
+示例（`loot_tables/entities/chicken.json`）：
+```json
+{
+    "condition": "entity_properties",
+    "entity": "this",
+    "properties": {
+        "on_fire": true
+    }
+}
+```
+
+### has_mark_variant
+
+检测该实体是否是某个变种。不明。
+
+- `value`：（数字）
+
+示例（`loot_tables/entities/mooshroom_milking.json`）：
+```json
+{
+    "condition": "has_mark_variant",
+    "value": -1
+}
+```
+
+### killed_by_entity
+
+被指定类型的实体击杀时达成条件。
+
+- `entity_type`：（字符串）指定实体的 ID。
+
+示例（`loot_tables/entities/creeper.json`）：
+```json
+{
+    "condition": "killed_by_entity",
+    "entity_type": "minecraft:skeleton"
+}
+```
+
+### killed_by_player
+
+被玩家击杀时达成条件。
+
+示例（`loot_tables/entities/cave_spider.json`）：
+```json
+{
+    "condition": "killed_by_player"
+}
+```
+
+### killed_by_player_or_pets
+
+被玩家或玩家的宠物击杀时达成条件。
+
+示例（`loot_tables/entities/blaze.json`）：
+```json
+{
+    "condition": "killed_by_player_or_pets"
+}
+```
+
+### random_chance
+
+有一定几率达成。
+
+- `chance`：（数字）条件达成的几率。取值应当在 [0, 1] 的范围内。
+
+示例（`loot_tables/entities/drowned_equipment.json`）：
+```json
+{
+    "condition": "random_chance",
+    "chance": 0.01
+}
+```
+
+### random_chance_with_looting
+
+有一定几率达成。该几率可以被「抢夺」附魔提高。
+
+- `chance`：（数字）条件达成的基础几率。取值应当在 [0, 1] 的范围内。
+- `looting_multiplier`：（数字）每一级「抢夺」魔咒所增加的几率。取值应当在 [0, 1] 的范围内。
+
+示例（`loot_tables/entities/drowned.json`）：
+```json
+{
+    "condition": "random_chance_with_looting",
+    "chance": 0.11,
+    "looting_multiplier": 0.02
+}
+```
+
+### random_difficulty_chance
+
+有一定几率达成。可以指定在不同难度下的几率。
+
+- `default_chance`：（数字）条件达成的默认几率。取值应当在 [0, 1] 的范围内。
+- `peaceful`：（数字）和平模式下条件达成的几率。取值应当在 [0, 1] 的范围内。
+- `easy`：（数字）简单模式下条件达成的几率。取值应当在 [0, 1] 的范围内。
+- `normal`：（数字）普通模式下条件达成的几率。取值应当在 [0, 1] 的范围内。
+- `hard`：（数字）困难模式下条件达成的几率。取值应当在 [0, 1] 的范围内。
+
+示例（`loot_tables/entities/armor_set_chain.json`）：
+```json
+{
+    "condition": "random_difficulty_chance",
+    "default_chance": 0.50,
+    "peaceful": 0,
+    "hard": 0.6
+}
+```
+
+### random_regional_difficulty_chance
+
+有一定几率达成。该几率随着区域难度提高而提高。
+
+- `max_chance`：（数字）条件达成的最大几率。取值应当在 [0, 1] 的范围内。
+
+示例（`loot_tables/entities/skeleton_gear.json`）：
+```json
+{
+    "condition": "random_regional_difficulty_chance",
+    "max_chance": 0.15
+}
+```
+
+[page]
+
+# 交易表
+
+行为包可以定义村民的交易表。
+
+原版放置村民交易表的位置是在根目录下的 `trading` 文件夹内。事实上，你可以放在行为包里任何你想要的地方，但建议大家按传统习惯行事。
+
+## 简述
+
+简单介绍一下村民交易的机制：村民的交易分为多个层级。首先只会解锁第一个层级的交易。当交易几次以后，会解锁下一个层级的交易。如此反复，直到所有层级的交易都解锁了为止。
+
+## 文件格式
+
+- `tiers`：（数组）储存该交易表中的所有交易层级。从上到下层级逐渐增高。
+    - *（对象）一层交易*
+        - `trades`：（数组）该层中具有的所有交易。
+        - *（对象）一个交易*
+            - `wants`：（数组）村民想要的物品。项数应小于等于 2，超出的物品会被无视。
+                - *（对象）一个物品*
+                    - `item`：（字符串）物品 ID，如果有数据值，使用冒号分割。
+                    - `quantity`：（数字或范围）物品数量。
+            - `gives`：（数组）村民给予的物品。会从中随机抽取。
+                - *（对象）一个物品*
+                    - `item`：（字符串）物品 ID，如果有数据值，使用冒号分割。
+                    - `quantity`：（数字或范围）物品数量。
+                    - `functions`：（数组）交易表函数。
+                        - *（对象）一个函数*
+                            - `function`：（字符串）使用的函数。
+                            - 其他参数（有关函数的具体内容见下文）。
+
+## 学习原版
+
+这次我们以渔夫的交易 `trading/fisherman_trades.json` 为例。删除了一小点儿内容，不然太长了。
+
+```
+{
+    "tiers": [
+        {
+            // 第一层交易
+            "trades": [
+                {
+                    // 第一层交易的第一个交易：
+                    "wants": [
+                        // 该交易接受：
+                        {
+                            // 6 条鱼。
+                            "item": "minecraft:fish",
+                            "quantity": 6
+                        },
+                        {
+                            // 1 个绿宝石。
+                            "item": "minecraft:emerald",
+                            "quantity": 1
+                        }
+                    ],
+                    "gives": [
+                        // 该交易给出：
+                        {
+                            // 6 条熟鱼。
+                            "item": "minecraft:cooked_fish",
+                            "quantity": 6
+                        }
+                    ]
+                },
+                {
+                    // 第一层交易的第二个交易：
+                    "wants": [
+                        // 该交易接受：
+                        {
+                            // 15-20 根线，具体数量由游戏随机生成。
+                            "item": "minecraft:string",
+                            "quantity": {
+                                "min": 15,
+                                "max": 20
+                            }
+                        }
+                    ],
+                    "gives": [
+                        // 该交易给出：
+                        {
+                            // 1 个绿宝石。
+                            "item": "minecraft:emerald",
+                            "quantity": 1
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            // 第二层交易
+            "trades": [
+                {
+                    // 第二层交易的第一个交易
+                    "wants": [
+                        // 该交易接受：
+                        {
+                            // 7-8 个绿宝石，具体数量由游戏随机生成。
+                            "item": "minecraft:emerald",
+                            "quantity": {
+                                "min": 7,
+                                "max": 8
+                            }
+                        }
+                    ],
+                    "gives": [
+                        // 该交易给出：
+                        {
+                            // 1 个用相当于 5-19 级经验附魔过的钓鱼杆。具体用几级经验由游戏随机决定。
+                            "item": "minecraft:fishing_rod",
+                            "quantity": 1,
+                            "functions": [
+                                {
+                                    "function": "enchant_with_levels",
+                                    "treasure": false,
+                                    "levels": {
+                                        "min": 5,
+                                        "max": 19
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+```
+
+## 自造轮子
+
+让奸商渔夫第三层交易为，绿宝石 + 钻石换取超级普通的钓鱼竿！
+
+由于我们要修改的是原版就有的交易表，比较便捷的做法是直接在你的行为包中用同名同路径的文件把它覆盖掉。创建 `loot_tables/trading/fisherman_trades.json`，把原版交易表中的内容复制进去。
+
+接下来就可以加第三层交易了。在原有的两个交易层级后继续加入一个对象，设置 `wants` 为 `minecraft:emerald`（绿宝石）和 `minecraft:diamond`（钻石），`gives` 为 `minecraft:fishing_rod`。即
+
+```json
+{
+    "tiers": [
+        { ... },
+        { ... }, // 原有的两个交易层级
+        {
+            "trades": [
+                {
+                    "wants": [
+                        {
+                            "item": "minecraft:emerald",
+                            "quantity": {
+                                "min": 10,
+                                "max": 14
+                            }
+                        },
+                        {
+                            "item": "minecraft:diamond",
+                            "quantity": {
+                                "min": 5,
+                                "max": 7
+                            }
+                        }
+                    ],
+                    "gives": [
+                        {
+                            "item": "minecraft:fishing_rod",
+                            "quantity": 1
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+```
+
+退出再重进世界。搞定。
+
+![](https://i.loli.net/2018/10/20/5bca1fee0a1b0.png)
+
+## 课后习题
+
+让 shepherd 村民（交易表位于 `trading/shepherd_trades.json`）可以拿羊毛换对应颜色的混凝土！【好无厘头的题目，没办法我只是想讲方块数据值。
+
+提示: 羊毛使用方块数据值来区分颜色。在写 `item` 时，把方块数据值用冒号 `:` 连接在方块 ID 的后面。例如: `minecraft:wool:0`。
+
+[page]
+
+## 附录：函数
+
+在给出交易物品前会执行指定的函数对物品进行操作。下面是交易表中可用的全部函数。
+
+### enchant_book_for_trading
+
+给书附魔。
+
+- `base_cost`：（数字）不明。个人猜测可能和玩家使用附魔台附魔物品所消耗的经验等级有关。
+- `base_random_cost`：（数字）不明。
+- `per_level_random_cost`：（数字）不明。
+- `per_level_cost`：（数字）不明。
+
+示例（`trading/librarian_trades.json`）：
+```json
+{
+    "function": "enchant_book_for_trading",
+    "base_cost": 2,
+    "base_random_cost": 5,
+    "per_level_random_cost": 10,
+    "per_level_cost": 3
+}
+```
+
+### enchant_with_levels
+
+进行相当于指定经验等级的附魔。
+
+- `treasure`：（布尔值）如果为 `true`，将会给予宝藏魔咒。
+- `levels`：（数字或范围）要设置的等级。
+
+示例（`trading/leather_worker_trades.json`）：
+```json
+{
+    "function": "enchant_with_levels",
+    "treasure": false,
+    "levels": {
+        "min": 5,
+        "max": 19
+    }
+}
+```
+
+### exploration_map
+
+绘制探险地图。
+
+- `destination`：字符串。地图的目的地。需要是一个结构的 ID。全部结构的 ID 可以在 [Wiki](https://minecraft-zh.gamepedia.com/%E5%91%BD%E4%BB%A4/locate) 上查看。
+
+示例（`trading/cartographer_trades.json`）：
+```json
+{
+  "function": "exploration_map",
+  "destination": "monument"
+}
+```
+
+### random_aux_value
+
+随机生成一个辅助数值。不明。
+
+- `values`：（数字或范围）要设置的值。
+
+示例（`trading/economy_trades/wandering_trader_trades.json`）：
+```json
+{
+    // 这是给染料 minecraft:dye 设置的
+    "function": "random_aux_value",
+    "values": {
+        "min": 0,
+        "max": 15
+    }
+}
+```
+
+### random_block_state
+
+随机设置方块状态。
+
+- `block_state`：（字符串）要设置的方块状态名。
+- `values`：（数字或范围）要设置的方块状态的值。
+
+示例（`trading/economy_trades/wandering_trader_trades.json`）：
+```json
+{
+    // 这是给树苗 minecraft:sapling 设置的
+    "function": "random_block_state",
+    "block_state": "sapling_type",
+    "values": {
+        "min": 0,
+        "max": 5
+    }
+}
+```
+
+[page]
+
+# 生成规则
+
+行为包可以设置实体的生成规则。只有在满足了生成规则的情况下，该实体才有可能会生成。
+
+放置生成规则的位置是在根目录下的 `spawn_rules` 文件夹内。
+
+## 简述
+
+![image.png](https://i.loli.net/2019/10/23/yKEd8uxQpl9ODXV.png)
+
+## 文件格式
+
+- `format_version`：（字符串）文件格式版本。本帖一律写为 `1.14.0`。
+- `minecraft:spawn_rules`：（对象）表明该文件定义了生成规则。
+    - `description`：（对象）描述。
+        - `identifier`：（字符串）该生成规则的 ID。在实体的定义文件中可以通过指定该 ID 来使用该规则。
+        - `population_control`：（字符串）实体数量控制。为了避免卡顿，Minecraft 会分别限制不同种类的实体的总数量。该参数正是被用于确定实体种类的。可填写`ambient`（环境，如蝙蝠）、`animal`（动物，如蜜蜂、羊等）、`cat`（猫）、`monster`（怪物，如僵尸等）、`pillager`（掠夺者）、`water_animal`（水生动物，如鱼等）。（Wiki 此处内容严重不全）
+    - `conditions`：（数组）生成条件。只需达成一组条件即会生成。
+        - *（对象）一组条件（有关条件的具体内容见下方介绍）。需要达成这下面的所有的条件才算达成了这一组条件。*
+            - `minecraft:条件 1`：（对象）一个条件。
+            - `minecraft:条件 2`：（对象）一个条件。
+            - ···
+
+## 学习原版
+
+以下是僵尸的生成规则 `./spawn_rules/zombie.json`。
+
+```json
+{
+    "format_version": "1.8.0",
+    "minecraft:spawn_rules": {
+        "description": {
+            // 该生成规则的 ID 为 minecraft:zombie。
+            // 在僵尸的实体定义文件中可以通过 minecraft:zombie 来引用这个生成规则。
+            "identifier": "minecraft:zombie",
+            // 生成与否受到怪物总数的控制。
+            "population_control": "monster"
+        },
+        "conditions": [
+            {
+                // 一组条件。只有这些条件全部满足才能生成。
+                // 具体的条件列表可在下方查看。
+                "minecraft:spawns_on_surface": {},
+                "minecraft:spawns_underground": {},
+                "minecraft:brightness_filter": {
+                    "min": 0,
+                    "max": 7,
+                    "adjust_for_weather": true
+                },
+                "minecraft:difficulty_filter": {
+                    "min": "easy",
+                    "max": "hard"
+                },
+                "minecraft:weight": {
+                    "default": 100
+                },
+                "minecraft:herd": {
+                    "min_size": 2,
+                    "max_size": 4
+                },
+                "minecraft:permute_type": [
+                    {
+                        "weight": 95
+                    },
+                    {
+                        "weight": 5,
+                        "entity_type": "minecraft:zombie_villager"
+                    }
+                ],
+                "minecraft:biome_filter": {
+                    "test": "has_biome_tag", "operator": "==", "value": "monster"
+                }
+            }
+        ]
+    }
+}
+```
+
+## 自造轮子 & 课后习题
+
+……我不知道该造什么，也不知道该出什么题，那就咕了吧。看看附录里面有没有什么你感兴趣的条件（
+
+[page]
+
+## 附录：条件
+
+当达成指定条件时，实体才会生成。
+
+特别指明，此处的条件必须要加 `minecraft:` 命名空间前缀，否则不会被读取。
+
+### minecraft:biome_filter
+
+限制允许该实体生成的生态群系。其格式与滤器一致。有关滤器的详细内容，请看「实体」章节的「滤器」部分。
+
+示例（`spawn_rules/bat.json`）：
+```json
+{
+    "minecraft:biome_filter": {
+        "test": "has_biome_tag", "operator":"==", "value": "animal"
+    }
+}
+```
+
+### minecraft:brightness_filter
+
+限制允许该实体生成的光照等级范围。
+
+
+- `min`：（数字）指定该实体能够生成的最低光照等级。
+- `max`：（数字）指定该实体能够生成的最高光照等级。
+- `adjust_for_weather`：（布尔值）指定天气是否能够影响亮度，进而让该实体生成（可用于让敌对生物在下雨的白天生成）。
+
+示例（`spawn_rules/bat.json`）：
+```json
+{
+    "minecraft:brightness_filter": {
+        "min": 0,
+        "max": 4,
+        "adjust_for_weather": true
+    }
+}
+```
+
+### minecraft:delay_filter
+
+限制两次尝试生成之间的间隔。
+
+- `min`：（数字）两次尝试生成的最短间隔。单位为秒。
+- `max`：（数字）两次尝试生成的最长间隔。单位为秒。
+- `identifier`：（数字）不明。推测是一个计时器的标识符。
+- `spawn_chance`：（数字）每次尝试成功的几率。取值应当在 [0, 100] 之间。
+
+示例（`spawn_rules/pillager_patrol.json`）：
+```json
+{
+    "minecraft:delay_filter": {
+        "min": 600,
+        "max": 660,
+        "identifier": "minecraft:pillager_patrol_easy",
+        "spawn_chance": 20
+    }
+}
+```
+该条件使得灾厄巡逻队会每 10 至 11 分钟尝试生成一次，每次尝试生成有 20% 的几率成功。
+
+### minecraft:density_limit
+
+限制实体的密度。
+
+- `surface`：（数字）在地面上的密度限制。
+- `underground`：（数字）在地下的密度限制。
+
+示例（`spawn_rules/bat.json`）：
+```json
+{
+    "minecraft:density_limit": {
+        "surface": 5
+    }
+}
+```
+
+### minecraft:difficulty_filter
+
+限制允许该实体生成的难度范围。
+
+- `min`：（字符串）该实体能够生成的最低难度。可为 `peaceful`、`easy`、`normal`、`hard` 中的一种。
+- `max`：（字符串）该实体能够生成的最高难度。可为 `peaceful`、`easy`、`normal`、`hard` 中的一种。
+
+示例（`spawn_rules/creeper.json`）：
+```json
+{
+    "minecraft:difficulty_filter": {
+        "min": "easy",
+        "max": "hard"
+    }
+}
+```
+
+### minecraft:distance_filter
+
+限制允许该实体生成的与玩家的距离。
+
+- `min`：（数字）允许该实体生成的与玩家距离的最小值。
+- `max`：（数字）允许该实体生成的与玩家距离的最大值。
+
+示例（`spawn_rules/cod.json`）：
+```json
+{
+    "minecraft:distance_filter": {
+        "min": 12,
+        "max": 32
+    }
+}
+```
+
+### minecraft:height_filter
+
+限制允许该实体生成的高度。
+
+- `min`：（数字）允许该实体生成的高度的最小值。
+- `max`：（数字）允许该实体生成的高度的最大值。
+
+示例（`spawn_rules/bat.json`）：
+```json
+{
+    "minecraft:height_filter": {
+        "min": 0,
+        "max": 63
+    }
+}
+```
+
+### minecraft:herd
+
+指定该实体按群生成。
+
+- `min_size`：（数字）生成的一群实体的数量的最小值。
+- `max_size`：（数字）生成的一群实体的数量的最大值。
+- `event`：（字符串）生成实体所执行的事件（有关事件的详细介绍，请查看「实体」章节）。
+- `event_skip_count`：（数字）在触发 `event` 前生成的实体数量。当实体数量达到这个值以后，才会触发上面 `event` 中指定的事件。
+
+示例（`spawn_rules/fox.json`）：
+```json
+{
+    "minecraft:herd": {
+        "min_size": 2,
+        "max_size": 4,
+        "event": "minecraft:entity_born",
+        "event_skip_count": 2
+    }
+}
+```
+
+### minecraft:mob_event_filter
+
+不明。
+
+- `event`：（字符串）不明。
+
+示例（`spawn_rules/pillager_patrol.json`）：
+```json
+{
+    "minecraft:mob_event_filter": {
+        "event": "minecraft:pillager_patrols_event"
+    }
+}
+```
+
+### minecraft:permute_type
+
+生成时使该实体成为它的变种（该条件应为一个数组，见下方示例）。
+
+- *（对象）一个变种*
+    - `weight`：（数字）该变种的权重。
+    - `entity_type`：（字符串）变种的实体 ID。如不指定则表明不进行任何变化。在该 ID 后可以再追加一个尖括号（`<>`），其中放置一个事件名，会在变为该变种后触发该事件。有关事件的详细内容请查看「实体」章节。
+
+示例一（`spawn_rules/zombie.json`）：
+```json
+{
+    "minecraft:permute_type": [
+        {
+            "weight": 95
+        },
+        {
+            "weight": 5,
+            "entity_type": "minecraft:zombie_villager"
+        }
+    ]
+}
+```
+这个条件指定了僵尸在生成后有 `95 / (95 + 5)` 也就是 95% 的几率保持不变，有 `5 / (95 + 5)` 也就是 5% 的几率变为 `minecraft:zombie_villager`（僵尸村民）。
+
+示例二（`spawn_rules/pillager_patrol.json`）：
+```json
+{
+    "minecraft:permute_type": [
+        {
+            "weight": 20,
+            "entity_type": "minecraft:vindicator"
+        },
+        {
+            "weight": 80,
+            "entity_type": "minecraft:pillager<minecraft:spawn_as_patrol_follower>"
+        }
+    ]
+}
+```
+这个条件指定了灾厄巡逻队在生成后有 20% 的几率变为卫道士（`vindicator`），有 80% 的几率变为掠夺者（`pillager`）并触发 `minecraft:spawn_as_patrol_follower` 事件。
+
+### minecraft:player_in_village_filter
+
+不明。
+
+- `distance`：（数字）不明。
+- `village_border_tolerance`：（数字）不明。
+
+示例（`spawn_rules/pillager_patrol.json`）：
+```json
+{
+    "minecraft:player_in_village_filter": {
+        "distance": 48,
+        "village_border_tolerance": 10
+    }
+}
+```
+
+### minecraft:spawn_event
+
+当该实体生成后执行的事件。有关事件的详细介绍请看「实体」章节。可以通过这一事件来让该实体在生成后进行一些条件判断，以及进行一些变换等。
+
+- `event`：（字符串）要执行的事件。
+
+示例（`spawn_rules/stray.json`）：
+```json
+{
+    "minecraft:spawn_event": {
+        "event": "change_to_skeleton"
+    }
+}
+```
+
+### minecraft:spawns_on_block_filter
+
+限制该生物只能生成在指定方块上（该条件应为一个表明方块 ID 的字符串，见下方示例）。
+
+示例（`spawn_rules/chicken.json`）：
+```json
+{
+    "minecraft:spawns_on_block_filter": "minecraft:grass"
+}
+```
+
+### minecraft:spawns_on_surface
+
+通过添加该对象，实体将可以生成在地表上。如果不添加则不能生成。
+
+示例（`spawn_rules/bee.json`）：
+```json
+{
+    "minecraft:spawns_on_surface": {}
+}
+```
+
+### minecraft:spawns_underground
+
+通过添加该对象，实体将可以生成在地下。如果不添加则不能生成。
+
+示例（`spawn_rules/bat.json`）：
+```json
+{
+    "minecraft:spawns_underground": {}
+}
+```
+
+### minecraft:spawns_underwater
+
+通过添加该对象，实体将可以生成在水里。如果不添加则不能生成。
+
+示例（`spawn_rules/cod.json`）：
+```json
+{
+    "minecraft:spawns_underwater": {}
+}
+```
+
+### minecraft:weight
+
+指定实体生成的权重。
+
+- `default`：（数字）该实体生成的权重。值越**高**，生成率越**低**。
+
+示例（`spawn_rules/bat.json`）：
+```json
+{
+    "minecraft:weight": {
+        "default": 10
+    }
+}
+```
+
+### minecraft:world_age_filter
+
+限制只有当玩家在该世界的游戏时间达到一定长度以后该实体才能生成。
+
+- `min`：（数字）玩家在该世界的游戏时间的最小值。
+- `max`：（数字）玩家在该世界的游戏时间的最大值。
+
+示例（`spawn_rules/pillager_patrol.json`）：
+```json
+{
+    "minecraft:world_age_filter": {
+        "min": 6000
+    }
+}
+```
+
+[page]
+
 # 实体
 
 「行为」包，最重要的便是可以定义实体的行为。
 
 实体定义文件应放置在根目录下的 `entities` 文件夹内。
 
-本部分仍在大幅变动。
-
 ## 简述
 
-实体
+一个实体是十分复杂的东西。但这个复杂的实体其实可以拆成很多简单的部分，我们把这些简单的部分称为「组件」。写实体的定义文件就像是写在拼积木，用一个个的组件来拼凑出一个完整的实体。
+
+下图是一个经过大量简化的牛的基础组件：
+
+![牛-基础组件.png](https://i.loli.net/2019/10/25/l6gVSL91nxtqGEN.png)
+
+我们知道，只有成年的牛才能繁殖、掉落物品，而只有幼体的牛才会长大、被缩小到原来的 1/2。这些组件会根据牛的状态来变化，因此不能直接添加到牛的基础组件当中：
+
+![牛-组件组.png](https://i.loli.net/2019/10/25/VGiQP3Hrj2tMdTe.png)
+
+我们把右侧「成年牛特有」、「幼体牛特有」这两组，称为「组件组」。当一头牛是成年牛时，我们会把成年牛特有的组件组添加到它的组件当中；当一头牛是幼体牛时，我们会把幼体牛特有的组件组添加到它的组件当中。
+
+当一头牛从幼体成长为成年牛以后，我们需要从它的组件当中移除幼体牛特有的组件组，再加入成年牛特有的组件组。这一行为实际上是由**事件**完成的：在幼体牛特有组件组的「长大」组件中，会在该实体成长为成年牛的那一刻触发某个**事件**，这个事件可以移除掉幼体牛特有组件组，并添加成年牛特有组件组。
+
+实体涉及到的两大重要部分，也就是**组件**和**事件**，已经讲解完了。
 
 ## 文件格式
 
-- `format_version`：（字符串）格式版本。本教程介绍的是 1.14.0 的写法，因此这里写为 `1.14.0`。写为旧版本的格式也仍然能在最新版游戏中使用，例如原版的药水云的定义文件的格式版本在发帖时仍为 `1.8.0`。事实上，这个参数存在的意义就是为了能够保持向后兼容。
-- `minecraft:entity`：（对象）定义实体。
-    - `description`：（对象）对实体的宏观概述。
-        - `identifier`：（字符串）实体的 ID。
-        - `minecraft:is_experimental`：（对象）是否为实验性特性。
-            - `value`：（布尔值）如果设置为 `true`，只有在世界选项里勾选「启用实验玩法」，该实体才会能够使用。
-        - `minecraft:is_summonable`：（对象）是否可以生成。
-            - `value`：（布尔值）如果设置为 `true`，将可以通过 `/summon <identifier>` 命令生成该实体。
-        - `minecraft:runtime_identifier`：（对象）运行时标识符。Minecraft 中有一些实体的行为是硬编码的（即写死在代码里面不能改动），例如鸡下蛋（尽管有组件可以做出下蛋的效果，但是鸡并没有使用那个组件）。这个字段可以将已有的硬编码行为赋予给任意实体。
-            - `id`：（字符串）要赋予的硬编码行为的实体 ID，例如 `minecraft:chicken`（鸡）就可以让这个实体会下蛋。
-        - `minecraft:spawn_egg`：（对象）是否拥有刷怪蛋。
-            - `value`：（布尔值）如果设置为 `true`，在创造模式物品栏中将会有该实体的对应刷怪蛋。
-    - `components`：（对象）该实体的「组件」。
-    - `component_groups`：（对象）该实体的「组件」组，每一个对象下面都储存了一些组件。一些较为复杂的实体会有多个状态，比如牛的「成年状态」、「幼年状态」和「被栓绳拴住」等。Minecraft 会根据你的设定，在某些情况下启用一组组件，或禁用一组组件，来达到实体在不同状态下有不同的行为。
+- `format_version`：（字符串）格式版本。本教程介绍的是 1.14.0 的写法，因此本教程自己的示例中都将一律写为 `1.14.0`。不过，写为旧版本的格式也仍然能在最新版游戏中使用，例如原版的药水云的定义文件的格式版本在发帖时仍为 `1.8.0`。事实上，这个参数存在的意义就是为了能够保持向后兼容。
+- `minecraft:entity`：（对象）表明这个文件定义了实体。
+    - `description`：（对象）对该实体的描述。
+        - `identifier`：（字符串）该实体的 ID。
+        - `is_spawnable`：（布尔值）可选。该实体是否拥有刷怪蛋。如果设置为 `true`，在创造模式物品栏中将会有该实体的对应刷怪蛋。默认为 `false`。
+        - `is_summonable`：（布尔）可选。是否可以通过命令生成。如果设置为 `true`，将可以通过 `/summon <实体 ID>` 命令生成该实体。默认为 `false`。
+        - `is_experimental`：（布尔）可选。该实体是否为实验性特性。如果设置为 `true`，只有在世界选项里勾选「启用实验玩法」，该实体才会能够使用。默认为 `false`。
+    - `components`：（对象）该实体的基础组件。
+    - `component_groups`：（对象）该实体具有的所有组件组。
+        - *组件组的名称*：（对象）一个组件组。组件组下的格式同上面的 `components`（基础组件）一样。
     - `events`：（对象）该实体的所有事件。事件可以在指定条件下执行，执行以后可以禁用/启用在 `component_groups` 中定义的组件组。
         - `事件名`：（对象）一个事件（有关事件的具体介绍见下）。
 
-`components`（组件）与 `component_groups`（组件组）的区别在于，前者中定义的是该实体的基础行为，而后者中则有一些与特定状态有关的行为。另外，如果组件组修改了和组件中相同的行为，在这个组件组被启用时，组件组里定义的值会覆盖掉组件中的值。
-
-下面会对此进行详细的讲解。
+相信看完简述已经能够理解，不过这里再重复一下。`components`（基础组件）与 `component_groups`（组件组）下面的定义的每个组件组的区别在于，前者中定义的是该实体的基础行为，而后者中则有一些与特定状态有关的行为。此外，如果组件组修改了和基础组件中相同的行为，在这个组件组被启用后，基础组件中的值会被组件组里定义的覆盖掉。
 
 ## 学习原版
 
-以钓鱼鱼钩（`./entities/fishing_hook.json`）为例，略有删改。
+我们先挑一个字符数少又骨架完整的来作示例。以钓鱼竿的鱼钩实体（`./entities/fishing_hook.json`）为例，格式略有调整。注释是我加的。
 
-```
+```json
 {
-    "format_version": "1.8.0-beta.1",
+    "format_version": "1.12.0",
     "minecraft:entity": {
         "description": {
-            "identifier": "minecraft:fishing_hook",
-            "minecraft:spawn_egg": {
-                "value": false
+            "identifier": "minecraft:fishing_hook", // 该实体的 ID 为 minecraft:fishing_hook
+            "is_spawnable": false,
+            "is_summonable": false,
+            "is_experimental": false
+        },
+        "components": {
+            // 这里面都是鱼钩实体的基础组件。
+            "minecraft:collision_box": {
+                // 定义了碰撞箱的大小。
+                "width": 0.15,
+                "height": 0.15
             },
-            "minecraft:is_summonable": {
-                "value": false
+            "minecraft:projectile": {
+                // 定义了该实体抛到地上后的特性。
+                "on_hit": { "stick_in_ground": {} }
             },
-            "minecraft:is_experimental": {
-                "value": false
+            "minecraft:loot": {
+                // 定义了该实体死亡后的战利品表，其实就是钓鱼的战利品表。没错，你钓鱼获得的物品是通过「杀死鱼钩」来得到的。
+                "table": "loot_tables/gameplay/fishing.json"
+            },
+            "minecraft:physics": {
+                // 使该实体有物理属性，也就是能撞墙上，不会穿墙。
+            },
+            "minecraft:pushable": {
+                // 定义了该实体能否被推动等。
+                "is_pushable": false,
+                "is_pushable_by_piston": true
             }
         },
-
         "component_groups": {
+            // 这下面定义的就都是组件组了。
             "loot_jungle": {
+                // 这是一个叫 loot_jungle 的组件组。
                 "minecraft:loot": {
+                    // 这个组件组里又定义了一遍该实体死亡后的战利品表。这意味着，如果 loot_jungle 组件组被启用，这个鱼钩的战利品表将变成这个，而不是在基础组件里定义的那个。
                     "table": "loot_tables/gameplay/jungle_fishing.json"
                 }
             }
         },
-
-        "components": {
-            "minecraft:loot": {
-                "table": "loot_tables/gameplay/fishing.json"
-            }
-        },
-
         "events": {
+            // 这下面定义的是各种事件。
             "minecraft:entity_spawned": {
+                // 这是一个叫 minecraft:entity_spawned 的事件。这个事件是游戏内置的事件，不需要我们自己调用。游戏会在实体生成后立刻执行这个事件。
+                // 简单说一下这个事件的功能。很简单，就是在当前生物群系为 jungle（丛林）时，启用上面的那个 loot_jungle 组件组。
                 "sequence": [
                     {
                         "filters": {
                             "test": "is_biome",
                             "value": "jungle"
                         },
-                        "add": {
-                            "component_groups": [
-                                "loot_jungle"
-                            ]
-                        }
+                        "add": { "component_groups": [ "loot_jungle" ] }
                     }
                 ]
             }
@@ -281,86 +1610,199 @@ JSON 格式包含五种结构，分别是对象、字符串、布尔值、数字
     }
 }
 ```
-在 `components` 中定义了一个 `minecraft:loot` 组件，这个组件实际上是设置实体的战利品的。于是这一部分的效果就是，设置鱼钩的战利品表为 `loot_tables/gameplay/fishing.json`（即默认的钓鱼战利品表）。
 
-在 `events` 中定义了一个 `minecraft:entity_spawned` 事件。目前我们并不太需要了解这个事件的详细工作原理，只需要知道它会在鱼钩处于丛林生态群系时执行，它的 `add` 部分启用了 `loot_jungle` 这个组件组即可。
+似乎很简单？确实很简单。现在唯一可能会难到你的就是：我怎么知道这些组件什么用呢？其实这个简单，你翻到帖子上面的目录，看实体下面的「附录 1：组件」就可以啦。那里面是所有你能够应用的实体组件，非常非常非常多，善用 Ctrl + F 进行搜索。
 
-于是我们回过头看 `component_groups` 中定义的 `loot_jungle` 这个组件组，它设置了 `minecraft:loot` 组件为另一个战利品表 `loot_tables/gameplay/jungle_fishing.json`（即在丛林生态群系下的钓鱼的战利品表）。在组件组 `loot_jungle` 被启用时，原先 `components` 中定义的战利品表就被新的适用于丛林的战利品表覆盖了。
+我们再找一个原版示例吧。这回把牛的定义文件拿出来好了。在「简述」章节举的例子正好就是牛，来个收尾呼应，争取能当个满分作文（笑
 
-似乎很简单？确实很简单。
-
-做个小练习吧，下面这一串 JSON 取材于牛，并删除了一些看着烦的组件。请你尝试理清各种组件组的关系（组件、事件的作用已写注释）：
+这一回我可就一条注释都不写了哦！遇到不知道的，你可以翻回上面「简述」再看一遍，或者看上面的「文件格式」，或者看实体章节下面的那三个「附录」。加油！
 
 ```
 {
-    "format_version": "1.8.0-beta.1",
+    "format_version": "1.13.0",
     "minecraft:entity": {
         "description": {
             "identifier": "minecraft:cow",
-            "minecraft:spawn_egg": {
-                "value": true
-            },
-            "minecraft:is_summonable": {
-                "value": true
-            },
-            "minecraft:is_experimental": {
-                "value": false
-            }
+            "is_spawnable": true,
+            "is_summonable": true,
+            "is_experimental": false
         },
         "component_groups": {
             "minecraft:cow_baby": {
+                "minecraft:is_baby": {},
+                "minecraft:scale": {
+                    "value": 0.5
+                },
                 "minecraft:ageable": {
                     "duration": 1200,
-                    "feedItems": "wheat",
+                    "feed_items": "wheat",
                     "grow_up": {
-                        "event": "minecraft:ageable_grow_up", // 到一定时间时执行 minecraft:ageable_grow_up 事件
+                        "event": "minecraft:ageable_grow_up",
                         "target": "self"
                     }
+                },
+                "minecraft:behavior.follow_parent": {
+                    "priority": 6,
+                    "speed_multiplier": 1.1
                 }
             },
-
             "minecraft:cow_adult": {
+                "minecraft:experience_reward": {
+                    "on_bred": "Math.Random(1,7)",
+                    "on_death": "query.last_hit_by_player ? Math.Random(1,3) : 0"
+                },
+                "minecraft:loot": {
+                    "table": "loot_tables/entities/cow.json"
+                },
+                "minecraft:behavior.breed": {
+                    "priority": 3,
+                    "speed_multiplier": 1.0
+                },
                 "minecraft:breedable": {
-                    "requireTame": false,
-                    "breedItems": "wheat",
-                    "breedsWith": {
-                        "mateType": "minecraft:cow",
-                        "babyType": "minecraft:cow",
+                    "require_tame": false,
+                    "breed_items": "wheat",
+                    "breeds_with": {
+                        "mate_type": "minecraft:cow",
+                        "baby_type": "minecraft:cow",
                         "breed_event": {
-                            "event": "minecraft:entity_born", // 在繁殖时由新出生的实体执行 minecraft:entity_born 事件
+                            "event": "minecraft:entity_born",
                             "target": "baby"
                         }
                     }
-                }
-            },
-
-            "minecraft:cow_leashed": {
-                "minecraft:behavior.move_towards_restriction": { // 该组件可以让实体跟随缰绳
-                    "priority": 2,
-                    "speed_multiplier": 1.0
+                },
+                "minecraft:interact": {
+                    "interactions": [
+                        {
+                            "on_interact": {
+                                "filters": {
+                                    "all_of": [
+                                        {
+                                            "test": "is_family",
+                                            "subject": "other",
+                                            "value": "player"
+                                        },
+                                        {
+                                            "test": "has_equipment",
+                                            "domain": "hand",
+                                            "subject": "other",
+                                            "value": "bucket:0"
+                                        }
+                                    ]
+                                }
+                            },
+                            "use_item": true,
+                            "transform_to_item": "bucket:1",
+                            "play_sounds": "milk",
+                            "interact_text": "action.interact.milk"
+                        }
+                    ]
                 }
             }
         },
-
         "components": {
+            "minecraft:type_family": {
+                "family": [
+                    "cow",
+                    "mob"
+                ]
+            },
+            "minecraft:breathable": {
+                "total_supply": 15,
+                "suffocate_time": 0
+            },
+            "minecraft:navigation.walk": {
+                "can_path_over_water": true,
+                "avoid_water": true,
+                "avoid_damage_blocks": true
+            },
+            "minecraft:movement.basic": {},
+            "minecraft:jump.static": {},
+            "minecraft:can_climb": {},
+            "minecraft:collision_box": {
+                "width": 0.9,
+                "height": 1.3
+            },
+            "minecraft:nameable": {},
+            "minecraft:health": {
+                "value": 10,
+                "max": 10
+            },
+            "minecraft:hurt_on_condition": {
+                "damage_conditions": [
+                    {
+                        "filters": { "test": "in_lava", "subject": "self", "operator": "==", "value": true },
+                        "cause": "lava",
+                        "damage_per_tick": 4
+                    }
+                ]
+            },
+            "minecraft:movement": {
+                "value": 0.25
+            },
+            "minecraft:behavior.float": {
+                "priority": 0
+            },
+            "minecraft:behavior.panic": {
+                "priority": 1,
+                "speed_multiplier": 1.25
+            },
+            "minecraft:behavior.mount_pathing": {
+                "priority": 2,
+                "speed_multiplier": 1.5,
+                "target_dist": 0.0,
+                "track_target": true
+            },
+            "minecraft:behavior.breed": {
+                "priority": 3,
+                "speed_multiplier": 1.0
+            },
+            "minecraft:behavior.tempt": {
+                "priority": 4,
+                "speed_multiplier": 1.25,
+                "items": [
+                    "wheat"
+                ]
+            },
+            "minecraft:behavior.follow_parent": {
+                "priority": 5,
+                "speed_multiplier": 1.1
+            },
+            "minecraft:behavior.random_stroll": {
+                "priority": 6,
+                "speed_multiplier": 0.8
+            },
+            "minecraft:behavior.look_at_player": {
+                "priority": 7,
+                "look_distance": 6.0,
+                "probability": 0.02
+            },
+            "minecraft:behavior.random_look_around": {
+                "priority": 9
+            },
             "minecraft:leashable": {
                 "soft_distance": 4.0,
                 "hard_distance": 6.0,
-                "max_distance": 10.0,
-                "on_leash": {
-                    "event": "minecraft:on_leash", // 被栓绳拴住时执行 minecraft:on_leash 事件
-                    "target": "self"
-                },
-                "on_unleash": {
-                    "event": "minecraft:on_unleash", // 取消栓绳时执行 minecraft:on_leash 事件
-                    "target": "self"
+                "max_distance": 10.0
+            },
+            "minecraft:balloonable": {},
+            "minecraft:rideable": {
+                "seat_count": 1,
+                "family_types": [
+                    "zombie"
+                ],
+                "seats": {
+                    "position": [0.0, 1.105, 0.0]
                 }
+            },
+            "minecraft:physics": {},
+            "minecraft:pushable": {
+                "is_pushable": true,
+                "is_pushable_by_piston": true
             }
         },
-
         "events": {
-            "minecraft:entity_spawned": { // 实体生成时自动执行的事件
-                "randomize": [ // 会随机启用下面两个组件组（minecraft:cow_adult 与 minecraft:cow_baby）之一
+            "minecraft:entity_spawned": {
+                "randomize": [
                     {
                         "weight": 95,
                         "add": {
@@ -379,7 +1821,6 @@ JSON 格式包含五种结构，分别是对象、字符串、布尔值、数字
                     }
                 ]
             },
-
             "minecraft:entity_born": {
                 "add": {
                     "component_groups": [
@@ -387,7 +1828,14 @@ JSON 格式包含五种结构，分别是对象、字符串、布尔值、数字
                     ]
                 }
             },
-
+            "minecraft:entity_transformed": {
+                "remove": {},
+                "add": {
+                    "component_groups": [
+                        "minecraft:cow_adult"
+                    ]
+                }
+            },
             "minecraft:ageable_grow_up": {
                 "remove": {
                     "component_groups": [
@@ -399,403 +1847,29 @@ JSON 格式包含五种结构，分别是对象、字符串、布尔值、数字
                         "minecraft:cow_adult"
                     ]
                 }
-            },
-
-            "minecraft:on_leash": {
-                "add": {
-                    "component_groups": [
-                        "minecraft:cow_leashed"
-                    ]
-                }
-            },
-            "minecraft:on_unleash": {
-                "remove": {
-                    "component_groups": [
-                        "minecraft:cow_leashed"
-                    ]
-                }
             }
         }
     }
 }
 ```
-其实还是可以分析出来的，对吧~【啥，没看懂。没关系，静下心来从头再看一遍就好。
+
+我相信强大的你已经完全理解了牛这个实体的行为，以及这些复杂行为的定义方式了。你真是太棒了，请给我的帖子最高等级的评分！
 
 ## 自造轮子
 
-本教程举一个例子来让大家再进一步熟悉如何编辑实体行为 —— 让豹猫入水爆炸！（豹猫：喵喵喵？）
+本教程再举一个例子来让大家进一步熟悉如何编辑实体的行为 —— 让牛入水爆炸！（牛：喵喵喵？）
 
-由于要修改的是原版就有的文件，所以在你的行为包下创建 `entities/ocelot.json` 文件，把原版豹猫的内容复制过去，即可覆盖掉原版的豹猫文件：
+由于要修改的是原版就有的文件，所以在你的行为包下创建 `entities/cow.json` 文件，把原版牛的内容复制过去即可。游戏会用你的行为包里面定义的牛的行为文件覆盖掉原版自带的牛的行为了。
 
-[spoiler]
+分析一下我们的需求「让牛入水爆炸」：
 
-```
-{
-  "format_version": "1.8.0-beta.1",
-  "minecraft:entity": {
-    "description": {
-      "identifier": "minecraft:ocelot",
-      "minecraft:spawn_egg": {
-        "value": true
-      },
-      "minecraft:is_summonable": {
-        "value": true
-      },
-      "minecraft:is_experimental": {
-        "value": false
-      }
-    },
-    "component_groups": {
-      "minecraft:ocelot_baby": {
-        "minecraft:is_baby": {},
-        "minecraft:scale": {
-          "value": 0.5
-        },
-        "minecraft:ageable": {
-          "duration": 1200,
-          "feedItems": [
-            "fish",
-            "salmon"
-          ],
-          "grow_up": {
-            "event": "minecraft:ageable_grow_up",
-            "target": "self"
-          }
-        }
-      },
-      "minecraft:ocelot_adult": {
-        "minecraft:loot": {
-          "table": "loot_tables/entities/ocelot.json"
-        },
-        "minecraft:scale": {
-          "value": 1
-        }
-      },
-      "minecraft:ocelot_wild": {
-        "minecraft:trusting": {
-          "probability": 0.33,
-          "trust_items": [
-            "fish",
-            "salmon"
-          ],
-          "trust_event": {
-            "event": "minecraft:on_trust",
-            "target": "self"
-          }
-        },
-        "minecraft:behavior.tempt": {
-          "priority": 4,
-          "speed_multiplier": 0.5,
-          "within_radius": 16,
-          "can_get_scared": true,
-          "items": [
-            "fish",
-            "salmon"
-          ]
-        },
-        "minecraft:behavior.avoid_mob_type": {
-          "priority": 5,
-          "entity_types": [
-            {
-              "filters": {
-                "test": "is_family",
-                "subject": "other",
-                "value": "player"
-              },
-              "max_dist": 10,
-              "walk_speed_multiplier": 0.8,
-              "sprint_speed_multiplier": 1.33
-            }
-          ]
-        },
-        "minecraft:rideable": {
-          "seat_count": 1,
-          "family_types": [
-            "zombie"
-          ],
-          "seats": {
-            "position": [
-              0.0,
-              0.35,
-              0.0
-            ]
-          }
-        }
-      },
-      "minecraft:ocelot_trusting": {
-        "minecraft:behavior.breed": {
-          "priority": 3,
-          "speed_multiplier": 1.0
-        },
-        "minecraft:behavior.tempt": {
-          "priority": 4,
-          "speed_multiplier": 0.5,
-          "within_radius": 16,
-          "items": [
-            "fish",
-            "salmon"
-          ]
-        },
-        "minecraft:breedable": {
-          "requireTame": false,
-          "breedsWith": {
-            "mateType": "minecraft:ocelot",
-            "babyType": "minecraft:ocelot",
-            "breed_event": {
-              "event": "minecraft:entity_born",
-              "target": "baby"
-            }
-          },
-          "breedItems": [
-            "fish",
-            "salmon"
-          ]
-        }
-      },
-      "minecraft:ocelot_tame": {
-        "minecraft:is_tamed": {},
-        "minecraft:health": {
-          "value": 20,
-          "max": 20
-        },
-        "minecraft:sittable": {},
-        "minecraft:leashable": {
-          "soft_distance": 4.0,
-          "hard_distance": 6.0,
-          "max_distance": 10.0,
-          "on_leash": {
-            "event": "minecraft:on_leash",
-            "target": "self"
-          },
-          "on_unleash": {
-            "event": "minecraft:on_unleash",
-            "target": "self"
-          }
-        },
-        "minecraft:behavior.follow_owner": {
-          "priority": 4,
-          "speed_multiplier": 1.0,
-          "start_distance": 10,
-          "stop_distance": 2
-        },
-        "minecraft:behavior.stay_while_sitting": {
-          "priority": 3
-        },
-        "minecraft:behavior.ocelot_sit_on_block": {
-          "priority": 6,
-          "speed_multiplier": 1.0
-        }
-      }
-    },
-    "components": {
-      "minecraft:health": {
-        "value": 10,
-        "max": 10
-      },
-      "minecraft:attack_damage": {
-        "value": 4
-      },
-      "minecraft:nameable": {},
-      "minecraft:type_family": {
-        "family": [
-          "ocelot"
-        ]
-      },
-      "minecraft:breathable": {
-        "totalSupply": 15,
-        "suffocateTime": 0
-      },
-      "minecraft:collision_box": {
-        "width": 0.6,
-        "height": 0.7
-      },
-      "minecraft:movement": {
-        "value": 0.3
-      },
-      "minecraft:navigation.walk": {
-        "can_path_over_water": true,
-        "avoid_water": true,
-        "avoid_damage_blocks": true
-      },
-      "minecraft:movement.basic": {},
-      "minecraft:jump.static": {},
-      "minecraft:can_climb": {},
-      "minecraft:fall_damage": {
-        "value": 0.0
-      },
-      "minecraft:behavior.float": {
-        "priority": 0
-      },
-      "minecraft:behavior.panic": {
-        "priority": 1,
-        "speed_multiplier": 1.25
-      },
-      "minecraft:behavior.nearest_attackable_target": {
-        "priority": 1,
-        "attack_interval": 10,
-        "reselect_targets": true,
-        "entity_types": [
-          {
-            "filters": {
-              "test": "is_family",
-              "subject": "other",
-              "value": "chicken"
-            },
-            "max_dist": 8
-          },
-          {
-            "filters": {
-              "all_of": [
-                {
-                  "test": "is_family",
-                  "subject": "other",
-                  "value": "baby_turtle"
-                },
-                {
-                  "test": "in_water",
-                  "subject": "other",
-                  "operator": "!=",
-                  "value": true
-                }
-              ]
-            },
-            "max_dist": 8
-          }
-        ]
-      },
-      "minecraft:behavior.mount_pathing": {
-        "priority": 1,
-        "speed_multiplier": 1.25,
-        "target_dist": 0,
-        "track_target": true
-      },
-      "minecraft:behavior.leap_at_target": {
-        "priority": 3,
-        "target_dist": 0.3
-      },
-      "minecraft:behavior.ocelotattack": {
-        "priority": 4,
-        "walk_speed_multiplier": 0.8,
-        "sprint_speed_multiplier": 1.33,
-        "sneak_speed_multiplier": 0.6
-      },
-      "minecraft:behavior.random_stroll": {
-        "priority": 8,
-        "speed_multiplier": 0.8
-      },
-      "minecraft:behavior.look_at_player": {
-        "priority": 9
-      },
-      "minecraft:physics": {}
-    },
-    "events": {
-      "minecraft:entity_spawned": {
-        "sequence": [
-          {
-            "randomize": [
-              {
-                "weight": 3,
-                "remove": {},
-                "add": {
-                  "component_groups": [
-                    "minecraft:ocelot_adult",
-                    "minecraft:ocelot_wild"
-                  ]
-                }
-              },
-              {
-                "weight": 1,
-                "remove": {},
-                "add": {
-                  "component_groups": [
-                    "minecraft:ocelot_baby",
-                    "minecraft:ocelot_wild"
-                  ]
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "minecraft:entity_born": {
-        "sequence": [
-          {
-            "remove": {},
-            "add": {
-              "component_groups": [
-                "minecraft:ocelot_baby",
-                "minecraft:ocelot_trusting"
-              ]
-            }
-          }
-        ]
-      },
-      "minecraft:entity_born_wild": {
-        "remove": {
-          "component_groups": [
-            "minecraft:ocelot_trusting"
-          ]
-        },
-        "add": {
-          "component_groups": [
-            "minecraft:ocelot_baby",
-            "minecraft:ocelot_wild"
-          ]
-        }
-      },
-      "minecraft:ageable_grow_up": {
-        "remove": {
-          "component_groups": [
-            "minecraft:ocelot_baby"
-          ]
-        },
-        "add": {
-          "component_groups": [
-            "minecraft:ocelot_adult"
-          ]
-        }
-      },
-      "minecraft:on_trust": {
-        "sequence": [
-          {
-            "remove": {
-              "component_groups": [
-                "minecraft:ocelot_wild"
-              ]
-            }
-          },
-          {
-            "add": {
-              "component_groups": [
-                "minecraft:ocelot_trusting"
-              ]
-            }
-          }
-        ]
-      },
-      "minecraft:on_leash": {
-        "add": {
-          "component_groups": [
-            "minecraft:ocelot_leashed"
-          ]
-        }
-      },
-      "minecraft:on_unleash": {
-        "remove": {
-          "component_groups": [
-            "minecraft:ocelot_leashed"
-          ]
-        }
-      }
-    }
-  }
-}
-```
-[/spoiler]
+1. 「爆炸」这一行为怎么做？查询附录可知，爆炸组件的名称叫做 `minecraft:explode`；
+2. 爆炸是在一定条件下才有的，因此爆炸组件应该放在一个组件组里面，不能直接加到基础组件；
+3. 用了组件组，就一定要在某条件下触发一个事件，让该事件启用这个组件组，才能让它发挥作用。条件很简单，是「入水」，所以我们添加一个在牛入水后触发指定事件的基础组件即可。
 
-在修改或添加实体时，所有你可能用到的组件、函数等都可以在附录里找到。
+为了添加这一行为，需要在基础组件里添加一个组件，并且再添加一个组件组、一个事件。
 
-我们先添加一个立刻爆炸的组件组 `spgoding:exploding`，在其中加入爆炸的组件：
+我们先添加组件组，命名为 `spgoding:exploding`，在其中加入爆炸的组件。当该组件组被启用后，牛就会开始自爆了：
 
 ```
 "spgoding:exploding": {
@@ -808,7 +1882,8 @@ JSON 格式包含五种结构，分别是对象、字符串、布尔值、数字
     }
 }
 ```
-然后添加一个事件 `spgoding:start_explode`，使其启用 `spgoding:exploding` 组件组：
+
+然后添加事件，使其启用上面定义的 `spgoding:exploding` 组件组。事件名就叫 `spgoding:start_explode` 好了：
 
 ```
 "spgoding:start_explode": {
@@ -819,7 +1894,8 @@ JSON 格式包含五种结构，分别是对象、字符串、布尔值、数字
     }
 }
 ```
-最后添加一个组件，当满足指定滤器时执行事件 `spgoding:start_explode`：
+
+最后在基础组件中添加一个组件，当满足指定滤器（入水）时触发我们的 `spgoding:start_explode` 事件：
 
 ```
 "minecraft:environment_sensor": {
@@ -832,11 +1908,9 @@ JSON 格式包含五种结构，分别是对象、字符串、布尔值、数字
 }
 ```
 
-然后我们重载行为包…
+至此，我们已经成功修改了牛的行为。
 
-把豹猫推到水里，然后你会惊喜地发现——豹猫并没有爆炸。
-
-为什么呢？我也不知道，留作课后习题。
+退出再重进世界。
 
 [page]
 
@@ -1472,1316 +2546,6 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 
 [page]
 
-# 战利品表
-
-战利品表可以用来定义宝箱/实体/游戏行为等各种东西所能给玩家带来的物品，以及指定实体所能穿的装备等。
-
-原版放置战利品表的位置是在行为包根目录下的 `loot_tables` 文件夹内。事实上，你可以放在行为包里任何你想要的地方，但建议大家按传统习惯行事。
-
-在 Java 版中同样也有战利品表，隔壁的教程也是我写的，有兴趣可以对比一下：[Java 版战利品表：从入门到重新入门](https://www.mcbbs.net/thread-831542-1-1.html)。
-
-## 简述
-
-![image.png](https://i.loli.net/2019/10/23/4b2a8QiIMvVWFx6.png)
-
-## 文件格式
-
-- `pools`：（数组）随机池们。游戏会从每一个随机池中**逐个**抽取物品。
-    - *（对象）一个随机池*
-        - `conditions`：（数组）可选。使用该随机池所需满足的条件列表。
-            - *（对象）一个条件（有关条件的具体内容见下方介绍）*
-        - `tiers`：（对象）可选。如果指定，将会忽略掉下方的 `rolls` 以及各项中的 `weight` 和 `quality`，把 `entries` 中的每一项看作一个层级。`entries` 中的第一个对象为第一层，第二个对象为第二层，以此类推。这几行的地方可能讲不明白，如果看不懂下面这三个参数的描述的话，下面有例子。
-            - `initial_range`：（数字）初始的选取范围。游戏将会默认从第 1 层一直到这一参数中指定的层中随机抽取一项。例如，把该参数设置为 `2`，则游戏会默认从 `entries` 中的第 1 项和第 2 项中随机抽取一个选择。由于设置了 `tiers` 后会忽略掉 `weight` 和 `quality`，每一项被选中的几率都是 50%。
-            - `bonus_chance`：（数字）将被选取的层级数再加上定义在 `bonus_rolls` 中的奖励的层数的几率。取值应在 [0.0, 1.0] 中。
-            - `bonus_rolls`：（数字）奖励层数。必须大于等于 `1`。当游戏根据 `initial_range` 定义的范围从 `entries` 中选取一层以后，有一定几率（该几率定义在 `bonus_chance` 中）把已经选取的层数再加上这个数字。
-        - `rolls`：（整数）可选。从该随机池中抽取物品的次数。
-        - `entries`：（数组）可以从该随机池中抽取的所有项。如果指定了 `rolls`，游戏会从这些项中随机抽取**一个**；如果指定了 `tiers`，则会按照层级的特性随机抽取**一个**。
-            - *（对象）一项*
-                - `type`：（字符串）该项的类型，用于决定下面 `name` 参数的解析方式。`item` 表示是个物品，`loot_table` 表示是另一个战利品表，`empty` 表示什么都没有。
-                - `name`：（字符串）名字。会根据上面 `type` 的值来解析。例如 `type` 为 `item`，则会将此字段按照物品名解析。
-                - `weight`：（整数）该项的权重。从随机池中抽到该项的几率为 `weight / (该随机池中所有满足条件的事物的 weight 的和)`。
-                - `quality`：（整数）可选。根据玩家的幸运等级影响该 `weight`。计算公式为，`floor(weight + (quality * <幸运等级>))`，其中 `floor` 为向下取整。
-                - `pools`：（数组）可选。该项的子随机池。在抽出该项后，游戏会从该项的这个子随机池中继续抽取物品。
-                    - *（对象）一个随机池。格式和根对象中随机池的格式完全一致。*
-                - `conditions`：（数组）可选。抽出该项所需满足的条件列表。
-                    - *（对象）一个条件（有关条件的具体内容见下方介绍）*
-                - `functions`：（函数）可选。抽出该项时对此项执行的战利品表函数（请与命令的函数做区分）。
-                    - *（对象）一个函数*
-                        - `function`：（字符串）该函数的名称（有关函数的具体内容见下方介绍）。
-                        - `conditions`：（数组）执行该函数所需满足的条件列表。
-                            - *（对象）一个条件（有关条件的具体内容见下方介绍）*
-
-## 学习原版
-
-以下是原版中僵尸的战利品表 `./loot_tables/entities/zombie.json`。注释是我自己加的。
-
-```json
-{
-    "pools": [
-        {
-            // 第一个随机池。
-            "rolls": 1, // 指定了 rolls，因此会从下面的 entries 中随机抽取一项。
-            "entries": [
-                {
-                    // 第一个随机池里的第一项。
-                    "type": "item", // 是个物品。
-                    "name": "minecraft:rotten_flesh", // 物品 ID 是腐肉的。
-                    "weight": 1, // 权重是 1。这个是几其实无所谓，因为这个随机池里面只有这一项，肯定会抽中这一项的。
-                    "functions": [
-                        {
-                            // 对这个腐肉执行的第一个函数。
-                            "function": "set_count", // 这个函数的作用是设置物品数量。详细函数列表可以看下面。
-                            "count": { // 数量随机设置为 0-2 中的一个。如果设置为 0，表明不会掉落。
-                                "min": 0,
-                                "max": 2
-                            }
-                        },
-                        {
-                            // 对这个腐肉执行的第二个函数。
-                            // 这个函数的作用是，玩家的武器每有一级抢夺附魔，就多掉落 0-1 个物品。
-                            "function": "looting_enchant", 
-                            "count": {
-                                "min": 0,
-                                "max": 1
-                            }
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            // 第二个随机池
-            "conditions": [
-                // 这个随机池设定了条件。只有以下条件全部满足时，才会从这个随机池中抽取物品。
-                {
-                    // 条件 1：僵尸是被玩家杀死的。
-                    "condition": "killed_by_player"
-                },
-                {
-                    // 条件 2：有 2.5% 的概率达成。玩家的武器每有一级抢夺附魔，就加 1% 的概率。
-                    "condition": "random_chance_with_looting",
-                    "chance": 0.025,
-                    "looting_multiplier": 0.01
-                }
-            ],
-            "rolls": 1,
-            "entries": [
-                // 当上述两个条件全部满足后，从这三项里随机抽取一个掉落。
-                // 这三项的权重 weight 都是 1，因此这三个掉落的概率相等。
-                // 这三项结构很简单，就不写注释了。
-                {
-                    "type": "item",
-                    "name": "minecraft:iron_ingot",
-                    "weight": 1
-                },
-                {
-                    "type": "item",
-                    "name": "minecraft:carrot",
-                    "weight": 1
-                },
-                {
-                    "type": "item",
-                    "name": "minecraft:potato",
-                    "weight": 1
-                }
-            ]
-        }
-    ]
-}
-```
-
-这整个战利品表实现了僵尸的物品的掉落，简单描述为：一般会掉落腐肉，偶尔会再多掉一个铁锭/胡萝卜/马铃薯。与我们平时认知的一样。
-
-## Tiers 层级到底是什么
-
-这是上面僵尸的战利品表，经过我修改后的样子，使用到了 `tiers`：
-
-```json
-{
-    "pools": [
-        {
-            "tiers": {
-                "initial_range": 2,
-                "bonus_rolls": 1,
-                "bonus_chance": 0.01
-            },
-            "entries": [
-                {
-                    "type": "item",
-                    "name": "minecraft:rotten_flesh"
-                },
-                {
-                    "type": "item",
-                    "name": "minecraft:carrot"
-                },
-                {
-                    "type": "item",
-                    "name": "minecraft:iron_ingot"
-                }
-            ]
-        }
-    ]
-}
-```
-
-`entries` 中定义的这三项变成了三个层级。`rotten_flesh`（腐肉）是第 1 层，`carrot`（胡萝卜）是第 2 层，`iron_ingot`（铁锭）是第 3 层。
-
-当游戏执行这个战利品表时，会首先从第 1 层到第 `initial_range` 层中随机抽取一层。以这个 JSON 为例，则是随机从 `rotten_flesh`（腐肉）和 `carrot`（胡萝卜）中随机抽取一个，这两个被抽到的概率都是 50%。
-
-当抽取好以后，又有 `bonus_chance` 的几率把这一层数加上 `bonus_rolls`。以这个 JSON 为例，有 1% 的几率把层数加 `1`。例如，原先抽取到了 `rotten_flesh`（腐肉），那么有 1% 的几率会返回 `carrot`（胡萝卜）；原先抽取到了 `carrot`（胡萝卜），那么有 1% 的几率会返回 `iron_ingot`（铁锭）。
-
-Tiers 这一特性原版主要将其用于生成怪物的盔甲。这是 `loot_tables/entities/skeleton_gear.json` 的一部分，它用于生成骷髅的盔甲：
-
-```json
-{
-    "tiers": {
-        "initial_range": 2,
-        "bonus_rolls": 3,
-        "bonus_chance": 0.095
-    },
-    "entries": [
-        {
-            "type": "loot_table",
-            "name": "loot_tables/entities/armor_set_leather.json"
-        },
-        {
-            "type": "loot_table",
-            "name": "loot_tables/entities/armor_set_gold.json"
-        },
-        {
-            "type": "loot_table",
-            "name": "loot_tables/entities/armor_set_chain.json"
-        },
-        {
-            "type": "loot_table",
-            "name": "loot_tables/entities/armor_set_iron.json"
-        },
-        {
-            "type": "loot_table",
-            "name": "loot_tables/entities/armor_set_diamond.json"
-        }
-    ]
-}
-```
-
-这一战利品表使得骷髅的盔甲通常为 `armor_set_leather`（皮革）或 `armor_set_gold`（金甲），但有 9.5% 的几率会变为 `armor_set_iron`（铁甲）或 `armor_set_diamond`（钻石甲）。
-
-Tiers 这个略为复杂的东西扯完了。
-
-[spoiler]以下是我自己用的东西，放别的地方怕被我弄丢了。没什么用，折叠吧。
-```typescript
-import * as fs from 'fs'
-import { join } from 'path'
-
-const walker = (path: string, cb: (content: string) => any) => {
-    const files = fs.readdirSync(path)
-    for (const file of files) {
-        const child = join(path, file)
-        if (fs.statSync(child).isDirectory()) {
-            walker(child, cb)
-        } else if (child.endsWith('.json')) {
-            cb(fs.readFileSync(child, { encoding: 'utf8' }))
-        }
-    }
-}
-
-const arr: string[] = []
-
-walker(__dirname, (content: string) => {
-    const trim = (val: string, prefix = 'minecraft:') => val.startsWith(prefix) ? val.slice(prefix.length) : val
-    const regex = /"function": "(.*?)"/g
-    let match = regex.exec(content)
-    while (match) {
-        if (arr.indexOf(trim(match[1])) === -1) {
-            arr.push(trim(match[1]))
-        }
-        match = regex.exec(content)
-    }
-})
-
-console.log(arr.length)
-console.log(arr.sort().join('\n'))
-```
-[/spoiler]
-
-## 自造轮子
-
-我想让僵尸在被烧死的时候掉烈焰粉！
-
-所有你需要的战利品表函数、条件都可以在附录里找到。不过如果找不到，可以考虑用别的方案替代。
-
-首先，我们要修改的是原版就有的僵尸的战利品表，比较便捷的做法是直接在你的行为包中用同名同路径的文件把它覆盖掉。创建 `loot_tables/entities/zombie.json`，把原版战利品表中的内容复制进去（你可以直接从我开头「学习原版」部分的代码框里复制，注释删不删无所谓，因为就像我开篇说的那样，Minecraft 会自动忽略掉那些注释）。
-
-接下来就可以加烈焰粉了。在原来的两个随机池下面多加一个随机池（注意逗号），设置条件为 `entity_properties`，指定 `entity` 为 `this`（即探测僵尸自身），指定 `on_fire` 为 `true`（即需要被探测的实体着火）。设置给予的物品为 `minecraft:blaze_powder`（烈焰粉），数量从 1 至 2 随机。即: 
-
-```
-{
-    "pools": [
-        { ... }, 
-        { ... }, // 原有的两个随机池，这里省略不写。
-        {
-            "conditions": [
-                {
-                    "condition": "entity_properties",
-                    "entity": "this",
-                    "properties": {
-                        "on_fire": true
-                    }
-                }
-            ],
-            "rolls": 1,
-            "entries": [
-                {
-                    "type": "item",
-                    "name": "minecraft:blaze_powder",
-                    "weight": 1,
-                    "functions": [
-                        {
-                            "function": "set_count",
-                            "count": {
-                                "min": 1,
-                                "max": 2
-                            }
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
-}
-```
-
-重载行为包。
-
-可以看到僵尸被烧死后产生了烈焰粉。
-
-![](https://i.loli.net/2018/10/20/5bca0ae304212.gif)
-
-（这张动图是上次写这篇教程时候录的，大体效果没错，就不重新录制了）
-
-好的，一个悲伤的故事是，僵尸就算不是被烧死的也会掉烈焰粉。这并不是我的问题，我已经将该漏洞反馈：[MCPE-54162](https://bugs.mojang.com/browse/MCPE-54162)。
-
-## 课后习题
-
-让玩家钓鱼能钓上来有随机附魔的钻石剑吧！
-
-提示: 可以在原版的行为包里找钓鱼相关战利品表的位置（找不到的话我告诉你，主钓鱼战利品表是 `loot_tables/gameplay/fishing.json`，它又引用了别的战利品表。带有随机附魔的钻石剑可以被认为是宝物，因此你需要修改的是钓鱼出宝物的战利品表，即 `loot_tables/gameplay/fishing/treasure.json`），在本人整理的附录中找到你需要的函数。
-
-本节完，点击论坛右侧的书签可以快速回到顶部。
-
-[page]
-
-## 附录：函数
-
-下面是战利品表中可用的全部函数。这些函数可以根据需求添加到每一项的 `functions` 数组中。函数的名称可以带 `minecraft:` 前缀，也可以不带，看你的喜好。例如，`set_count` 和 `minecraft:set_count` 都是表示设置物品数量的函数，执行起来没有区别。
-
-在开始介绍前，先简单说明一下「数字或范围」这一格式的意思。这一格式在之后的章节中也有可能会出现，到时就不再赘言了。
-
-### 数字或范围
-
-很简单。当一个参数的类型被我写为「数字或范围」时，表明它既可以是一个精确的数字，也可以是一个形如 `{ "min": 最小值, "max": 最大值 }` 的表明随机数的对象。
-
-### enchant_random_gear
-
-对装备随机附魔。Minecraft 使用战利品表来决定实体在生成时所装备的物品，每个生物具体使用哪个战利品表，可以在实体行为中定义（有关实体行为的具体内容，见「实体行为」章节）。
-
-- `chance`：（数字）进行附魔的概率。例如 `0.25` 表示 `25%`。
-
-示例（`loot_tables/entities/armor_set_chain.json`）：
-```json
-{
-    "function": "enchant_random_gear",
-    "chance": 0.25
-}
-```
-
-### enchant_randomly
-
-对物品进行随机附魔。
-
-- `treasure`：（布尔值）是否给予宝藏魔咒。
-
-示例（`loot_tables/chests/pillager_outpost.json`）：
-```json
-{
-    "function": "minecraft:enchant_randomly"
-}
-```
-
-### enchant_with_levels
-
-对物品进行相当于使用了指定经验等级的附魔。
-
-- `treasure`：（布尔值）是否给予宝藏魔咒。
-- `levels`：（数字或范围）要设置的等级。
-
-示例（`loot_tables/chests/end_city_treasure.json`）：
-```json
-{
-    "function": "enchant_with_levels",
-    "treasure": true,
-    "levels": {
-        "min": 20,
-        "max": 39
-    }
-}
-```
-
-### exploration_map
-
-将该物品变为探险地图。指定的物品需要是地图。
-
-- `destination`：（字符串）地图的目的地。需要是一个结构的 ID。全部结构的 ID 可以在 [Wiki](https://minecraft-zh.gamepedia.com/%E5%91%BD%E4%BB%A4/locate) 上查看。
-
-示例（`loot_tables/chests/shipwreck.json`）：
-```json
-{
-    "function": "exploration_map",
-    "destination": "buriedtreasure"
-}
-```
-
-### furnace_smelt
-
-对该物品进行熔炼。得到的结果与将物品放置熔炉中熔炼产生的结果一致。为该函数添加 `entity_properties` 条件可以做到实体被烧死时掉落熟食。
-
-示例（`loot_tables/entities/chicken.json`）：
-```json
-{
-    "function": "furnace_smelt"
-}
-```
-
-### looting_enchant
-
-设置抢夺魔咒对数量的影响。
-
-- `count`：（数字或范围）每一级抢夺魔咒增加的数量。
-- `limit`：（数字）抢夺魔咒所增加的数量的上限。
-
-示例（`loot_tables/entities/blaze.json`）：
-```json
-{
-    "function": "looting_enchant",
-    "count": {
-        "min": 0,
-        "max": 1
-    }
-}
-```
-
-### random_aux_value
-
-随机生成一个辅助数值。不明。
-
-- `values`：（数字或范围）要设置的值。
-
-示例（`loot_tables/chests/shipwrecksupply.json`）：
-```json
-{
-    "function": "random_aux_value",
-    "values": {
-        "min": 0,
-        "max": 6
-    }
-}
-```
-
-### set_banner_details
-
-设置旗帜的图案。指定的物品需要是旗帜。
-
-- `type`：（数字）旗帜图案的类型。已知数值只有 `1`，代表掠夺者首领头上的旗帜。
-
-示例（`loot_tables/entities/pillager_captain_equipment.json`）：
-```json
-{
-    "function": "set_banner_details",
-    "type": 1
-}
-```
-
-### set_count
-
-设置物品的数量。
-
-- `count`：（数字或范围）要设置的数量。
-
-示例（`loot_tables/chests/buriedtreasure.json`）：
-```json
-{
-    "function": "set_count",
-    "count": {
-        "min": 1,
-        "max": 5
-    }
-}
-```
-
-### set_damage
-
-设置物品的损坏率。
-
-- `damage`：（数字或范围）要设置的损坏率。取值应在 [0, 1] 之间。
-
-示例（`loot_tables/entities/drowned.json`）：
-```json
-{
-    "function": "set_damage",
-    "damage": {
-        "min": 0.2,
-        "max": 0.9
-    }
-}
-```
-
-### set_data
-
-设置物品的数据值。
-
-- `data`：（数字）要设置的数据值。
-
-示例（`loot_tables/chests/buriedtreasure.json`）：
-```json
-{
-    "function": "set_data",
-    "data": 19
-}
-```
-
-### set_data_from_color_index
-
-根据当前实体的颜色设置物品的数据值。只有在当前实体为羊且物品具有颜色（如羊毛、混凝土等），或当前实体为哞菇且当前物品为蘑菇时有用。
-
-示例（`loot_tables/entities/sheep.json`）：
-```json
-{
-    "function": "minecraft:set_data_from_color_index"
-}
-```
-
-[page]
-
-## 附录：条件
-
-当你指定的条件全部达成时，才有可能会使用你所设置的随机池（`pool`）、项（`entry`）或是函数（`function`）。下面是战利品表中可用的全部条件。
-
-### entity_properties
-
-指定实体的属性匹配时达成条件。
-
-
-- `entity`：（字符串）要检测的实体。`this` 指代死亡的这个实体，`killer` 指代杀了这个实体的实体，`killer_player` 指代杀了这个实体的玩家。
-- `properties`：（对象）要检测的属性。
-    - `on_fire`：（布尔值）指定实体是否着火。
-
-示例（`loot_tables/entities/chicken.json`）：
-```json
-{
-    "condition": "entity_properties",
-    "entity": "this",
-    "properties": {
-        "on_fire": true
-    }
-}
-```
-
-### has_mark_variant
-
-检测该实体是否是某个变种。不明。
-
-- `value`：（数字）
-
-示例（`loot_tables/entities/mooshroom_milking.json`）：
-```json
-{
-    "condition": "has_mark_variant",
-    "value": -1
-}
-```
-
-### killed_by_entity
-
-被指定类型的实体击杀时达成条件。
-
-- `entity_type`：（字符串）指定实体的 ID。
-
-示例（`loot_tables/entities/creeper.json`）：
-```json
-{
-    "condition": "killed_by_entity",
-    "entity_type": "minecraft:skeleton"
-}
-```
-
-### killed_by_player
-
-被玩家击杀时达成条件。
-
-示例（`loot_tables/entities/cave_spider.json`）：
-```json
-{
-    "condition": "killed_by_player"
-}
-```
-
-### killed_by_player_or_pets
-
-被玩家或玩家的宠物击杀时达成条件。
-
-示例（`loot_tables/entities/blaze.json`）：
-```json
-{
-    "condition": "killed_by_player_or_pets"
-}
-```
-
-### random_chance
-
-有一定几率达成。
-
-- `chance`：（数字）条件达成的几率。取值应当在 [0, 1] 的范围内。
-
-示例（`loot_tables/entities/drowned_equipment.json`）：
-```json
-{
-    "condition": "random_chance",
-    "chance": 0.01
-}
-```
-
-### random_chance_with_looting
-
-有一定几率达成。该几率可以被「抢夺」附魔提高。
-
-- `chance`：（数字）条件达成的基础几率。取值应当在 [0, 1] 的范围内。
-- `looting_multiplier`：（数字）每一级「抢夺」魔咒所增加的几率。取值应当在 [0, 1] 的范围内。
-
-示例（`loot_tables/entities/drowned.json`）：
-```json
-{
-    "condition": "random_chance_with_looting",
-    "chance": 0.11,
-    "looting_multiplier": 0.02
-}
-```
-
-### random_difficulty_chance
-
-有一定几率达成。可以指定在不同难度下的几率。
-
-- `default_chance`：（数字）条件达成的默认几率。取值应当在 [0, 1] 的范围内。
-- `peaceful`：（数字）和平模式下条件达成的几率。取值应当在 [0, 1] 的范围内。
-- `easy`：（数字）简单模式下条件达成的几率。取值应当在 [0, 1] 的范围内。
-- `normal`：（数字）普通模式下条件达成的几率。取值应当在 [0, 1] 的范围内。
-- `hard`：（数字）困难模式下条件达成的几率。取值应当在 [0, 1] 的范围内。
-
-示例（`loot_tables/entities/armor_set_chain.json`）：
-```json
-{
-    "condition": "random_difficulty_chance",
-    "default_chance": 0.50,
-    "peaceful": 0,
-    "hard": 0.6
-}
-```
-
-### random_regional_difficulty_chance
-
-有一定几率达成。该几率随着区域难度提高而提高。
-
-- `max_chance`：（数字）条件达成的最大几率。取值应当在 [0, 1] 的范围内。
-
-示例（`loot_tables/entities/skeleton_gear.json`）：
-```json
-{
-    "condition": "random_regional_difficulty_chance",
-    "max_chance": 0.15
-}
-```
-
-[page]
-
-# 交易表
-
-行为包可以定义村民的交易表。
-
-原版放置村民交易表的位置是在根目录下的 `trading` 文件夹内。事实上，你可以放在行为包里任何你想要的地方，但建议大家按传统习惯行事。
-
-## 简述
-
-简单介绍一下村民交易的机制：村民的交易分为多个层级。首先只会解锁第一个层级的交易。当交易几次以后，会解锁下一个层级的交易。如此反复，直到所有层级的交易都解锁了为止。
-
-## 文件格式
-
-- `tiers`：（数组）储存该交易表中的所有交易层级。从上到下层级逐渐增高。
-    - *（对象）一层交易*
-        - `trades`：（数组）该层中具有的所有交易。
-        - *（对象）一个交易*
-            - `wants`：（数组）村民想要的物品。项数应小于等于 2，超出的物品会被无视。
-                - *（对象）一个物品*
-                    - `item`：（字符串）物品 ID，如果有数据值，使用冒号分割。
-                    - `quantity`：（数字或范围）物品数量。
-            - `gives`：（数组）村民给予的物品。会从中随机抽取。
-                - *（对象）一个物品*
-                    - `item`：（字符串）物品 ID，如果有数据值，使用冒号分割。
-                    - `quantity`：（数字或范围）物品数量。
-                    - `functions`：（数组）交易表函数。
-                        - *（对象）一个函数*
-                            - `function`：（字符串）使用的函数。
-                            - 其他参数（有关函数的具体内容见下文）。
-
-## 学习原版
-
-这次我们以渔夫的交易 `trading/fisherman_trades.json` 为例。删除了一小点儿内容，不然太长了。
-
-```
-{
-    "tiers": [
-        {
-            // 第一层交易
-            "trades": [
-                {
-                    // 第一层交易的第一个交易：
-                    "wants": [
-                        // 该交易接受：
-                        {
-                            // 6 条鱼。
-                            "item": "minecraft:fish",
-                            "quantity": 6
-                        },
-                        {
-                            // 1 个绿宝石。
-                            "item": "minecraft:emerald",
-                            "quantity": 1
-                        }
-                    ],
-                    "gives": [
-                        // 该交易给出：
-                        {
-                            // 6 条熟鱼。
-                            "item": "minecraft:cooked_fish",
-                            "quantity": 6
-                        }
-                    ]
-                },
-                {
-                    // 第一层交易的第二个交易：
-                    "wants": [
-                        // 该交易接受：
-                        {
-                            // 15-20 根线，具体数量由游戏随机生成。
-                            "item": "minecraft:string",
-                            "quantity": {
-                                "min": 15,
-                                "max": 20
-                            }
-                        }
-                    ],
-                    "gives": [
-                        // 该交易给出：
-                        {
-                            // 1 个绿宝石。
-                            "item": "minecraft:emerald",
-                            "quantity": 1
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            // 第二层交易
-            "trades": [
-                {
-                    // 第二层交易的第一个交易
-                    "wants": [
-                        // 该交易接受：
-                        {
-                            // 7-8 个绿宝石，具体数量由游戏随机生成。
-                            "item": "minecraft:emerald",
-                            "quantity": {
-                                "min": 7,
-                                "max": 8
-                            }
-                        }
-                    ],
-                    "gives": [
-                        // 该交易给出：
-                        {
-                            // 1 个用相当于 5-19 级经验附魔过的钓鱼杆。具体用几级经验由游戏随机决定。
-                            "item": "minecraft:fishing_rod",
-                            "quantity": 1,
-                            "functions": [
-                                {
-                                    "function": "enchant_with_levels",
-                                    "treasure": false,
-                                    "levels": {
-                                        "min": 5,
-                                        "max": 19
-                                    }
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
-}
-```
-
-## 自造轮子
-
-让奸商渔夫第三层交易为，绿宝石 + 钻石换取超级普通的钓鱼竿！
-
-由于我们要修改的是原版就有的交易表，比较便捷的做法是直接在你的行为包中用同名同路径的文件把它覆盖掉。创建 `loot_tables/trading/fisherman_trades.json`，把原版交易表中的内容复制进去。
-
-接下来就可以加第三层交易了。在原有的两个交易层级后继续加入一个对象，设置 `wants` 为 `minecraft:emerald`（绿宝石）和 `minecraft:diamond`（钻石），`gives` 为 `minecraft:fishing_rod`。即
-
-```json
-{
-    "tiers": [
-        { ... },
-        { ... }, // 原有的两个交易层级
-        {
-            "trades": [
-                {
-                    "wants": [
-                        {
-                            "item": "minecraft:emerald",
-                            "quantity": {
-                                "min": 10,
-                                "max": 14
-                            }
-                        },
-                        {
-                            "item": "minecraft:diamond",
-                            "quantity": {
-                                "min": 5,
-                                "max": 7
-                            }
-                        }
-                    ],
-                    "gives": [
-                        {
-                            "item": "minecraft:fishing_rod",
-                            "quantity": 1
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
-}
-```
-
-重载行为包，搞定。
-
-![](https://i.loli.net/2018/10/20/5bca1fee0a1b0.png)
-
-## 课后习题
-
-让 shepherd 村民（交易表位于 `trading/shepherd_trades.json`）可以拿羊毛换对应颜色的混凝土！【好无厘头的题目，没办法我只是想讲方块数据值。
-
-提示: 羊毛使用方块数据值来区分颜色。在写 `item` 时，把方块数据值用冒号 `:` 连接在方块 ID 的后面。例如: `minecraft:wool:0`。
-
-[page]
-
-## 附录：函数
-
-在给出交易物品前会执行指定的函数对物品进行操作。下面是交易表中可用的全部函数。
-
-### enchant_book_for_trading
-
-给书附魔。
-
-- `base_cost`：（数字）不明。个人猜测可能和玩家使用附魔台附魔物品所消耗的经验等级有关。
-- `base_random_cost`：（数字）不明。
-- `per_level_random_cost`：（数字）不明。
-- `per_level_cost`：（数字）不明。
-
-示例（`trading/librarian_trades.json`）：
-```json
-{
-    "function": "enchant_book_for_trading",
-    "base_cost": 2,
-    "base_random_cost": 5,
-    "per_level_random_cost": 10,
-    "per_level_cost": 3
-}
-```
-
-### enchant_with_levels
-
-进行相当于指定经验等级的附魔。
-
-- `treasure`：（布尔值）如果为 `true`，将会给予宝藏魔咒。
-- `levels`：（数字或范围）要设置的等级。
-
-示例（`trading/leather_worker_trades.json`）：
-```json
-{
-    "function": "enchant_with_levels",
-    "treasure": false,
-    "levels": {
-        "min": 5,
-        "max": 19
-    }
-}
-```
-
-### exploration_map
-
-绘制探险地图。
-
-- `destination`：字符串。地图的目的地。需要是一个结构的 ID。全部结构的 ID 可以在 [Wiki](https://minecraft-zh.gamepedia.com/%E5%91%BD%E4%BB%A4/locate) 上查看。
-
-示例（`trading/cartographer_trades.json`）：
-```json
-{
-  "function": "exploration_map",
-  "destination": "monument"
-}
-```
-
-### random_aux_value
-
-随机生成一个辅助数值。不明。
-
-- `values`：（数字或范围）要设置的值。
-
-示例（`trading/economy_trades/wandering_trader_trades.json`）：
-```json
-{
-    // 这是给染料 minecraft:dye 设置的
-    "function": "random_aux_value",
-    "values": {
-        "min": 0,
-        "max": 15
-    }
-}
-```
-
-### random_block_state
-
-随机设置方块状态。
-
-- `block_state`：（字符串）要设置的方块状态名。
-- `values`：（数字或范围）要设置的方块状态的值。
-
-示例（`trading/economy_trades/wandering_trader_trades.json`）：
-```json
-{
-    // 这是给树苗 minecraft:sapling 设置的
-    "function": "random_block_state",
-    "block_state": "sapling_type",
-    "values": {
-        "min": 0,
-        "max": 5
-    }
-}
-```
-
-[page]
-
-# 生成规则
-
-行为包可以设置实体的生成规则。只有在满足了生成规则的情况下，该实体才有可能会生成。
-
-放置生成规则的位置是在根目录下的 `spawn_rules` 文件夹内。
-
-## 简述
-
-![image.png](https://i.loli.net/2019/10/23/yKEd8uxQpl9ODXV.png)
-
-## 文件格式
-
-- `format_version`：（字符串）文件格式版本。本帖一律写为 `1.14.0`。
-- `minecraft:spawn_rules`：（对象）表明该文件定义了生成规则。
-    - `description`：（对象）描述。
-        - `identifier`：（字符串）该生成规则的 ID。在实体的定义文件中可以通过指定该 ID 来使用该规则。
-        - `population_control`：（字符串）实体数量控制。为了避免卡顿，Minecraft 会分别限制不同种类的实体的总数量。该参数正是被用于确定实体种类的。可填写`ambient`（环境，如蝙蝠）、`animal`（动物，如蜜蜂、羊等）、`cat`（猫）、`monster`（怪物，如僵尸等）、`pillager`（掠夺者）、`water_animal`（水生动物，如鱼等）。（Wiki 此处内容严重不全）
-    - `conditions`：（数组）生成条件。只需达成一组条件即会生成。
-        - *（对象）一组条件（有关条件的具体内容见下方介绍）。需要达成这下面的所有的条件才算达成了这一组条件。*
-            - `minecraft:条件 1`：（对象）一个条件。
-            - `minecraft:条件 2`：（对象）一个条件。
-            - ···
-
-## 学习原版
-
-以下是僵尸的生成规则 `./spawn_rules/zombie.json`。
-
-```json
-{
-    "format_version": "1.8.0",
-    "minecraft:spawn_rules": {
-        "description": {
-            // 该生成规则的 ID 为 minecraft:zombie。
-            // 在僵尸的实体定义文件中可以通过 minecraft:zombie 来引用这个生成规则。
-            "identifier": "minecraft:zombie",
-            // 生成与否受到怪物总数的控制。
-            "population_control": "monster"
-        },
-        "conditions": [
-            {
-                // 一组条件。只有这些条件全部满足才能生成。
-                // 具体的条件列表可在下方查看。
-                "minecraft:spawns_on_surface": {},
-                "minecraft:spawns_underground": {},
-                "minecraft:brightness_filter": {
-                    "min": 0,
-                    "max": 7,
-                    "adjust_for_weather": true
-                },
-                "minecraft:difficulty_filter": {
-                    "min": "easy",
-                    "max": "hard"
-                },
-                "minecraft:weight": {
-                    "default": 100
-                },
-                "minecraft:herd": {
-                    "min_size": 2,
-                    "max_size": 4
-                },
-                "minecraft:permute_type": [
-                    {
-                        "weight": 95
-                    },
-                    {
-                        "weight": 5,
-                        "entity_type": "minecraft:zombie_villager"
-                    }
-                ],
-                "minecraft:biome_filter": {
-                    "test": "has_biome_tag", "operator": "==", "value": "monster"
-                }
-            }
-        ]
-    }
-}
-```
-
-## 自造轮子 & 课后习题
-
-……我不知道该造什么，也不知道该出什么题，那就咕了吧。看看附录里面有没有什么你感兴趣的条件（
-
-[page]
-
-## 附录：条件
-
-当达成指定条件时，实体才会生成。
-
-特别指明，此处的条件必须要加 `minecraft:` 命名空间前缀，否则不会被读取。
-
-### minecraft:biome_filter
-
-限制允许该实体生成的生态群系。其格式与滤器一致。有关滤器的详细内容，请看「实体」章节的「滤器」部分。
-
-示例（`spawn_rules/bat.json`）：
-```json
-{
-    "minecraft:biome_filter": {
-        "test": "has_biome_tag", "operator":"==", "value": "animal"
-    }
-}
-```
-
-### minecraft:brightness_filter
-
-限制允许该实体生成的光照等级范围。
-
-
-- `min`：（数字）指定该实体能够生成的最低光照等级。
-- `max`：（数字）指定该实体能够生成的最高光照等级。
-- `adjust_for_weather`：（布尔值）指定天气是否能够影响亮度，进而让该实体生成（可用于让敌对生物在下雨的白天生成）。
-
-示例（`spawn_rules/bat.json`）：
-```json
-{
-    "minecraft:brightness_filter": {
-        "min": 0,
-        "max": 4,
-        "adjust_for_weather": true
-    }
-}
-```
-
-### minecraft:delay_filter
-
-限制两次尝试生成之间的间隔。
-
-- `min`：（数字）两次尝试生成的最短间隔。单位为秒。
-- `max`：（数字）两次尝试生成的最长间隔。单位为秒。
-- `identifier`：（数字）不明。推测是一个计时器的标识符。
-- `spawn_chance`：（数字）每次尝试成功的几率。取值应当在 [0, 100] 之间。
-
-示例（`spawn_rules/pillager_patrol.json`）：
-```json
-{
-    "minecraft:delay_filter": {
-        "min": 600,
-        "max": 660,
-        "identifier": "minecraft:pillager_patrol_easy",
-        "spawn_chance": 20
-    }
-}
-```
-该条件使得灾厄巡逻队会每 10 至 11 分钟尝试生成一次，每次尝试生成有 20% 的几率成功。
-
-### minecraft:density_limit
-
-限制实体的密度。
-
-- `surface`：（数字）在地面上的密度限制。
-- `underground`：（数字）在地下的密度限制。
-
-示例（`spawn_rules/bat.json`）：
-```json
-{
-    "minecraft:density_limit": {
-        "surface": 5
-    }
-}
-```
-
-### minecraft:difficulty_filter
-
-限制允许该实体生成的难度范围。
-
-- `min`：（字符串）该实体能够生成的最低难度。可为 `peaceful`、`easy`、`normal`、`hard` 中的一种。
-- `max`：（字符串）该实体能够生成的最高难度。可为 `peaceful`、`easy`、`normal`、`hard` 中的一种。
-
-示例（`spawn_rules/creeper.json`）：
-```json
-{
-    "minecraft:difficulty_filter": {
-        "min": "easy",
-        "max": "hard"
-    }
-}
-```
-
-### minecraft:distance_filter
-
-限制允许该实体生成的与玩家的距离。
-
-- `min`：（数字）允许该实体生成的与玩家距离的最小值。
-- `max`：（数字）允许该实体生成的与玩家距离的最大值。
-
-示例（`spawn_rules/cod.json`）：
-```json
-{
-    "minecraft:distance_filter": {
-        "min": 12,
-        "max": 32
-    }
-}
-```
-
-### minecraft:height_filter
-
-限制允许该实体生成的高度。
-
-- `min`：（数字）允许该实体生成的高度的最小值。
-- `max`：（数字）允许该实体生成的高度的最大值。
-
-示例（`spawn_rules/bat.json`）：
-```json
-{
-    "minecraft:height_filter": {
-        "min": 0,
-        "max": 63
-    }
-}
-```
-
-### minecraft:herd
-
-指定该实体按群生成。
-
-- `min_size`：（数字）生成的一群实体的数量的最小值。
-- `max_size`：（数字）生成的一群实体的数量的最大值。
-- `event`：（字符串）生成实体所执行的事件（有关事件的详细介绍，请查看「实体」章节）。
-- `event_skip_count`：（数字）在触发 `event` 前生成的实体数量。当实体数量达到这个值以后，才会触发上面 `event` 中指定的事件。
-
-示例（`spawn_rules/fox.json`）：
-```json
-{
-    "minecraft:herd": {
-        "min_size": 2,
-        "max_size": 4,
-        "event": "minecraft:entity_born",
-        "event_skip_count": 2
-    }
-}
-```
-
-### minecraft:mob_event_filter
-
-不明。
-
-- `event`：（字符串）不明。
-
-示例（`spawn_rules/pillager_patrol.json`）：
-```json
-{
-    "minecraft:mob_event_filter": {
-        "event": "minecraft:pillager_patrols_event"
-    }
-}
-```
-
-### minecraft:permute_type
-
-生成时使该实体成为它的变种（该条件应为一个数组，见下方示例）。
-
-- *（对象）一个变种*
-    - `weight`：（数字）该变种的权重。
-    - `entity_type`：（字符串）变种的实体 ID。如不指定则表明不进行任何变化。在该 ID 后可以再追加一个尖括号（`<>`），其中放置一个事件名，会在变为该变种后触发该事件。有关事件的详细内容请查看「实体」章节。
-
-示例一（`spawn_rules/zombie.json`）：
-```json
-{
-    "minecraft:permute_type": [
-        {
-            "weight": 95
-        },
-        {
-            "weight": 5,
-            "entity_type": "minecraft:zombie_villager"
-        }
-    ]
-}
-```
-这个条件指定了僵尸在生成后有 `95 / (95 + 5)` 也就是 95% 的几率保持不变，有 `5 / (95 + 5)` 也就是 5% 的几率变为 `minecraft:zombie_villager`（僵尸村民）。
-
-示例二（`spawn_rules/pillager_patrol.json`）：
-```json
-{
-    "minecraft:permute_type": [
-        {
-            "weight": 20,
-            "entity_type": "minecraft:vindicator"
-        },
-        {
-            "weight": 80,
-            "entity_type": "minecraft:pillager<minecraft:spawn_as_patrol_follower>"
-        }
-    ]
-}
-```
-这个条件指定了灾厄巡逻队在生成后有 20% 的几率变为卫道士（`vindicator`），有 80% 的几率变为掠夺者（`pillager`）并触发 `minecraft:spawn_as_patrol_follower` 事件。
-
-### minecraft:player_in_village_filter
-
-不明。
-
-- `distance`：（数字）不明。
-- `village_border_tolerance`：（数字）不明。
-
-示例（`spawn_rules/pillager_patrol.json`）：
-```json
-{
-    "minecraft:player_in_village_filter": {
-        "distance": 48,
-        "village_border_tolerance": 10
-    }
-}
-```
-
-### minecraft:spawn_event
-
-当该实体生成后执行的事件。有关事件的详细介绍请看「实体」章节。可以通过这一事件来让该实体在生成后进行一些条件判断，以及进行一些变换等。
-
-- `event`：（字符串）要执行的事件。
-
-示例（`spawn_rules/stray.json`）：
-```json
-{
-    "minecraft:spawn_event": {
-        "event": "change_to_skeleton"
-    }
-}
-```
-
-### minecraft:spawns_on_block_filter
-
-限制该生物只能生成在指定方块上（该条件应为一个表明方块 ID 的字符串，见下方示例）。
-
-示例（`spawn_rules/chicken.json`）：
-```json
-{
-    "minecraft:spawns_on_block_filter": "minecraft:grass"
-}
-```
-
-### minecraft:spawns_on_surface
-
-通过添加该对象，实体将可以生成在地表上。如果不添加则不能生成。
-
-示例（`spawn_rules/bee.json`）：
-```json
-{
-    "minecraft:spawns_on_surface": {}
-}
-```
-
-### minecraft:spawns_underground
-
-通过添加该对象，实体将可以生成在地下。如果不添加则不能生成。
-
-示例（`spawn_rules/bat.json`）：
-```json
-{
-    "minecraft:spawns_underground": {}
-}
-```
-
-### minecraft:spawns_underwater
-
-通过添加该对象，实体将可以生成在水里。如果不添加则不能生成。
-
-示例（`spawn_rules/cod.json`）：
-```json
-{
-    "minecraft:spawns_underwater": {}
-}
-```
-
-### minecraft:weight
-
-指定实体生成的权重。
-
-- `default`：（数字）该实体生成的权重。值越**高**，生成率越**低**。
-
-示例（`spawn_rules/bat.json`）：
-```json
-{
-    "minecraft:weight": {
-        "default": 10
-    }
-}
-```
-
-### minecraft:world_age_filter
-
-限制只有当玩家在该世界的游戏时间达到一定长度以后该实体才能生成。
-
-- `min`：（数字）玩家在该世界的游戏时间的最小值。
-- `max`：（数字）玩家在该世界的游戏时间的最大值。
-
-示例（`spawn_rules/pillager_patrol.json`）：
-```json
-{
-    "minecraft:world_age_filter": {
-        "min": 6000
-    }
-}
-```
-
-[page]
-
 # 物品
 
 行为包可以设置物品的行为。
@@ -2864,7 +2628,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-重载行为包。
+退出再重进世界。
 
 苹果堆叠上限变为 42：  
 ![42.gif](https://i.loli.net/2019/10/24/Lya2PmFcRfCOkJj.gif)
@@ -3072,7 +2836,7 @@ console.log(arr.sort().join('\n'))
 
 # 配方
 
-行为包可以修改各种配方，包括有序合成配方、无序合成配方（工作台、制图台、切石机）、熔炼配方（熔炉、烟熏炉、高炉、营火）、混合酿造配方、换容酿造配方等。
+行为包可以修改或增加各种配方，包括有序合成配方、无序合成配方（工作台、制图台、切石机）、熔炼配方（熔炉、烟熏炉、高炉、营火）、混合酿造配方、换容酿造配方等。
 
 [page]
 
@@ -3142,11 +2906,50 @@ console.log(arr.sort().join('\n'))
 
 ### 自造轮子
 
-这回我们不覆盖原有的东西了。我们直接加新的有序合成配方！
+#### 修改金合欢船的配方
+
+目标：把金合欢船的配方改成和 Java 版一样，也就是不需要木锹就能合成。
+
+很简单，把 `pattern` 里面代表木锹的 `P` 换成空格（` `），然后顺手删掉 `key` 里面的 `P` 即可（其实不删也行）。
+
+```json
+{
+    "format_version": "1.12",
+    "minecraft:recipe_shaped": {
+        "description": {
+            "identifier": "minecraft:acacia_boat"
+        },
+        "tags": ["crafting_table"], // 该配方可用于工作台。
+        "key": {
+            "#": {
+                // 将 # 这个字符对应为数据值为 4 的木板（即金合欢木板）
+                "item": "minecraft:planks",
+                "data": 4
+            }
+        },
+        "pattern": [
+            // 在这里用 # 这个字符来拼出船的合成配方的图案。
+            // 如果你想要表示空的栏位，使用空格即可。
+            "# #",
+            "###"
+            // 需要注意的是，这个数组里面最多只能有三个字符串，最少要有一个字符串。每个字符串中包含的字符数应该相同，并且字符数要位于 1 至 3 之间。
+        ],
+        "result": {
+            // 合成结果是数据值为 4 的船，即金合欢船。
+            "item": "minecraft:boat",
+            "data": 4
+        }
+    }    
+}
+```
+
+#### 新增配方
+
+这回我们不覆盖原有的东西了。我们加新的有序合成配方！
 
 目标：用草和土块能够合成出草方块。
 
-> 基岩版中，草（不管是一格高的还是两格高的）都是 `tall_grass`，草方块叫做 `grass`，挺反人类的。
+> 基岩版中，草（不管是一格高的还是两格高的）都是 `tall_grass`，草方块叫做 `grass`，挺反直觉的。
 
 在你的行为包下创建文件 `recipes/grass_from_dirt_and_tallgrass.json`（文件名其实可以随意，只要是小写英文 + 下划线的组合就行）。
 
@@ -3224,7 +3027,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-重载行为包。
+退出再重进世界。
 
 游戏会自动读取 `recipes` 目录下的所有配方，因此我们不需要在别的什么文件里面设置就可以直接在工作台里使用这个配方了！这一点和前面的战利品表、交易表、生成规则等不同。
 
@@ -3363,7 +3166,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-重载行为包。
+退出再重进世界。
 
 ![image.png](https://i.loli.net/2019/10/24/MHLE9GJoNi2TPF4.png)
 
@@ -3426,7 +3229,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-重载行为包。
+退出再重进世界。
 
 ![image.png](https://i.loli.net/2019/10/24/oLYAHysl6umgbpq.png)
 
@@ -3552,7 +3355,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-重载行为包。
+退出再重进世界。
 
 好，遗憾的是，并没有用。酿造台的那几个格子所能接受的物品是写死的，即使你在配方中写了 `tallgrass`，草也照样放不进去。这一目标以失败告终。
 
@@ -3560,7 +3363,7 @@ console.log(arr.sort().join('\n'))
 
 [page]
 
-# 生物群系
+# 方块
 
 [page]
 
@@ -3568,7 +3371,32 @@ console.log(arr.sort().join('\n'))
 
 [page]
 
-# 方块
+# 生物群系
+
+行为包能够修改或增加生物群系。
+
+## 简述
+
+> 如果你不知道什么叫作“生物群系”，我可以告诉你，它是游戏中用于设置何种地表（沙子？还是草？），是下雨还是下雪，长什么树，以及允许何种动物生成的气候区。
+> 
+> —— [Jeb](https://minecraft-zh.gamepedia.com/Jens_Bergensten)  
+> —— [Wiki](https://minecraft-zh.gamepedia.com/%E7%94%9F%E7%89%A9%E7%BE%A4%E7%B3%BB)
+
+简单来讲，生物群系可以修改：
+
+- 这块儿的地形
+- 地表和地底的构成
+- 装饰结构（树、草等）的分布
+- 能够生成的生物
+- 气候（下雨还是下雪，或者是永远干旱）
+
+## 文件结构
+
+- `format_version`：（字符串）文件格式版本。本帖一律写为 `1.14.0`。
+- `minecraft:biome`：（对象）表明该文件定义了生物群系。
+    - `description`：（对象）描述。
+        - `identifier`：（字符串）该生物群系的 ID。
+    - `components`：（对象）构成该生物群系的各种组件。此外这里也能定义该生物群系的标签，具体内容请看附录。
 
 [page]
 
@@ -3648,8 +3476,8 @@ say ======
 
 # 参考资料
 
-- [wiki - Add-on](https://minecraft.gamepedia.com/Add-on)
-- [Skylinerw - Loot Tables](https://github.com/skylinerw/guides/blob/master/bedrock/loot%20tables.md)
+- CC BY-NC-SA 3.0: [wiki - Add-on](https://minecraft.gamepedia.com/Add-on) 及其中列出的各页面
+- CC BY 4.0: [Skylinerw - Loot Tables](https://github.com/skylinerw/guides/blob/master/bedrock/loot%20tables.md)
 - [ruhuasiyu - 【1.13】数据包(原版模组)入门教程](http://www.mcbbs.net/thread-784662-1-1.html) 【我很认真
 
 # 致谢
@@ -3660,10 +3488,10 @@ say ======
 
 # 后语
 
-看到大家都来这里水三个命令方块的东西然后拿走基岩版爱好者勋章，我也想来拿。但是水命令方块的东西太没有水平了，我当然要水些别的。于是，断断续续脱了一年多，这篇不知道是教程还是水文的东西就这么出来了，让您见笑了。
+看到大家都来这里水三个命令方块的东西然后拿走基岩版爱好者勋章，我也想来拿。但是水命令方块的东西太没有水平了，我当然要水些别的。于是，断断续续拖了一年多，这篇不知道是教程还是水文的东西就这么出来了，让您见笑了。
 
 基岩版的 Add-on 是十分强大的一个功能，作为一名 Java 版的忠实玩家其实是非常欣赏 Add-on 的这种开放性的。当然，我不会转行，Java 版仍然是我的家。不过我也迫切地希望能够在论坛看到优秀的原创 Add-on 作品。各位 dalaoes 不要吝啬自己的才华！
 
-教程中有部分内容没有官方文档依据，仅靠测试、查看原版行为包文件以及在游戏内进行测试推断而出，如有错误请务必指正。另外还有一部分我本人推断不出的内容，在网上查询资料未果，在教程内同一标注为「不明」，希望有了解这部分内容的玩家不吝赐教！
+教程中有部分内容没有官方文档依据，仅靠测试、查看原版行为包文件以及在游戏内进行测试推断而出，如有错误请务必指正。另外还有一部分我本人推断不出的内容，在网上查询资料未果，在教程内统一标注为「不明」，希望有了解这部分内容的玩家不吝赐教！在本帖下方回复指出错漏，或帮助补充内容，可以获得本人的人气和金粒奖励！
 
-后续还会视情况发布有关资源包的教程，加入动画、粒子效果、UI 界面等内容。将行为包与资源包结合到一起以后，便可自行任意添加新方块、物品、实体等，无人能当，十分愉快。
+后续还会视情况发布有关资源包的教程，加入动画、粒子效果、UI 界面等内容。将行为包与资源包结合到一起以后，便可自行任意添加新方块、物品、实体等，无人能当，十分愉快。不过，也有可能就此截止，还是要看反响。
