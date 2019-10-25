@@ -491,7 +491,7 @@ console.log(arr.sort().join('\n'))
 
 [page]
 
-## 附录：函数
+# 附录：函数
 
 下面是战利品表中可用的全部函数。这些函数可以根据需求添加到每一项的 `functions` 数组中。函数的名称可以带 `minecraft:` 前缀，也可以不带，看你的喜好。例如，`set_count` 和 `minecraft:set_count` 都是表示设置物品数量的函数，执行起来没有区别。
 
@@ -682,11 +682,11 @@ console.log(arr.sort().join('\n'))
 
 [page]
 
-## 附录：条件
+# 附录：条件
 
 当你指定的条件全部达成时，才有可能会使用你所设置的随机池（`pool`）、项（`entry`）或是函数（`function`）。下面是战利品表中可用的全部条件。
 
-### entity_properties
+## entity_properties
 
 指定实体的属性匹配时达成条件。
 
@@ -706,7 +706,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-### has_mark_variant
+## has_mark_variant
 
 检测该实体是否是某个变种。不明。
 
@@ -720,7 +720,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-### killed_by_entity
+## killed_by_entity
 
 被指定类型的实体击杀时达成条件。
 
@@ -734,7 +734,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-### killed_by_player
+## killed_by_player
 
 被玩家击杀时达成条件。
 
@@ -745,7 +745,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-### killed_by_player_or_pets
+## killed_by_player_or_pets
 
 被玩家或玩家的宠物击杀时达成条件。
 
@@ -756,7 +756,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-### random_chance
+## random_chance
 
 有一定几率达成。
 
@@ -770,7 +770,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-### random_chance_with_looting
+## random_chance_with_looting
 
 有一定几率达成。该几率可以被「抢夺」附魔提高。
 
@@ -786,7 +786,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-### random_difficulty_chance
+## random_difficulty_chance
 
 有一定几率达成。可以指定在不同难度下的几率。
 
@@ -806,7 +806,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-### random_regional_difficulty_chance
+## random_regional_difficulty_chance
 
 有一定几率达成。该几率随着区域难度提高而提高。
 
@@ -1007,11 +1007,11 @@ console.log(arr.sort().join('\n'))
 
 [page]
 
-## 附录：函数
+# 附录：函数
 
 在给出交易物品前会执行指定的函数对物品进行操作。下面是交易表中可用的全部函数。
 
-### enchant_book_for_trading
+## enchant_book_for_trading
 
 给书附魔。
 
@@ -1031,7 +1031,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-### enchant_with_levels
+## enchant_with_levels
 
 进行相当于指定经验等级的附魔。
 
@@ -1050,7 +1050,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-### exploration_map
+## exploration_map
 
 绘制探险地图。
 
@@ -1064,7 +1064,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-### random_aux_value
+## random_aux_value
 
 随机生成一个辅助数值。不明。
 
@@ -1082,7 +1082,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-### random_block_state
+## random_block_state
 
 随机设置方块状态。
 
@@ -1188,15 +1188,15 @@ console.log(arr.sort().join('\n'))
 
 [page]
 
-## 附录：条件
+# 附录：条件
 
 当达成指定条件时，实体才会生成。
 
 特别指明，此处的条件必须要加 `minecraft:` 命名空间前缀，否则不会被读取。
 
-### minecraft:biome_filter
+## minecraft:biome_filter
 
-限制允许该实体生成的生态群系。其格式与滤器一致。有关滤器的详细内容，请看「实体」章节的「滤器」部分。
+限制允许该实体生成的生态群系。其格式与滤器一致。有关滤器的详细内容，请看「实体」章节下的「附录：滤器」部分。
 
 示例（`spawn_rules/bat.json`）：
 ```json
@@ -1207,10 +1207,9 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-### minecraft:brightness_filter
+## minecraft:brightness_filter
 
 限制允许该实体生成的光照等级范围。
-
 
 - `min`：（数字）指定该实体能够生成的最低光照等级。
 - `max`：（数字）指定该实体能够生成的最高光照等级。
@@ -1227,7 +1226,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-### minecraft:delay_filter
+## minecraft:delay_filter
 
 限制两次尝试生成之间的间隔。
 
@@ -1249,7 +1248,7 @@ console.log(arr.sort().join('\n'))
 ```
 该条件使得灾厄巡逻队会每 10 至 11 分钟尝试生成一次，每次尝试生成有 20% 的几率成功。
 
-### minecraft:density_limit
+## minecraft:density_limit
 
 限制实体的密度。
 
@@ -1265,7 +1264,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-### minecraft:difficulty_filter
+## minecraft:difficulty_filter
 
 限制允许该实体生成的难度范围。
 
@@ -1282,7 +1281,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-### minecraft:distance_filter
+## minecraft:distance_filter
 
 限制允许该实体生成的与玩家的距离。
 
@@ -1299,7 +1298,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-### minecraft:height_filter
+## minecraft:height_filter
 
 限制允许该实体生成的高度。
 
@@ -1316,7 +1315,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-### minecraft:herd
+## minecraft:herd
 
 指定该实体按群生成。
 
@@ -1337,7 +1336,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-### minecraft:mob_event_filter
+## minecraft:mob_event_filter
 
 不明。
 
@@ -1352,7 +1351,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-### minecraft:permute_type
+## minecraft:permute_type
 
 生成时使该实体成为它的变种（该条件应为一个数组，见下方示例）。
 
@@ -1393,7 +1392,7 @@ console.log(arr.sort().join('\n'))
 ```
 这个条件指定了灾厄巡逻队在生成后有 20% 的几率变为卫道士（`vindicator`），有 80% 的几率变为掠夺者（`pillager`）并触发 `minecraft:spawn_as_patrol_follower` 事件。
 
-### minecraft:player_in_village_filter
+## minecraft:player_in_village_filter
 
 不明。
 
@@ -1410,7 +1409,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-### minecraft:spawn_event
+## minecraft:spawn_event
 
 当该实体生成后执行的事件。有关事件的详细介绍请看「实体」章节。可以通过这一事件来让该实体在生成后进行一些条件判断，以及进行一些变换等。
 
@@ -1425,7 +1424,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-### minecraft:spawns_on_block_filter
+## minecraft:spawns_on_block_filter
 
 限制该生物只能生成在指定方块上（该条件应为一个表明方块 ID 的字符串，见下方示例）。
 
@@ -1436,7 +1435,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-### minecraft:spawns_on_surface
+## minecraft:spawns_on_surface
 
 通过添加该对象，实体将可以生成在地表上。如果不添加则不能生成。
 
@@ -1447,7 +1446,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-### minecraft:spawns_underground
+## minecraft:spawns_underground
 
 通过添加该对象，实体将可以生成在地下。如果不添加则不能生成。
 
@@ -1458,7 +1457,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-### minecraft:spawns_underwater
+## minecraft:spawns_underwater
 
 通过添加该对象，实体将可以生成在水里。如果不添加则不能生成。
 
@@ -1469,7 +1468,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-### minecraft:weight
+## minecraft:weight
 
 指定实体生成的权重。
 
@@ -1484,7 +1483,7 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-### minecraft:world_age_filter
+## minecraft:world_age_filter
 
 限制只有当玩家在该世界的游戏时间达到一定长度以后该实体才能生成。
 
@@ -1914,11 +1913,11 @@ console.log(arr.sort().join('\n'))
 
 [page]
 
-## 附录：滤器
+# 附录：滤器
 
 滤器能够用于测试指定的项目是否满足你所定义的条件。
 
-### 基本单位
+## 基本单位
 
 
 - `test`：（字符串）要测试的项目（详细介绍见下）。
@@ -1927,7 +1926,7 @@ console.log(arr.sort().join('\n'))
 - `operator`：（字符串）在指定项目 `test` 方面，主体 `subject` 的 `domain` 与 给定的数据 `value` 的比较方式（详细介绍见下）。
 - `value` （字符串）给定的数据。
 
-### 测试项目
+## 测试项目
 
 [spoiler]
 
@@ -2391,9 +2390,9 @@ console.log(arr.sort().join('\n'))
 
 [/spoiler]
 
-### 测试主体
+## 测试主体
 
-### 调用：即填写了该滤器的 JSON 文件所属的实体。
+**调用：即填写了该滤器的 JSON 文件所属的实体。**
 
 
 - `self`：调用此测试的实体。
@@ -2402,7 +2401,7 @@ console.log(arr.sort().join('\n'))
 - `player`：参与交互的玩家。
 - `target`：调用者的目标实体。
 
-### 比较方式
+## 比较方式
 
 
 - `==`、`===`、`equals`：等于。当主体的项目与给定数据完全一致时，测试通过。
@@ -2414,7 +2413,7 @@ console.log(arr.sort().join('\n'))
 
 注意：比较方式中永远不会出现单个的等号 `=`。建议在写滤器时，只要需要写等号就写成两个，即 `==`。
 
-### 组合
+## 组合
 
 
 - `any_of`：（数组）当其下的任何一个测试通过时，测试通过。
@@ -2475,11 +2474,11 @@ console.log(arr.sort().join('\n'))
 
 [page]
 
-## 附录：事件
+# 附录：事件
 
 事件可以用于禁用/启用组件组。
 
-### 格式
+## 文件格式
 
 
 - `add`：（对象）要启用的所有组件组。
@@ -2644,11 +2643,11 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 
 [page]
 
-## 附录：组件
+# 附录：组件
 
 特别指明，此处的组件名必须要加 `minecraft:` 命名空间前缀，否则不会被读取。
 
-### minecraft:block （字符串）
+## minecraft:block （字符串）
 
 不明。会把该物品显示为指定的方块的模型，但是右键没有效果。
 
@@ -2659,7 +2658,7 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 }
 ```
 
-### minecraft:camera
+## minecraft:camera
 
 使该物品具有相机的特性。
 
@@ -2682,7 +2681,7 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 }
 ```
 
-### minecraft:foil （布尔）
+## minecraft:foil （布尔）
 
 使该物品自带附魔的光效。
 
@@ -2693,7 +2692,7 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 }
 ```
 
-### minecraft:food
+## minecraft:food
 
 使该物品具有食物的特性。
 
@@ -2750,7 +2749,7 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 }
 ```
 
-### minecraft:hand_equipped （布尔）
+## minecraft:hand_equipped （布尔）
 
 决定该物品拿到手上后是否像工具一样竖起来。
 
@@ -2767,7 +2766,7 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 }
 ```
 
-### minecraft:max_damage （数字）
+## minecraft:max_damage （数字）
 
 该物品的总耐久度。当耗损到达这个值以后物品会破碎。
 
@@ -2780,7 +2779,7 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 }
 ```
 
-### minecraft:max_stack_size （数字）
+## minecraft:max_stack_size （数字）
 
 该物品的最大堆叠上限。
 
@@ -2793,7 +2792,7 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 }
 ```
 
-### minecraft:seed
+## minecraft:seed
 
 该物品可作为种子使用。
 
@@ -2810,7 +2809,7 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 }
 ```
 
-### minecraft:stacked_by_data （布尔）
+## minecraft:stacked_by_data （布尔）
 
 具有不同数据值的该物品是否不能互相堆叠。
 
@@ -2821,7 +2820,7 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 }
 ```
 
-### minecraft:use_duration （数字）
+## minecraft:use_duration （数字）
 
 使用该物品所持续的时长。单位为刻。
 
@@ -2840,13 +2839,13 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 
 [page]
 
-## 有序合成配方
+# 有序合成配方
 
-### 简述
+## 简述
 
 有序合成，指的是材料必须在工作台内按照一定顺序摆放才能获得输出物品的合成方式。
 
-### 文件结构
+## 文件结构
 
 - `format_version`：（字符串）文件格式版本。本帖一律写为 `1.14.0`。
 - `minecraft:recipe_shaped`：（对象）表明该文件是一个有序合成配方。
@@ -2864,7 +2863,7 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
         - `data`：物品数据值。
         - `count`：物品数量。
 
-### 学习原版
+## 学习原版
 
 以金合欢船（`recipes/acacia_boat.json`）的合成配方为例：
 
@@ -2904,7 +2903,7 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 }
 ```
 
-### 自造轮子
+## 自造轮子
 
 #### 修改金合欢船的配方
 
@@ -3037,13 +3036,13 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 
 [page]
 
-## 无序合成配方
+# 无序合成配方
 
-### 简述
+## 简述
 
 无序合成，指的是只要材料的种类、数目够了，就可以获得输出物品的配方。
 
-### 文件结构
+## 文件结构
 
 - `format_version`：（字符串）文件格式版本。本帖一律写为 `1.14.0`。
 - `minecraft:recipe_shapeless`：（对象）表明该文件是一个无序合成配方。
@@ -3060,7 +3059,7 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
         - `data`：物品数据值。
         - `count`：物品数量。
 
-### 学习原版
+## 学习原版
 
 以砖块旗帜图案的合成配方（`recipes/banner_pattern_bricks.json`）为例，只要工作台的合成栏中放有一格纸和一格砖块即可合成旗帜图案：
 
@@ -3138,7 +3137,7 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 }
 ```
 
-### 自造轮子
+## 自造轮子
 
 目标：用切石机能把草方块切碎为草。
 
@@ -3172,13 +3171,13 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 
 [page]
 
-## 熔炼配方
+# 熔炼配方
 
-### 简述
+## 简述
 
 熔炼配方，指的是放到炉子（广义，包含熔炉、高炉、烟熏炉、营火）里面能得到物品的配方。
 
-### 文件结构
+## 文件结构
 
 - `format_version`：（字符串）文件格式版本。本帖一律写为 `1.14.0`。
 - `minecraft:recipe_furnace`：（对象）表明该文件是一个熔炼配方。
@@ -3189,7 +3188,7 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
     - `input`：（字符串）一个物品 ID。该熔炼配方的输入物品。
     - `output`：（字符串）一个物品 ID。该熔炼配方的输出物品。
 
-### 学习原版
+## 学习原版
 
 以牛排的熔炼配方（`recipes/furnace_beef.json`）为例，生牛排（`beef`）可以在熔炉、烟熏炉或营火中烤成熟牛排（`cooked_beef`）：
 
@@ -3207,7 +3206,7 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 }
 ```
 
-### 自造轮子
+## 自造轮子
 
 目标：用熔炉、高炉能把草方块烤成土块。
 
@@ -3235,13 +3234,13 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 
 [page]
 
-## 混合酿造配方
+# 混合酿造配方
 
-### 简述
+## 简述
 
 混合酿造配方，指的是将一个具有某种状态效果的药水放入酿造台后，再加入某个物品，可以酿造出具有另一种状态效果的药水的配方。
 
-### 文件结构
+## 文件结构
 
 - `format_version`：（字符串）文件格式版本。本帖一律写为 `1.14.0`。
 - `minecraft:recipe_brewing_mix`：（对象）表明该文件是一个混合酿造配方。
@@ -3253,7 +3252,7 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
     - `reagent`：（字符串）一个物品 ID。进行该酿造所需要添加的额外物品。
     - `output`：（字符串）一个形如 `minecraft:potion_type:<药水类型>` 的药水类型 ID。该配方的输出的药水类型。
 
-### 学习原版
+## 学习原版
 
 以力量药水的酿造配方（`recipes/brew_awkward_blaze_powder.json`）为例，当放入粗制的药水以及烈焰粉时，能够酿造出力量药水：
 
@@ -3289,19 +3288,19 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 }
 ```
 
-### 自造轮子
+## 自造轮子
 
 不造了，酿造没意思。
 
 [page]
 
-## 换容酿造配方
+# 换容酿造配方
 
-### 简述
+## 简述
 
 换容酿造配方，指的是一瓶药水被酿造后将会改变容器的配方。例如从普通玻璃瓶转换为喷溅型玻璃瓶或滞留型玻璃瓶等。
 
-### 文件结构
+## 文件结构
 
 - `format_version`：（字符串）文件格式版本。本帖一律写为 `1.14.0`。
 - `minecraft:recipe_brewing_container`：（对象）表明该文件是一个换容酿造配方。
@@ -3313,7 +3312,7 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
     - `reagent`：（字符串）一个物品 ID。进行该酿造所需要添加的额外物品。
     - `output`：（字符串）一个物品 ID。该配方输出的药水瓶的 ID。可选：`minecraft:potion`（普通玻璃瓶）、`minecraft:splash_potion`（喷溅型）、`minecraft:lingering_potion`（滞留型）。
 
-### 学习原版
+## 学习原版
 
 以喷溅型药水的酿造配方（`recipes/brew_potion_sulphur.json`）为例，当放入普通的玻璃瓶乘装的药水以及火药时，能够酿造出喷溅型的对应药水：
 
@@ -3332,7 +3331,7 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 }
 ```
 
-### 自造轮子
+## 自造轮子
 
 目标：用草能把喷溅型药水变回普通药水。（没错，我和草杠上了）。
 
