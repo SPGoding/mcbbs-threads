@@ -1,25 +1,4 @@
-# 附录：组件
-
-组件在 Wiki 的文档中被分为四类，一类是描述实体所固有**属性**（如碰撞箱等），一类描述实体的**行为**（即 **AI 目标**，例如能够跟随玩家、破坏方块等），一类是在指定情况下会被触发的**触发器**，还有一类其他。下面将分别介绍这四类下面都有哪些组件可以使用。在 `components` 以及每一个组件组下面，我们都可以直接使用下面提到的所有组件。用法为：
-
-```
-{
-    "components": {
-        "组件名": {
-            "参数 1": 值, // 有些组件可以指定参数，但是你也可以不指定，依你的需求而定。
-            "参数 2": 值,
-            ...
-        },
-        "又一个组件名": {} // 如果某个组件没有参数，或者你不想指定任何参数，直接闭合大括号即可。
-    }
-}
-```
-
-下面将分别介绍这些组件，篇幅较长。其中示例均是从 Minecraft 原版行为包中抠出来的。
-
-[spoiler]
-
-## 触发器
+# 触发器
 
 首先讲解触发器，是因为在后面有些组件的参数中，使用到了与触发器完全相同的 JSON 格式。
 
@@ -27,7 +6,7 @@
 
 ![触发器.png](https://i.loli.net/2019/10/25/GVYvFQqrd2ih3I4.png)
 
-### 基础格式
+## 基础格式
 
 - `event`：（字符串）该触发器被触发后要执行的事件。
 - `filters`：（对象）可选。一个滤器。如果指定了，则只有在该滤器通过的情况下才会执行 `event` 中指定的事件。
@@ -35,7 +14,7 @@
 
 再次强调，触发器属于组件的一种，所以要定义在 `components` 或是 `component_groups` 中的一个组件组之下。
 
-### minecraft:on_death
+## minecraft:on_death
 
 触发时机：该实体死亡时。**只能被末影龙使用**。
 
@@ -46,11 +25,11 @@
 }
 ```
 
-### minecraft:on_friendly_anger
+## minecraft:on_friendly_anger
 
 触发时机：该实体附近有其他相同种类的实体愤怒时。
 
-### minecraft:on_hurt
+## minecraft:on_hurt
 
 触发时机：该实体受到伤害时。
 
@@ -61,15 +40,15 @@
 }
 ```
 
-### minecraft:on_hurt_by_player
+## minecraft:on_hurt_by_player
 
 触发时机：该实体被玩家攻击时。
 
-### minecraft:on_ignite
+## minecraft:on_ignite
 
 触发时机：该实体着火时。
 
-### minecraft:on_start_landing
+## minecraft:on_start_landing
 
 触发时机：该实体着陆时。**只能被末影龙使用**。
 
@@ -80,7 +59,7 @@
 }
 ```
 
-### minecraft:on_start_takeoff
+## minecraft:on_start_takeoff
 
 触发时机：该实体开始飞行时。**只能被末影龙使用**。
 
@@ -91,7 +70,7 @@
 }
 ```
 
-### minecraft:on_target_acquired
+## minecraft:on_target_acquired
 
 触发时机：该实体找到攻击目标时。
 
@@ -137,7 +116,7 @@
 }
 ```
 
-### minecraft:on_target_escape
+## minecraft:on_target_escape
 
 触发时机：该实体失去攻击目标时（目标已死亡，或逃出了该实体的视距等）。
 
@@ -187,15 +166,15 @@
 }
 ```
 
-### minecraft:on_wake_with_owner
+## minecraft:on_wake_with_owner
 
 触发时机：该实体的主人在与该实体一起睡觉后醒来时。
 
-## 属性
+# 属性
 
 定义实体的固有属性。
 
-### minecraft:attack
+## minecraft:attack
 
 定义实体的近战攻击及其附加效果。
 
@@ -226,7 +205,7 @@
     "effect_duration": 10
 }
 ```
-### minecraft:spell_effects
+## minecraft:spell_effects
 
 定义添加该组件时对该实体添加/移除的状态效果
 
@@ -242,7 +221,7 @@
 
 - `remove_effects`：（字符串）要移除的状态效果的名字。
 
-### minecraft:strength
+## minecraft:strength
 
 定义该实体携带物品的「力量」。
 
@@ -250,7 +229,7 @@
 - `max`：（整数，默认 5）实体的最大力量。
 - `value`：（整数，默认 1）实体的初始力量。
 
-### minecraft:ambient_sound_interval
+## minecraft:ambient_sound_interval
 
 设置实体的环境音效的播放间隔。
 
@@ -258,19 +237,19 @@
 - `range`：（数字，默认 16.0）随机添加到播放间隔的时间最大值，单位为秒。
 - `value`：（数字，默认 8.0）实体再次播放环境音效的时间最小值，单位为秒。
 
-### minecraft:can_climb
+## minecraft:can_climb
 
 允许实体爬楼梯。
 
-### minecraft:can_fly
+## minecraft:can_fly
 
 允许实体飞行。寻路系统将不再限制实体脚下的方块必须为固体方块。
 
-### minecraft:can_power_jump
+## minecraft:can_power_jump
 
 允许实体蓄力跳。（类似原版中马的表现。）
 
-### minecraft:collision_box
+## minecraft:collision_box
 
 设置该实体碰撞箱的宽和高。
 
@@ -284,7 +263,7 @@
     "height": 1.8
 }
 ```
-### minecraft:color
+## minecraft:color
 
 定义实体的颜色。只对原版的有颜色预制的生物有效（例如羊、潜影贝）。
 
@@ -296,7 +275,7 @@
     "value": 0
 }
 ```
-### minecraft:color2
+## minecraft:color2
 
 定义实体的第二个颜色。只对原版的有第二个颜色预制的生物有效（热带鱼）。
 
@@ -308,14 +287,14 @@
     "value": 0
 }
 ```
-### minecraft:default_look_angle
+## minecraft:default_look_angle
 
 设置该实体默认状态下头的角度。
 
 
 - `value`：（数字，默认 0.0）角度，单位为度。
 
-### minecraft:equipment
+## minecraft:equipment
 
 设置该实体的装备使用的战利品表。（基岩版中，使用战利品表来设置实体的装备）
 
@@ -346,15 +325,15 @@
     "table": "loot_tables/entities/zombie_equipment.json"
 }
 ```
-### minecraft:fire_immune
+## minecraft:fire_immune
 
 使实体不会受到火焰伤害。
 
-### minecraft:floats_in_liquid
+## minecraft:floats_in_liquid
 
 使实体能够在液体中悬浮。
 
-### minecraft:flying_speed
+## minecraft:flying_speed
 
 设置实体的飞行速度。
 
@@ -366,44 +345,44 @@
     "value": 0.6
 }
 ```
-### minecraft:foot_size
+## minecraft:foot_size
 
 设置实体在非跳跃时的步行速度。
 
 
 - `value`：（数字，默认 0.5）实体迈一步的大小。
 
-### minecraft:friction_modifier
+## minecraft:friction_modifier
 
 定义「摩擦力」对该实体的影响程度。
 
 
 - `value`：（数字，默认 1.0）数字越大，摩擦力影响越大。`1.0` 表示正常的摩擦，`2.0` 表示正常摩擦的二倍，`0.5` 表示一半，诸如此类。
 
-### minecraft:ground_offset
+## minecraft:ground_offset
 
 设置实体从地面的偏移。
 
 
 - `value`：（数字，默认 0.0）实体从地面向上偏移的距离，单位为格。
 
-### minecraft:input_ground_controlled
+## minecraft:input_ground_controlled
 
 如果该实体可以被骑乘，添加该组件可以使玩家能够使用方向键（WASD）控制实体移动。
 
-### minecraft:is_baby
+## minecraft:is_baby
 
 设置该实体为幼儿状态。
 
-### minecraft:is_charged
+## minecraft:is_charged
 
 设置该实体带电。
 
-### minecraft:is_chested
+## minecraft:is_chested
 
 设置该实体携带了一个箱子。
 
-### minecraft:is_dyeable
+## minecraft:is_dyeable
 
 允许染料改变该实体的颜色。
 
@@ -415,31 +394,31 @@
     "interact_text": "action.interact.dye"
 }
 ```
-### minecraft:is_ignited
+## minecraft:is_ignited
 
 设置该实体正在着火。
 
-### minecraft:is_saddled
+## minecraft:is_saddled
 
 设置该实体正被装以马鞍。
 
-### minecraft:is_shaking
+## minecraft:is_shaking
 
 设置该实体正在抖动。
 
-### minecraft:is_sheared
+## minecraft:is_sheared
 
 设置该实体已被剪（羊毛）。
 
-### minecraft:is_stackable
+## minecraft:is_stackable
 
 设置该实体可以被堆放。
 
-### minecraft:is_tamed
+## minecraft:is_tamed
 
 设置该实体已被驯服。
 
-### minecraft:item_controllable
+## minecraft:item_controllable
 
 设置在骑乘时可以控制该实体的物品。
 
@@ -454,7 +433,7 @@
     "control_items": "carrotOnAStick"
 }
 ```
-### minecraft:loot
+## minecraft:loot
 
 设置该实体死亡时使用的战利品表。
 
@@ -466,7 +445,7 @@
     "table": "loot_tables/entities/zombie.json"
 }
 ```
-### minecraft:mark_variant
+## minecraft:mark_variant
 
 附加的变种值。可以用于进一步区分不同的变种。
 
@@ -478,14 +457,14 @@
     "value": 1
 }
 ```
-### minecraft:push_through
+## minecraft:push_through
 
 设置实体可以通过的距离。
 
 
 - `value`：（数字，默认 0.0）单位为方块。
 
-### minecraft:scale
+## minecraft:scale
 
 设置该实体在视觉效果上的缩放倍数。
 
@@ -497,14 +476,14 @@
     "value": 0.5
 }
 ```
-### minecraft:sound_volume
+## minecraft:sound_volume
 
 设置该实体音效的基础音量。
 
 
 - `value`：（数字，默认 1.0）音量的大小。
 
-### minecraft:type_family
+## minecraft:type_family
 
 设置该实体所属于的分类。
 
@@ -525,7 +504,7 @@
     ]
 }
 ```
-### minecraft:variant
+## minecraft:variant
 
 用于从一个实体其他的变种中，区分出某个变种的组件组（可以参考村民或豹猫的 JSON 文件）。
 
@@ -537,18 +516,18 @@
     "value": 0
 }
 ```
-### minecraft:walk_animation_speed
+## minecraft:walk_animation_speed
 
 设置实体的行走动画的播放速度。
 
 
 - `value`：（数字，默认 1.0）数字越大，动画播放越快。`1.0` 表示正常的播放速度，`2.0` 表示正常速度的二倍，`0.5` 表示一半，诸如此类。
 
-### minecraft:wants_jockey
+## minecraft:wants_jockey
 
 设置该实体想要成为骑士。
 
-### AI 目标
+## AI 目标
 
 定义该实体的 AI 目标。
 
@@ -558,7 +537,7 @@
 - `priority`：（数字）该 AI 组件的优先级。数字越小，优先级越高。优先级高的 AI 组件会优先进行执行。
 
 
-### minecraft:behavior.scared
+## minecraft:behavior.scared
 
 当下雨时使该实体害怕。
 
@@ -571,7 +550,7 @@
     "sound_interval": 20
 }
 ```
-### minecraft:behavior.avoid_mob_type
+## minecraft:behavior.avoid_mob_type
 
 允许该实体躲避某种实体。
 
@@ -611,7 +590,7 @@
     "probability_per_strength": 0.14
 }
 ```
-### minecraft:behavior.beg
+## minecraft:behavior.beg
 
 允许实体在玩家手里拿着它们喜欢的食物时，看着玩家并跟随玩家。
 
@@ -646,11 +625,11 @@
     ]
 }
 ```
-### minecraft:behavior.break_door
+## minecraft:behavior.break_door
 
 允许该实体破坏门。
 
-### minecraft:behavior.breed
+## minecraft:behavior.breed
 
 允许该实体和其他实体交配。
 
@@ -663,11 +642,11 @@
     "speed_multiplier": 1
 }
 ```
-### minecraft:behavior.charge_attack
+## minecraft:behavior.charge_attack
 
 允许该实体追着目标打。
 
-### minecraft:behavior.circle_around_anchor
+## minecraft:behavior.circle_around_anchor
 
 允许该实体绕着某一点或目标转圈。
 
@@ -700,11 +679,11 @@
     "goal_radius": 1
 }
 ```
-### minecraft:behavior.controlled_by_player
+## minecraft:behavior.controlled_by_player
 
 允许该实体被玩家控制。
 
-### minecraft:behavior.defend_village_target
+## minecraft:behavior.defend_village_target
 
 允许该实体待在村庄，与对村民有害的敌对生物展开生死搏斗。
 
@@ -721,43 +700,43 @@
 
 
 
-### minecraft:behavior.door_interact
+## minecraft:behavior.door_interact
 
 允许该实体开关门。
 
-### minecraft:behavior.dragonchargeplayer
+## minecraft:behavior.dragonchargeplayer
 
 允许末影龙通过快速飞行攻击玩家（玩家由 `minecraft:behavior.dragonscanning` 目标选择）。只能用于末影龙。
 
-### minecraft:behavior.dragondeath
+## minecraft:behavior.dragondeath
 
 允许末影龙高调地死。控制末影龙的死亡动画。只对末影龙有效。
 
-### minecraft:behavior.dragonflaming
+## minecraft:behavior.dragonflaming
 
 允许末影龙喷火攻击。只对末影龙有效。
 
-### minecraft:behavior.dragonholdingpattern
+## minecraft:behavior.dragonholdingpattern
 
 允许末影龙绕着中心飞行。只对末影龙有效。
 
-### minecraft:behavior.dragonlanding
+## minecraft:behavior.dragonlanding
 
 允许末影龙停止飞行，进入栖息模式。只对末影龙有效。
 
-### minecraft:behavior.dragonscanning
+## minecraft:behavior.dragonscanning
 
 允许末影龙在栖息时选择攻击的玩家对象。只对末影龙有效。
 
-### minecraft:behavior.dragonstrafeplayer
+## minecraft:behavior.dragonstrafeplayer
 
 允许末影龙绕着一个玩家并对他吐火球。只对末影龙有效。
 
-### minecraft:behavior.dragontakeoff
+## minecraft:behavior.dragontakeoff
 
 允许末影龙停止栖息模式，进入飞行模式。只对末影龙有效。
 
-### minecraft:behavior.drop_item_for
+## minecraft:behavior.drop_item_for
 
 允许该实体移向一个目标并为其丢下物品。
 
@@ -815,7 +794,7 @@
     }
 }
 ```
-### minecraft:behavior.eat_block
+## minecraft:behavior.eat_block
 
 允许实体吃掉方块，例如羊吃草方块。
 
@@ -831,15 +810,15 @@
     }
 }
 ```
-### minecraft:behavior.enderman_leave_block
+## minecraft:behavior.enderman_leave_block
 
 允许末影人放下它们拿着的方块。仅对末影人有效。
 
-### minecraft:behavior.enderman_take_block
+## minecraft:behavior.enderman_take_block
 
 允许末影人拿起一个方块。仅对末影人有效。
 
-### minecraft:behavior.find_mount
+## minecraft:behavior.find_mount
 
 允许该实体找到另一个实体，并骑上去。
 
@@ -860,7 +839,7 @@
     "mount_distance": 2
 }
 ```
-### minecraft:behavior.find_underwater_treasure
+## minecraft:behavior.find_underwater_treasure
 
 允许该实体移动到最近的沉船或海底废墟。
 
@@ -877,7 +856,7 @@
     "stop_distance": 50
 }
 ```
-### minecraft:behavior.flee_sun
+## minecraft:behavior.flee_sun
 
 允许实体躲避太阳直射，寻找阴凉处。
 
@@ -890,11 +869,11 @@
     "speed_multiplier": 1
 }
 ```
-### minecraft:behavior.float
+## minecraft:behavior.float
 
 允许实体在游泳时保持漂浮。
 
-### minecraft:behavior.float_wander
+## minecraft:behavior.float_wander
 
 允许实体像恶魂一样悬浮。
 
@@ -922,7 +901,7 @@
     "must_reach": true
 }
 ```
-### minecraft:behavior.follow_caravan
+## minecraft:behavior.follow_caravan
 
 允许实体跟随商队中的实体。
 
@@ -954,7 +933,7 @@
     }
 }
 ```
-### minecraft:behavior.follow_mob
+## minecraft:behavior.follow_mob
 
 允许实体跟随其他生物。
 
@@ -971,7 +950,7 @@
     "search_range": 20
 }
 ```
-### minecraft:behavior.follow_owner
+## minecraft:behavior.follow_owner
 
 允许该实体跟随它们的主人玩家。
 
@@ -988,7 +967,7 @@
     "stop_distance": 2
 }
 ```
-### minecraft:behavior.follow_parent
+## minecraft:behavior.follow_parent
 
 允许该实体跟随它们的父母。
 
@@ -1001,7 +980,7 @@
     "speed_multiplier": 1
 }
 ```
-### minecraft:behavior.go_home
+## minecraft:behavior.go_home
 
 允许该实体回到它的出生地。
 
@@ -1023,11 +1002,11 @@
     }
 }
 ```
-### minecraft:behavior.guardian_attack
+## minecraft:behavior.guardian_attack
 
 允许守卫者攻击。只能被守卫者或远古守卫者使用。
 
-### minecraft:behavior.harvest_farm_block
+## minecraft:behavior.harvest_farm_block
 
 允许村民收割附近的农田。只能被村民使用。
 
@@ -1040,7 +1019,7 @@
     "speed_multiplier": 0.5
 }
 ```
-### minecraft:behavior.hurt_by_target
+## minecraft:behavior.hurt_by_target
 
 允许实体将伤害它的实体作为新目标。
 
@@ -1064,7 +1043,7 @@
     "alert_same_type": true
 }
 ```
-### minecraft:behavior.lay_down
+## minecraft:behavior.lay_down
 
 允许生物躺下。
 
@@ -1079,7 +1058,7 @@
     "random_stop_interval": 2000
 }
 ```
-### minecraft:behavior.lay_egg
+## minecraft:behavior.lay_egg
 
 允许怀孕的生物在沙子上下蛋。
 
@@ -1104,7 +1083,7 @@
     }
 }
 ```
-### minecraft:behavior.leap_at_target
+## minecraft:behavior.leap_at_target
 
 允许生物跳起并攻击目标。只能被敌对生物使用。
 
@@ -1119,7 +1098,7 @@
     "must_be_on_ground": false
 }
 ```
-### minecraft:behavior.look_at_entity
+## minecraft:behavior.look_at_entity
 
 允许实体看在附近的实体上。
 
@@ -1143,7 +1122,7 @@
     }
 }
 ```
-### minecraft:behavior.look_at_player
+## minecraft:behavior.look_at_player
 
 允许实体看在附近的玩家上。
 
@@ -1161,7 +1140,7 @@
     "probability": 0.02
 }
 ```
-### minecraft:behavior.look_at_target
+## minecraft:behavior.look_at_target
 
 允许实体看在它的目标上。
 
@@ -1172,7 +1151,7 @@
 - `look_time`：（数组，默认 `[2, 4]`）该实体会看向某生物的时间范围。
 - `probability`：（数字，默认 0.02）会看向生物的几率。`1.00` 为 100%。
 
-### minecraft:behavior.look_at_trading_player
+## minecraft:behavior.look_at_trading_player
 
 允许实体看向正在与它交易的玩家。
 
@@ -1183,11 +1162,11 @@
 - `look_time`：（数组，默认 `[2, 4]`）该实体会看向某生物的时间范围。
 - `probability`：（数字，默认 0.02）会看向生物的几率。`1.00` 为 100%。
 
-### minecraft:behavior.make_love
+## minecraft:behavior.make_love
 
 允许村民找一个伴侣。只能被村民使用。
 
-### minecraft:behavior.melee_attack
+## minecraft:behavior.melee_attack
 
 允许实体使用近战攻击。
 
@@ -1208,7 +1187,7 @@
     "track_target": true
 }
 ```
-### minecraft:behavior.mount_pathing
+## minecraft:behavior.mount_pathing
 
 允许在坐骑寻找目标时，该实体自行移动。
 
@@ -1225,7 +1204,7 @@
     "track_target": true
 }
 ```
-### minecraft:behavior.move_indoors
+## minecraft:behavior.move_indoors
 
 允许村民在室内躲避。只能被村民使用。
 
@@ -1238,7 +1217,7 @@
     "speed_multiplier": 0.8
 }
 ```
-### minecraft:behavior.move_through_village
+## minecraft:behavior.move_through_village
 
 允许村民在村庄周围创建路径。只能被村民使用。
 
@@ -1253,7 +1232,7 @@
     "only_at_night": true
 }
 ```
-### minecraft:behavior.move_to_land
+## minecraft:behavior.move_to_land
 
 允许实体在水中时移回陆地。
 
@@ -1272,7 +1251,7 @@
     "goal_radius": 0.5
 }
 ```
-### minecraft:behavior.move_to_water
+## minecraft:behavior.move_to_water
 
 允许实体在陆地上时移回水中。
 
@@ -1291,21 +1270,21 @@
     "goal_radius": 0.1
 }
 ```
-### minecraft:behavior.move_towards_restriction
+## minecraft:behavior.move_towards_restriction
 
 允许守卫者、铁傀儡和村民在它们预先设定的限制区域内移动。其他实体没有定义限制区域。
 
 
 - `speed_multiplier`：（数字，默认 1.0）在使用此 AI 目标组件时的移动速度的倍数。`1.0` 表明速度未改变。
 
-### minecraft:behavior.move_towards_target
+## minecraft:behavior.move_towards_target
 
 允许该实体直接移向它的目标。
 
 
 - `within_radius`：（数字，默认 0.0）该实体想要和目标的距离。`0.0` 表明它会尝试和目标占在同一格内。
 
-### minecraft:behavior.nearest_attackable_target
+## minecraft:behavior.nearest_attackable_target
 
 允许该实体检查并追踪最近的有效目标。
 
@@ -1384,14 +1363,14 @@
     "must_see": true
 }
 ```
-### minecraft:behavior.ocelot_sit_on_block
+## minecraft:behavior.ocelot_sit_on_block
 
 允许实体像豹猫那样坐在一个地方。
 
 
 - `speed_multiplier`：（数字，默认 1.0）在使用此 AI 目标组件时的移动速度的倍数。`1.0` 表明速度未改变。
 
-### minecraft:behavior.ocelotattack
+## minecraft:behavior.ocelotattack
 
 允许豹猫进行潜行和猛扑攻击。只能被豹猫使用。
 
@@ -1406,11 +1385,11 @@
     "speed_multiplier": 1
 }
 ```
-### minecraft:behavior.offer_flower
+## minecraft:behavior.offer_flower
 
 允许实体像铁傀儡那样递花。
 
-### minecraft:behavior.open_door
+## minecraft:behavior.open_door
 
 允许实体开门。需要让实体能通过门，否则它不会去尝试开门。
 
@@ -1423,7 +1402,7 @@
     "close_door_after": true
 }
 ```
-### minecraft:behavior.owner_hurt_by_target
+## minecraft:behavior.owner_hurt_by_target
 
 允许该实体把伤害它主人的实体作为目标。
 
@@ -1440,7 +1419,7 @@
 
 
 
-### minecraft:behavior.owner_hurt_target
+## minecraft:behavior.owner_hurt_target
 
 允许该实体把它主人伤害的实体作为目标。
 
@@ -1457,7 +1436,7 @@
 
 
 
-### minecraft:behavior.panic
+## minecraft:behavior.panic
 
 允许实体进入恐慌状态。实体将会躲避使它进入恐慌状态的伤害源。
 
@@ -1472,11 +1451,11 @@
     "speed_multiplier": 1.25
 }
 ```
-### minecraft:behavior.peek
+## minecraft:behavior.peek
 
 允许该实体窥探。潜影贝使用该 AI 目标组件从壳中往外看。
 
-### minecraft:behavior.pet_sleep_with_owner
+## minecraft:behavior.pet_sleep_with_owner
 
 允许宠物在主人睡觉时移动到床上。
 
@@ -1495,7 +1474,7 @@
     "goal_radius": 1
 }
 ```
-### minecraft:behavior.pickup_items
+## minecraft:behavior.pickup_items
 
 允许实体捡起地上的物品。
 
@@ -1513,7 +1492,7 @@
     "speed_multiplier": 0.5
 }
 ```
-### minecraft:behavior.play
+## minecraft:behavior.play
 
 允许村民与其他幼儿村民玩耍。只能被村民使用。
 
@@ -1526,11 +1505,11 @@
     "speed_multiplier": 0.32
 }
 ```
-### minecraft:behavior.player_ride_tamed
+## minecraft:behavior.player_ride_tamed
 
 允许该实体被驯服以后能被玩家骑乘。
 
-### minecraft:behavior.raid_garden
+## minecraft:behavior.raid_garden
 
 允许实体吃掉农场中的农作物，直到饱了。
 
@@ -1555,7 +1534,7 @@
     "goal_radius": 0.8
 }
 ```
-### minecraft:behavior.random_breach
+## minecraft:behavior.random_breach
 
 允许实体随机跳出水面。
 
@@ -1574,7 +1553,7 @@
     "cooldown_time": 2
 }
 ```
-### minecraft:behavior.random_fly
+## minecraft:behavior.random_fly
 
 允许实体随机飞行。
 
@@ -1594,7 +1573,7 @@
     "avoid_damage_blocks": true
 }
 ```
-### minecraft:behavior.random_look_around
+## minecraft:behavior.random_look_around
 
 允许实体随机看向四周。
 
@@ -1607,7 +1586,7 @@
     "look_distance": 8
 }
 ```
-### minecraft:behavior.random_sitting
+## minecraft:behavior.random_sitting
 
 允许实体随机坐一会儿。
 
@@ -1626,7 +1605,7 @@
     "min_sit_time": 10
 }
 ```
-### minecraft:behavior.random_stroll
+## minecraft:behavior.random_stroll
 
 允许实体随机溜达。
 
@@ -1642,7 +1621,7 @@
     "speed_multiplier": 1
 }
 ```
-### minecraft:behavior.random_swim
+## minecraft:behavior.random_swim
 
 允许实体随机在水下移动。
 
@@ -1660,7 +1639,7 @@
     "y_dist": 15
 }
 ```
-### minecraft:behavior.ranged_attack
+## minecraft:behavior.ranged_attack
 
 允许实体使用远程攻击，例如射箭。
 
@@ -1684,19 +1663,19 @@
     "attack_radius": 10
 }
 ```
-### minecraft:behavior.receive_love
+## minecraft:behavior.receive_love
 
 允许村民站住等待和另一个村民繁殖。只能被村民使用。
 
-### minecraft:behavior.restrict_open_door
+## minecraft:behavior.restrict_open_door
 
 允许实体在夜间躲在室内。
 
-### minecraft:behavior.restrict_sun
+## minecraft:behavior.restrict_sun
 
 允许实体在日出后自动躲避阳光。
 
-### minecraft:behavior.roll
+## minecraft:behavior.roll
 
 允许实体随机向前。
 
@@ -1709,7 +1688,7 @@
     "probability": 0.013
 }
 ```
-### minecraft:behavior.run_around_like_crazy
+## minecraft:behavior.run_around_like_crazy
 
 允许实体漫无目的地跑。
 
@@ -1722,7 +1701,7 @@
     "speed_multiplier": 1.2
 }
 ```
-### minecraft:behavior.send_event
+## minecraft:behavior.send_event
 
 允许实体向另一个实体发送事件（有关事件的具体内容见下方介绍）。
 
@@ -1775,7 +1754,7 @@
     ]
 }
 ```
-### minecraft:behavior.share_items
+## minecraft:behavior.share_items
 
 允许实体将它有的物品给予其他生物。
 
@@ -1811,15 +1790,15 @@
     ]
 }
 ```
-### minecraft:behavior.silverfish_merge_with_stone
+## minecraft:behavior.silverfish_merge_with_stone
 
 允许实体想蠹鱼那样钻进方块。目前只能被蠹鱼使用。
 
-### minecraft:behavior.silverfish_wake_up_friends
+## minecraft:behavior.silverfish_wake_up_friends
 
 允许实体让附近方块里面的实体出来。目前只能被蠹鱼使用。
 
-### minecraft:behavior.skeleton_horse_trap
+## minecraft:behavior.skeleton_horse_trap
 
 允许马群成为马陷阱。当有玩家在附近时会生成闪电和许多马。只能被马、驴、骡子和骷髅马使用。
 
@@ -1834,23 +1813,23 @@
     "priority": 2
 }
 ```
-### minecraft:behavior.slime_attack
+## minecraft:behavior.slime_attack
 
 允许实体像史莱姆那样进行近战攻击。只能被史莱姆或岩浆怪使用。
 
-### minecraft:behavior.slime_float
+## minecraft:behavior.slime_float
 
 允许实体浮在熔岩或水里。只能被史莱姆或岩浆怪使用。
 
-### minecraft:behavior.slime_keep_on_jumping
+## minecraft:behavior.slime_keep_on_jumping
 
 允许实体持续跳跃。只能被史莱姆或岩浆怪使用。
 
-### minecraft:behavior.slime_random_direction
+## minecraft:behavior.slime_random_direction
 
 允许实体随机移动。只能被史莱姆或岩浆怪使用。
 
-### minecraft:behavior.snacking
+## minecraft:behavior.snacking
 
 允许该实体吃它在附近找到的食品。
 
@@ -1874,7 +1853,7 @@
     ]
 }
 ```
-### minecraft:behavior.sneeze
+## minecraft:behavior.sneeze
 
 允许该生物停下并打喷嚏。可能会丢下一个物品，并吓到附近生物。
 
@@ -1942,31 +1921,31 @@
     "sound": "sneeze"
 }
 ```
-### minecraft:behavior.squid_dive
+## minecraft:behavior.squid_dive
 
 允许鱿鱼潜入水底。只能被鱿鱼使用。
 
-### minecraft:behavior.squid_flee
+## minecraft:behavior.squid_flee
 
 允许鱿鱼游走。只能被鱿鱼使用。
 
-### minecraft:behavior.squid_idle
+## minecraft:behavior.squid_idle
 
 允许鱿鱼悠闲地游泳。只能被鱿鱼使用。
 
-### minecraft:behavior.squid_move_away_from_ground
+## minecraft:behavior.squid_move_away_from_ground
 
 允许鱿鱼从地面回到水中。只能被鱿鱼使用。
 
-### minecraft:behavior.squid_out_of_water
+## minecraft:behavior.squid_out_of_water
 
 允许鱿鱼在水外时贴在地面。只能被鱿鱼使用。
 
-### minecraft:behavior.stay_while_sitting
+## minecraft:behavior.stay_while_sitting
 
 允许实体在坐姿状态时保持不动，而不是做别的。
 
-### minecraft:behavior.stomp_attack
+## minecraft:behavior.stomp_attack
 
 允许实体使用北极熊的近战攻击。
 
@@ -1978,7 +1957,7 @@
 - `speed_multiplier`：（数字，默认 1.0）在使用此 AI 目标组件时的移动速度的倍数。`1.0` 表明速度未改变。
 - `track_target`：（布尔值，默认 `false`）如果为 `true`，只要目标还有效，该实体就会追在目标后面。
 
-### minecraft:behavior.stomp_turtle_egg
+## minecraft:behavior.stomp_turtle_egg
 
 允许实体踩爆海龟蛋。
 
@@ -2000,7 +1979,7 @@
     "interval": 20
 }
 ```
-### minecraft:behavior.summon_entity
+## minecraft:behavior.summon_entity
 
 允许实体通过召唤其他实体来攻击玩家。
 
@@ -2115,7 +2094,7 @@
     ]
 }
 ```
-### minecraft:behavior.swell
+## minecraft:behavior.swell
 
 允许爬行者在附近有玩家时膨胀。只能被爬行者使用。
 
@@ -2130,7 +2109,7 @@
     "priority": 2
 }
 ```
-### minecraft:behavior.swim_wander
+## minecraft:behavior.swim_wander
 
 当不能寻路时有鱼环绕。
 
@@ -2145,7 +2124,7 @@
     "look_ahead": 2
 }
 ```
-### minecraft:behavior.swoop_attack
+## minecraft:behavior.swoop_attack
 
 允许实体通过移动攻击目标。如果在水平方向上碰撞，此 AI 目标将会停止。用于为飞行实体使用。
 
@@ -2159,11 +2138,11 @@
     "delay_range": [ 10, 20 ]
 }
 ```
-### minecraft:behavior.take_flower
+## minecraft:behavior.take_flower
 
 允许该实体从铁傀儡处接受花朵。只能被村民使用。
 
-### minecraft:behavior.tempt
+## minecraft:behavior.tempt
 
 允许该实体被它感兴趣的物品诱惑。
 
@@ -2186,11 +2165,11 @@
     ]
 }
 ```
-### minecraft:behavior.trade_with_player
+## minecraft:behavior.trade_with_player
 
 允许玩家与此实体交易。
 
-### minecraft:behavior.vex_copy_owner_target
+## minecraft:behavior.vex_copy_owner_target
 
 允许恼鬼将目标设置为与其主人相同的目标。
 
@@ -2207,15 +2186,15 @@
 
 
 
-### minecraft:behavior.vex_random_move
+## minecraft:behavior.vex_random_move
 
 允许凋零像恼鬼一样随机移动。
 
-### minecraft:behavior.wither_random_attack_pos_goal
+## minecraft:behavior.wither_random_attack_pos_goal
 
 允许凋零随机攻击。只能被凋零使用。
 
-### minecraft:behavior.wither_target_highest_damage
+## minecraft:behavior.wither_target_highest_damage
 
 允许凋零攻击对它造成伤害最大的实体。
 
@@ -2233,10 +2212,10 @@
 
 
 
-### 其他组件
+## 其他组件
 
 
-### minecraft:addrider
+## minecraft:addrider
 
 为该实体添加一个骑乘者。需要有 `minecraft:rideable`。
 
@@ -2248,7 +2227,7 @@
     "entity_type": "minecraft:skeleton"
 }
 ```
-### minecraft:ageable
+## minecraft:ageable
 
 为该实体添加一个用于成长的计时器。可以通过喂食 `feedItems` 中定义的物品来加速生长。
 
@@ -2295,7 +2274,7 @@
     }
 }
 ```
-### minecraft:angry
+## minecraft:angry
 
 通过计时器定义实体的「愤怒」状态。
 
@@ -2317,7 +2296,7 @@
     }
 }
 ```
-### minecraft:boostable
+## minecraft:boostable
 
 定义可骑乘实体的提升。
 
@@ -2346,7 +2325,7 @@
     ]
 }
 ```
-### minecraft:breathable
+## minecraft:breathable
 
 定义该实体能够在其中呼吸/窒息的方块。
 
@@ -2373,7 +2352,7 @@
     "breathesWater": true
 }
 ```
-### minecraft:breedable
+## minecraft:breedable
 
 定义实体进入「求爱」状态的方式。
 
@@ -2436,7 +2415,7 @@
     ]
 }
 ```
-### minecraft:bribeable
+## minecraft:bribeable
 
 定义一个实体进入「行贿」状态的方式。
 
@@ -2455,7 +2434,7 @@
     ]
 }
 ```
-### minecraft:damage_over_time
+## minecraft:damage_over_time
 
 使实体每隔指定时间后受到指定伤害。
 
@@ -2469,7 +2448,7 @@
     "timeBetweenHurt": 0
 }
 ```
-### minecraft:damage_sensor
+## minecraft:damage_sensor
 
 当实体被指定物品或实体伤害时执行的事件。
 
@@ -2534,7 +2513,7 @@
     }
 ]
 ```
-### minecraft:environment_sensor
+## minecraft:environment_sensor
 
 创建一个基于环境条件的感应器。
 
@@ -2584,7 +2563,7 @@
     }
 ]
 ```
-### minecraft:equippable
+## minecraft:equippable
 
 允许实体装备物品。
 
@@ -2634,7 +2613,7 @@
     ]
 }
 ```
-### minecraft:explode
+## minecraft:explode
 
 定义该实体的爆炸方式。
 
@@ -2658,7 +2637,7 @@
     "destroyAffectedByGriefing": true
 }
 ```
-### minecraft:healable
+## minecraft:healable
 
 定义治疗该实体的交互。
 
@@ -2731,7 +2710,7 @@
     ]
 }
 ```
-### minecraft:insomnia
+## minecraft:insomnia
 
 添加一个计时器记录玩家上一次睡觉的时间（用于决定是否生成幻翼）。
 
@@ -2743,7 +2722,7 @@
     "days_until_insomnia": 3
 }
 ```
-### minecraft:interact
+## minecraft:interact
 
 定义与此实体的交互。
 
@@ -2859,7 +2838,7 @@
     }
 ]
 ```
-### minecraft:inventory
+## minecraft:inventory
 
 定义该实体的物品栏属性。
 
@@ -2891,22 +2870,22 @@
     "private": true
 }
 ```
-### minecraft:item_hopper
+## minecraft:item_hopper
 
 决定该实体为一个物品漏斗。
 
-### minecraft:jump.dynamic
+## minecraft:jump.dynamic
 
 定义一个动态的跳跃高度控制。将会基于实体的速度修饰器改变跳跃的属性。
 
-### minecraft:jump.static
+## minecraft:jump.static
 
 给予实体跳跃的能力。
 
 
 - `jump_power`：（数字，默认 0.42）跳跃的初始垂直速度。
 
-### minecraft:leashable
+## minecraft:leashable
 
 允许该实体可以被栓绳拴住。
 
@@ -2932,7 +2911,7 @@
     }
 }
 ```
-### minecraft:lookat
+## minecraft:lookat
 
 定义当另一个实体看向这个实体时的行为（参考末影人 `enderman.json` 被玩家看而激怒）。
 
@@ -2968,35 +2947,35 @@
     }
 }
 ```
-### minecraft:movement.amphibious
+## minecraft:movement.amphibious
 
 允许该实体在水中游泳或在陆地上行走。
 
 
 - `max_turn`：（数字，默认 30.0）该生物一刻内能最大转过的度数。
 
-### minecraft:movement.basic
+## minecraft:movement.basic
 
 实体的基础移动组件。
 
 
 - `max_turn`：（数字，默认 30.0）该生物一刻内能最大转过的度数。
 
-### minecraft:movement.fly
+## minecraft:movement.fly
 
 允许该实体飞行。
 
 
 - `max_turn`：（数字，默认 30.0）该生物一刻内能最大转过的度数。
 
-### minecraft:movement.generic
+## minecraft:movement.generic
 
 允许该实体飞行、游泳、爬行等。
 
 
 - `max_turn`：（数字，默认 30.0）该生物一刻内能最大转过的度数。
 
-### minecraft:movement.jump
+## minecraft:movement.jump
 
 允许该实体跳跃。
 
@@ -3004,21 +2983,21 @@
 - `jump_delay`：（数组，默认 `[0.0, 0.0]`）两次跳跃之间的间隔时间。
 - `max_turn`：（数字，默认 30.0）该生物一刻内能最大转过的度数。
 
-### minecraft:movement.skip
+## minecraft:movement.skip
 
 允许实体在移动时跳跃。
 
 
 - `max_turn`：（数字，默认 30.0）该生物一刻内能最大转过的度数。
 
-### minecraft:movement.sway
+## minecraft:movement.sway
 
 使实体左右摇摆，给人以游泳的感觉。
 
 
 - `max_turn`：（数字，默认 30.0）该生物一刻内能最大转过的度数。
 
-### minecraft:nameable
+## minecraft:nameable
 
 允许该实体被命名（如使用命名牌）。
 
@@ -3056,7 +3035,7 @@
     ]
 }
 ```
-### minecraft:navigation.*
+## minecraft:navigation.*
 
 下面是有关寻路的一些组件。「寻路」是实体在移动前对自己移动路线的规划。「规划」和「实际」有可能会不一致，例如你在寻路组件中允许该实体通过门，那么实体在规划路线时就有可能穿过门，但假设你没有在 AI 目标组件中允许该实体开门，那么实体到了门前以后只会傻站着，而不会像它原先规划地那样通过门。换句话说就是，实体在规划路径时以为自己可以开门，但真正到了门前才发现自己菜到连门都打不开（大雾。
 
@@ -3138,7 +3117,7 @@
 - `can_path_over_water`：（布尔值，默认 `false`）如果为 `true`，该实体规划的路径能够通过水面。
 - `can_sink`：（布尔值，默认 `true`）如果为 `true`，该实体规划的路径会在水里受到重力影响下沉。
 
-### minecraft:peek
+## minecraft:peek
 
 定义实体的「窥视」行为（参考原版的潜影贝）。
 
@@ -3160,7 +3139,7 @@
     }
 }
 ```
-### minecraft:projectile
+## minecraft:projectile
 
 定义该实体为弹射物（如原版的鸡蛋、投掷药水等）。
 
@@ -3237,14 +3216,14 @@
     ]
 }
 ```
-### minecraft:rail_movement
+## minecraft:rail_movement
 
 定义该实体在铁轨上的移动。拥有该组件的实体将只能在铁轨上移动。
 
 
 - `max_speed`：（数字，默认 0.4）该实体在铁轨上移动时的最大速度。
 
-### minecraft:rail_sensor
+## minecraft:rail_sensor
 
 定义当铁轨被激活/取消激活时该实体的行为。
 
@@ -3284,7 +3263,7 @@
     }
 }
 ```
-### minecraft:rideable
+## minecraft:rideable
 
 允许该实体被骑乘。可以定义多个不同位置的座位。
 
@@ -3354,11 +3333,11 @@
     ]
 }
 ```
-### minecraft:scaffolding_climber
+## minecraft:scaffolding_climber
 
 允许在脚手架上爬行。只能被玩家使用。
 
-### minecraft:scale_by_age
+## minecraft:scale_by_age
 
 定义基于年龄的该实体大小的缩放。
 
@@ -3372,7 +3351,7 @@
     "end_scale": 1
 }
 ```
-### minecraft:shareables
+## minecraft:shareables
 
 定义该实体想要交换的物品。
 
@@ -3414,7 +3393,7 @@
     ]
 }
 ```
-### minecraft:shooter
+## minecraft:shooter
 
 定义该实体的远程攻击表现。
 
@@ -3432,7 +3411,7 @@
     "auxVal": 19
 }
 ```
-### minecraft:sittable
+## minecraft:sittable
 
 定义该实体的「坐姿」状态。
 
@@ -3440,7 +3419,7 @@
 - `sit_event`：（对象，格式同触发器）当该实体坐下时触发。
 - `stand_event`：（对象，格式同触发器）当该实体站起时触发。
 
-### minecraft:spawn_entity
+## minecraft:spawn_entity
 
 该实体在一段时间后生成另一个实体。类似原版鸡下蛋的表现。
 
@@ -3461,7 +3440,7 @@
     "spawn_item": "egg"
 }
 ```
-### minecraft:tameable
+## minecraft:tameable
 
 允许该实体被玩家驯服。
 
@@ -3498,7 +3477,7 @@
     }
 }
 ```
-### minecraft:tamemount
+## minecraft:tamemount
 
 允许该实体能通过骑乘被驯服。
 
@@ -3559,7 +3538,7 @@
     }
 }
 ```
-### minecraft:target_nearby_sensor
+## minecraft:target_nearby_sensor
 
 定义实体能将其他实体视为目标的范围。
 
@@ -3583,7 +3562,7 @@
     }
 }
 ```
-### minecraft:teleport
+## minecraft:teleport
 
 定义一个实体的传送行为。
 
@@ -3611,7 +3590,7 @@
     "lightTeleportChance": 0.05
 }
 ```
-### minecraft:tick_world
+## minecraft:tick_world
 
 定义实体是否加载世界。
 
@@ -3620,7 +3599,7 @@
 - `never_despawn`：（布尔值，默认 `false`）如果为 `true`，该实体即使距离玩家很远也不会被移除。
 - `radius`：（整数，默认 2，可用范围 2-6）该实体加载的区域半径。
 
-### minecraft:timer
+## minecraft:timer
 
 定义一个一段时间后触发触发器的组件。
 
@@ -3640,7 +3619,7 @@
     }
 }
 ```
-### minecraft:trade_table
+## minecraft:trade_table
 
 定义该实体与玩家交易的能力。
 
@@ -3654,7 +3633,7 @@
     "table": "trading/leather_worker_trades.json"
 }
 ```
-### minecraft:transformation
+## minecraft:transformation
 
 定义实体从当前实体转变为另一个实体的行为。
 
@@ -3712,7 +3691,7 @@
     }
 }
 ```
-### minecraft:trusting
+## minecraft:trusting
 
 定义该实体信任玩家的条件。
 

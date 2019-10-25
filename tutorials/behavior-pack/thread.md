@@ -10,25 +10,29 @@
 [#9]生成规则  
 *[#10]附录：条件  
 [#11]实体  
-*[#829760,15760754]附录：组件  
 *[#12]附录：滤器  
-*[#13]附录：事件  
-[#14]物品  
-*[#15]附录：组件  
-[#16]配方  
-*[#17]有序合成配方  
-*[#18]无序合成配方  
-*[#19]熔炼配方  
-*[#20]混合酿造配方  
-*[#21]换容酿造配方  
-[#24]方块  
-[#23]结构  
-[#22]生物群系  
-[#25]函数  
-[#26]脚本（WIP）  
-[#27]发布  
-[#28]参考资料  
-[#29]后语  
+*[#13]附录：组件  
+**[#829760,15760754]属性  
+**[#829760,13536864]行为  
+**[#829760,13506665]触发器  
+**[#829760,13501483]其他  
+*[#14]附录：事件  
+[#15]物品  
+*[#16]附录：组件  
+[#17]配方  
+*[#18]有序合成配方  
+*[#19]无序合成配方  
+*[#20]熔炼配方  
+*[#21]混合酿造配方  
+*[#22]换容酿造配方  
+[#23]方块  
+[#24]结构  
+[#25]生物群系  
+[#26]函数  
+[#27]脚本（WIP）  
+[#28]发布  
+[#29]参考资料  
+[#30]后语  
 友情提示：点击论坛页面右侧偏下的粉红小书签能快速回到本目录  
 [/index]
 
@@ -1917,27 +1921,102 @@ console.log(arr.sort().join('\n'))
 
 # 附录：滤器
 
-滤器能够用于测试指定的项目是否满足你所定义的条件。
+滤器能够用于测试指定的项目是否满足你所定义的条件。在组件、事件等各种地方都有运用到滤器。
 
-## 基本单位
-
+## JSON 格式的基本单位
 
 - `test`：（字符串）要测试的项目（详细介绍见下）。
 - `subject`：（字符串）测试的主体。只有部分测试需要指定这个字段（详细介绍见下）。
 - `domain`：（字符串）域。只有部分测试需要指定这个字段（详细介绍见下）。
-- `operator`：（字符串）在指定项目 `test` 方面，主体 `subject` 的 `domain` 与 给定的数据 `value` 的比较方式（详细介绍见下）。
-- `value` （字符串）给定的数据。
+- `value` （字符串或数字或布尔）给定的值。将会拿实际的数据与这个值进行比较。
+- `operator`：（字符串）比较方式。在指定项目（`test`）上，主体（`subject`）的域（`domain`）与给定的值（`value`）的比较方式（详细介绍见下）。
+
+> *这都啥玩意儿，我怎么看不懂？*
+> 
+> 没事儿，先装作看懂了往下再看点儿吧。
+
+## 测试主体
+
+- `self`：调用此测试的实体（即使用了该滤器的实体）。
+- `other`：除调用者以外的，参与交互的实体。该实体具体是哪个，由调用该滤器的组件或事件决定。
+- `parent`：调用者的父母。
+- `player`：参与交互的玩家。该玩家具体是哪个，由调用该滤器的组件或事件决定。
+- `target`：调用者的目标实体。通常是该实体正在追杀的目标。
+
+## 比较方式
+
+- `=`、`==`、`equals`：等于。当主体的项目与给定数据完全一致时，测试通过。如果比较方式被省略，则默认使用该种方式比较。
+- `!=`、`<>`、`not`：不等于。当主体的项目与给定数据不一致时，测试通过。
+- `<`：小于。当主体的项目小于给定数据时，测试通过。
+- `<=`：小于等于。当主体的项目小于或等于给定数据时，测试通过。
+- `>`：大于。当主体的项目大于给定数据时，测试通过。
+- `>=`：大于等于。当主体的项目大于或等于给定数据时，测试通过。
+
+## 组合
+
+滤器其实可以将基本单位通过逻辑进行任意组合。
+
+- `any_of`：（数组）当其下只要有任何一个滤器通过时，这组滤器就能通过。
+- `all_of`：（数组）当其下的所有滤器通过时，这组滤器才能通过。
+- `none_of`：（对象）当其下的滤器没有通过时，该滤器才能通过。
+
+例如我们可以这么写：
+
+```json
+{
+    "any_of": [
+        { "test": "has_biome_tag", "operator": "==", "value": "taiga"}, 
+        { "test": "has_biome_tag", "operator": "!=", "value": "mega" }
+    ]
+}
+```
+
+当生态群系有 `taiga` 标签**或者**没有 `mega` 标签时，条件达成。
+
+如果我们把 `any_of` 改成 `all_of`：
+
+```json
+{
+    "all_of": [
+        { "test": "has_biome_tag", "operator": "==", "value": "taiga"}, 
+        { "test": "has_biome_tag", "operator": "!=", "value": "mega" }
+    ]
+}
+```
+
+就变成了当生态群系有 `taiga` 标签**并且**没有 `mega` 标签时，条件才能达成。
+
+`all_of`、`any_of` 以及 `none_of` 可以自由组合和嵌套。示例（`entities/pufferfish.json`）：
+
+```json
+{
+    "any_of": [
+        { /* A */ "test": "is_family", "subject": "other", "value": "mob" },
+        { 
+            "all_of": [
+                { /* B */ "test": "is_family", "subject": "other", "value": "player" },
+                { "none_of": { /* C */ "test": "has_ability", "subject": "other", "value": "instabuild" } }
+            ]
+        }
+    ]
+}
+```
+
+只要 A 滤器通过，或者 B 滤器通过且 C 滤器不通过，这整个一大块就能通过。
+
+> *我怎么还是看不懂？？？*
+> 
+> 你就快要看懂了。不就是示例嘛，我有一吨的示例给你。
 
 ## 测试项目
 
-[spoiler]
+下面将列出所有能够填写到 `test` 中的测试项目。将会在每个测试项目介绍的首段前用括号表明该测试项目的类型，也就是你应该写在 `value` 里的值的类型。
 
-[size=2]**clock_time
+### clock_time
 
-当前时间。
+（数字）当前时间。
 
 将一天的时间均分到了 `[0.00, 1.00]` 中。即：
-
 
 - `0.00`：正午。
 - `0.25`：日落。
@@ -1945,75 +2024,83 @@ console.log(arr.sort().join('\n'))
 - `0.75`：次日日出。
 - `1.00`：次日正午。
 
-例子：
+示例：
+```json
+{ "test": "clock_time", "value": 0.001 }
+```
+在当前时间为正午后过了一小点儿时，该滤器通过。
 
-完整写法：`{ "test": "clock_time", "subject": "self", "operator": "equals", "value": "0.00" }`
+### distance_to_nearest_player
 
-简写：`{ "test": "clock_time", "value": "0.00" }`
+（数字）主体到最近的玩家的距离。
 
-[size=2]**has_ability
+示例（`entities/fox.json`）：
+```json
+{ "test": "distance_to_nearest_player", "operator": ">", "value": 16 }
+```
+在距离最近玩家的距离大于 `16` 时，该滤器通过。
 
-主体的能力。
+### has_ability
 
+（字符串）主体是否具有某个能力。可选值：
 
 - `flySpeed`：飞行速度。
 - `walkSpeed`：行走速度。
 - `flying`：是否正在飞行。
 - `mayfly`：是否能够飞行。
-- `instabuild`：是否能够瞬间摧毁方块。
+- `instabuild`：是否能够瞬间摧毁方块。经常被用来判断玩家是否为创造模式。
 - `invulnerable`：是否无敌。
 - `mute`：是否被禁言（教育版特性）。
 - `worldbuilder`：是否为地图建造者（教育版特性）。
 - `noclip`：（教育版特性）。
 - `lightning`：（教育版特性）。
 
-例子：
+示例（`entities/pufferfish.json`）：
+```json
+{ "none_of": { "test": "has_ability", "subject": "other", "value": "instabuild" } }
+```
+在 `other` 主体不处于创造模式时，该滤器通过。`other` 主体具体是哪个，由调用该滤器的组件或事件决定。
 
-完整写法：`{ "test": "has_ability", "subject": "self", "operator": "equals", "value": "instabuild" }`
+### has_biome_tag
 
-简写：`{ "test": "has_ability", "value": "instabuild" }`
+（字符串）当前生物群系是否具有某个标签。有关生物群系标签的内容你可以在「生物群系」章节查看。
 
-[size=2]**has_biome_tag
+示例（`entities/villager_v2.json`）：
+```json
+{ "test": "has_biome_tag", "value": "desert" }
+```
+在当前生物群系具有 `desert` 标签时，该滤器通过。
 
-拥有指定名称的生态群系标签。
+### has_component
 
-例子：
+（字符串）主体是否拥有某个组件。
 
-完整写法：`{ "test": "has_biome_tag", "subject": "self", "operator": "equals", "value": " " }`
+示例（`entities/creeper.json`）：
+```json
+{ "test": "has_component", "operator": "!=", "value": "minecraft:explode" }
+```
+在当前实体没有 `minecraft:explode` 组件时，该滤器通过。
 
-简写：`{ "test": "has_biome_tag", "value": " " }`
+### has_damage
 
-[size=2]**has_component
+（字符串）主体是否受到了某种类型的伤害。可选值：
 
-主体拥有的组件（所有组件可在上文中找到）。
-
-例子：
-
-完整写法：`{ "test": "has_component", "subject": "self", "operator": "equals", "value": "minecraft:explode" }`
-
-简写：`{ "test": "has_component", "value": "minecraft:explode" }`
-
-[size=2]**has_damage
-
-主体受到伤害的类型。
-
-
-- `anvil`：铁砧砸伤。
+- `anvil`：掉落的铁砧砸伤。
 - `attack`：攻击。
 - `block_explosion`：方块爆炸。
-- `contact`：接触。
+- `contact`：不明。
 - `drowning`：溺水。
 - `entity_explosion`：实体爆炸。
 - `fall`：摔伤。
-- `falling_block`：掉落方块砸伤。
+- `falling_block`：掉落的方块砸伤。
 - `fatal`：任何能直接杀死该实体的致命伤害。
 - `fire`：燃烧伤害。
-- `fire_tick`：不可知。
-- `fly_into_wall`：飞行撞墙。
+- `fire_tick`：不明。
+- `fly_into_wall`：鞘翅飞行撞墙。
 - `lava`：熔岩烧伤。
 - `magic`：魔法（药水）。
 - `none`：无。
-- `override`：覆盖。
+- `override`：不明。
 - `piston`：活塞。
 - `projectile`：弹射物。
 - `starve`：饥饿。
@@ -2021,129 +2108,193 @@ console.log(arr.sort().join('\n'))
 - `suicide`：自杀。
 - `thorns`：荆棘。
 - `void`：虚空。
-- `wither`：凋灵。
+- `wither`：凋零。
 
-例子：
+示例（`entities/pillager.json`）：
+```json
+{ "test": "has_damage", "value": "fatal" }
+```
+在当前实体受到致命打击时，该滤器通过。
 
-完整写法：`{ "test": "has_damage", "subject": "self", "operator": "equals", "value": "fatal" }`
+### has_equipment
 
-简写：`{ "test": "has_damage", "value": "fatal" }`
+（字符串）主体是否拥有某个物品。
 
-[size=2]**has_equipment
-
-主体拥有的装备。
-
-域：检测的栏位
-
-
-- `any`：任意。
-- `hand`：手。
+该检测项目需要用域（`domain`）来指定检测的栏位，可选值：
+- `any`：任意栏位。
+- `hand`：手部。
 - `armor`：盔甲。
 - `head`：头部。
 - `torso`：躯干。
-- `leg`：腿。
-- `feet`：脚。
+- `feet`：脚部。
+- `leg`：腿部。
 
-例子：
+示例（`entities/cow.json`）：
+```json
+{
+    "test": "has_equipment",
+    "domain": "hand",
+    "subject": "other",
+    "value": "bucket:0"
+}
+```
+在 `other` 主体的手中含有空桶时，该滤器通过。
 
-完整写法：`{ "test": "has_equipment", "subject": "self", "domain": "any", "operator": "equals", "value": "dirt" }`
+### has_mob_effect
 
-简写：`{ "test": "has_equipment", "value": "dirt" }`
+（字符串）主体是否拥有某个状态效果。
 
-[size=2]**in_caravan
+示例（`entities/player.json`）：
+```json
+{ "test": "has_mob_effect", "subject": "self", "value": "bad_omen" }
+```
+在当前实体具有 `bad_omen`（不祥之兆）状态效果时，该滤器通过。
 
-主体是否在车队中。
+### has_target
 
-例子：
+（布尔）主体是否拥有目标实体。
 
-完整写法：`{ "test": "in_caravan", "subject": "self", "operator": "equals", "value": "true" }`
+示例（`entities/fox.json`）：
+```json
+{ "test": "has_target", "operator": "==", "value": false }
+```
+在当前实体没有目标实体时，该滤器通过。
 
-简写：`{ "test": "in_caravan" }`
+### has_trade_supply
 
-[size=2]**in_clouds
+（布尔）主体是否能提供交易。似乎只能被流浪商人使用。
 
-主体是否在云中。
+示例（`entities/wandering_trader.json`）：
+```json
+{ "test": "has_trade_supply", "subject": "self", "value": false }
+```
+在主体没有交易要提供时，该滤器通过。
 
-例子：
+### hourly_clock_time
 
-完整写法：`{ "test": "in_clouds", "subject": "self", "operator": "equals", "value": "true" }`
+（数字）24 小时制的时间。取值范围 `[0, 24000]`。
 
-简写：`{ "test": "in_clouds" }`
+示例（`entities/wandering_trader.json`）：
+```json
+{ "test": "hourly_clock_time", "operator": ">=", "value": 18000 }
+```
+在当前时间晚于 18 点时，该滤器通过。
 
-[size=2]**in_lava
+### in_caravan
 
-主体是否在岩浆中。
+（布尔）主体是否在车队中。似乎只对行商骆驼有用。
 
-例子：
+示例（`entities/llama.json`）：
+```json
+{ "test": "in_caravan", "value": false }
+```
+在当前实体不在车队中时，该滤器通过。
 
-完整写法：`{ "test": "in_lava", "subject": "self", "operator": "equals", "value": "true" }`
+### in_clouds
 
-简写：`{ "test": "in_lava" }`
+（布尔）主体是否在云中。
 
-[size=2]**in_water
+示例：
+```json
+{ "test": "in_clouds" }
+```
+在当前实体是云实体时，该滤器通过。
 
-主体是否在水中。
+### in_lava
 
-例子：
+（布尔）主体是否在岩浆中。
 
-完整写法：`{ "test": "in_water", "subject": "self", "operator": "equals", "value": "true" }`
+示例（`entities/armor_stand.json`）：
+```json
+{ "test": "in_lava", "subject": "self", "operator": "==", "value": true }
+```
+在当前实体位于熔岩中时，该滤器通过。
 
-简写：`{ "test": "in_water" }`
+### in_water
 
-[size=2]**in_water_or_rain
+（布尔）主体是否在水中。
 
-是否在水中或雨中。
+示例（`entities/drowned.json`）：
+```json
+{ "test": "in_water", "subject": "other", "value": true }
+```
+在 `other` 实体位于水中时，该滤器通过。
 
-例子：
+### in_water_or_rain
 
-完整写法：`{ "test": "in_water_or_rain", "subject": "self", "operator": "equals", "value": "true" }`
+（布尔）是否在水中或雨中。
 
-简写：`{ "test": "in_water_or_rain" }`
+示例（`entities/blaze.json`）：
+```json
+{ "test": "in_water_or_rain", "operator": "==", "value": true }
+```
+在当前实体位于水中或雨中时，该滤器通过。
 
-[size=2]**is_altitude
+### is_altitude
 
-海拔高度。0 为基岩所在的高度。
+（数字）海拔高度。0 为基岩所在的高度。
 
-例子：
+示例：
+```json
+{ "test": "is_altitude", "operator": "<=", "value": 1 }
+```
+在当前实体位于基岩层时，该滤器通过。
 
-完整写法：`{ "test": "is_altitude", "subject": "self", "operator": "equals", "value": "0" }`
+### is_avoiding_mobs
 
-简写：`{ "test": "is_altitude", "value": "0" }`
+（布尔）正在躲避怪物。似乎只对流浪商人有用。
 
-[size=2]**is_biome
+示例（`entities/wandering_trader.json`）：
+```json
+{ "test": "is_avoiding_mobs", "subject": "self", "value": true }
+```
+在当前实体正在躲避怪物时，该滤器通过。
 
-生态群系。
+### is_biome
 
-例子：
+（字符串）生态群系。
 
-完整写法：`{ "test": "is_biome", "subject": "self", "operator": "equals", "value": "beach" }`
+示例（`entities/cave_spider.json`）：
+```json
+{ "test": "is_biome", "value" : "the_nether" }
+```
+在当前生物群系为 `the_nether`（下界）时，该滤器通过。
 
-简写：`{ "test": "is_biome", "value": "beach" }`
+### is_block
 
-[size=2]**is_brightness
+（字符串）主体是否为某个方块。
 
-亮度。范围在 `[0.0, 1.0]` 之中。
+该检测项目需要使用特殊的主体（`subject`）：`block`。
 
-例子：
+示例（`entities/bee.json`）：
+```json
+{ "test": "is_block", "subject": "block", "value": "minecraft:bee_nest" }
+```
+在指定方块是蜂巢时，该滤器通过。
 
-完整写法：`{ "test": "is_brightness", "subject": "self", "operator": "equals", "value": "0.50" }`
+### is_brightness
 
-简写：`{ "test": "is_brightness", "value": "0.50" }`
+（数字）亮度。范围在 `[0.0, 1.0]` 之中。
 
-[size=2]**is_climbing
+示例（`entities/cave_spider.json`）：
+```json
+{ "test" : "is_brightness", "operator" : "<", "value" : 0.49 }
+```
+在当前亮度相对于满亮度的比例小于 `0.49` 时，该滤器通过。
 
-是否正在攀爬。
+### is_climbing
 
-例子：
+（布尔）是否正在攀爬（梯子等）。
 
-完整写法：`{ "test": "is_climbing", "subject": "self", "operator": "equals", "value": "true" }`
+示例：
+```json
+{ "test": "is_climbing" }
+```
+在当前实体正在攀爬时，该滤器通过。
 
-简写：`{ "test": "is_climbing" }`
+### is_color
 
-[size=2]**is_color
-
-颜色。
-
+（字符串）检测主体的颜色。似乎只能在羊上使用。
 
 - `black`：黑色。
 - `blue`：蓝色。
@@ -2162,315 +2313,351 @@ console.log(arr.sort().join('\n'))
 - `white`：白色。
 - `yellow`：黄色。
 
-例子：
+示例（`entities/evocation_illager.json`）：
+```json
+{ "test": "is_color", "subject": "other", "value":  "blue" }
+```
+在 `other` 实体的颜色为 `blue`（蓝色）时，该滤器通过。
 
-完整写法：`{ "test": "is_color", "subject": "self", "operator": "equals", "value": "white" }`
+### is_daytime
 
-简写：`{ "test": "is_color", "value": "white" }`
+（布尔）是否正在白天。
 
-[size=2]**is_daytime
+示例（`entities/bee.json`）：
+```json
+{ "test" : "is_daytime", "value" : false }
+```
+在当前时间不是白天时，该滤器通过。
 
-是否正在白天。
+### is_difficulty
 
-例子：
-
-完整写法：`{ "test": "is_daytime", "subject": "self", "operator": "equals", "value": "true" }`
-
-简写：`{ "test": "is_daytime" }`
-
-[size=2]**is_difficulty
-
-游戏难度。
-
+（布尔）游戏难度。可选值：
 
 - `peaceful`：和平。
 - `easy`：简单。
 - `normal`：普通。
 - `hard`：困难。
 
-例子：
+示例（`entities/arrow.json`）：
+```json
+{"test": "is_difficulty", "value": "hard"}
+```
+在当前难度为困难模式时，该滤器通过。
 
-完整写法：`{ "test": "is_difficulty", "subject": "self", "operator": "equals", "value": "normal" }`
+### is_family
 
-简写：`{ "test": "is_difficulty", "value": "normal" }`
+（布尔）主体是否是某个实体种类。
 
-[size=2]**is_family
+示例（`entities/arrow.json`）：
+```json
+{"test": "is_family", "subject": "other", "value": "player"}
+```
+在 `other` 实体属于 `player` 类（玩家）时，该滤器通过。
 
-实体种类。
-
-例子：
-
-完整写法：`{ "test": "is_family", "subject": "self", "operator": "equals", "value": "player" }`
-
-简写：`{ "test": "is_family", "value": "player" }`
-
-[size=2]**is_game_rule
+### is_game_rule
 
 游戏规则。
 
-例子：
+该检测项目需要定义域，来指明检测哪个游戏规则。
 
-完整写法：`{ "test": "is_game_rule", "subject": "self", "domain": "domobspawning", "operator": "equals", "value": "true" }`
+示例（`entities/ender_pearl.json`）：
+```json
+{"test": "is_game_rule", "domain": "domobspawning", "value": false}
+```
+在 `domobspawning` 游戏规则为 `false`（禁止生物生成）时，该滤器通过。
 
-简写：`{ "test": "is_game_rule", "domain": "domobspawning" }`
+### is_humid
 
-[size=2]**is_humid
+（布尔）区域是否潮湿。
 
-主体所在区域的湿度。
+示例：
+```json
+{ "test": "is_humid" }
+```
+在当前区域潮湿时，该滤器通过。
 
-例子：
+### is_immobile
 
-完整写法：`{ "test": "is_humid", "subject": "self", "operator": "equals", "value": "true" }`
+（布尔）主体是否不能移动。当失去行为组件、刚刚改变维度或没有生命值时，实体会不能移动。
 
-简写：`{ "test": "is_humid" }`
+示例：
+```json
+{ "test": "is_immobile" }
+```
+在当前实体不能移动时，该滤器通过。
 
-[size=2]**is_immobile
+### is_in_village
 
-主体是否不移动。当失去 AI 目标、刚刚改变维度或者没有生命值时，实体会不移动。
+（布尔）主体是否位于村庄
 
-例子：
+示例（`entities/player.json`）：
+```json
+{ "test": "is_in_village", "subject": "self", "value": true }
+```
+在当前实体位于村庄时，该滤器通过。
 
-完整写法：`{ "test": "is_immobile", "subject": "self", "operator": "equals", "value": "true" }`
+### is_leashed
 
-简写：`{ "test": "is_immobile" }`
+（布尔）主体是否被拴绳拴着。
 
-[size=2]**is_moving
+示例（`entities/llama.json`）：
+```json
+{ "test": "is_leashed", "subject": "self", "value": false }
+```
+在当前实体没有被拴绳牵着时，该滤器通过。
 
-主体是否移动。
+### is_leashed_to
 
-例子：
+（布尔）当前实体是否被拴绳牵到主体上。
 
-完整写法：`{ "test": "is_moving", "subject": "self", "operator": "equals", "value": "true" }`
+示例（`entities/wandering_trader.json`）：
+```json
+{ "test": "is_leashed_to", "subject": "other", "value": true }
+```
+在当前实体被拴绳牵到 `other` 实体上时，该滤器通过。
 
-简写：`{ "test": "is_moving" }`
+### is_mark_variant
 
-[size=2]**is_owner
+（数字）主体的类型是否是指定变种。
 
-主题是否是调用者的主人。
+示例（`entities/llama.json`）：
+```json
+{ "test": "is_mark_variant", "subject": "self", "operator": "!=", "value": 1 }
+```
+在当前实体的变种不是 `1` 时，该滤器通过。
 
-例子：
+### is_moving
 
-完整写法：`{ "test": "is_owner", "subject": "self", "operator": "equals", "value": "true" }`
+（布尔）主体是否正在移动。
 
-简写：`{ "test": "is_owner" }`
+示例：
+```json
+{ "test": "is_moving" }
+```
+在当前实体正在移动时，该滤器通过。
 
-[size=2]**is_riding
+### is_owner
 
-主体是否正在骑乘。
+（布尔）主体是否是当前实体的主人。
 
-例子：
+示例：
+```json
+{ "test": "is_owner", "subject": "other" }
+```
+在 `other` 实体是当前实体的主人时，该滤器通过。
 
-完整写法：`{ "test": "is_riding", "subject": "self", "operator": "equals", "value": "true" }`
+### is_riding
 
-简写：`{ "test": "is_riding" }`
+（布尔）主体是否正在骑乘。
 
-[size=2]**is_sneaking
+示例（`entities/parrot.json`）：
+```json
+{ "test": "is_riding", "operator": "!=", "value": true }
+```
+在当前实体没有在骑乘其他实体时，该滤器通过。
 
-主体是否正在潜行
+### is_skin_id
 
-例子：
+（数字）主体的皮肤 ID。似乎只对新版村民和新版僵尸村民有用。
 
-完整写法：`{ "test": "is_sneaking", "subject": "self", "operator": "equals", "value": "true" }`
+示例（`entities/villager_2.json`）：
+```json
+{ "test": "is_skin_id", "subject": "other", "value": 0 }
+```
+在当前实体的皮肤 ID 为 `0` 时，该滤器通过。
 
-简写：`{ "test": "is_sneaking" }`
+### is_sleeping
 
-[size=2]**is_snow_covered
+（布尔）主体是否正在睡觉。
 
-主体所在区域是否被雪覆盖。
+示例（`entities/fox.json`）：
+```json
+{ "test": "is_sleeping", "value": true }
+```
+在当前实体正在睡觉时，该滤器通过。
 
-例子：
+### is_sneaking
 
-完整写法：`{ "test": "is_snow_covered", "subject": "self", "operator": "equals", "value": "true" }`
+（布尔）主体是否正在潜行。
 
-简写：`{ "test": "is_snow_covered" }`
+示例（`entities/fox.json`）：
+```json
+{ "test": "is_sneaking", "subject": "other", "operator": "!=", "value": true }
+```
+在 `other` 实体没有潜行时，该滤器通过。
 
-[size=2]**is_target
+### is_snow_covered
 
-主体是否是调用者的目标。
+（布尔）主体所在区域是否被雪覆盖。
 
-例子：
+示例（`entities/fox.json`）：
+```json
+{ "test": "is_snow_covered", "value": true }
+```
+在当前实体所在区域被雪覆盖了时，该滤器通过。
 
-完整写法：`{ "test": "is_target", "subject": "self", "operator": "equals", "value": "true" }`
+### is_target
 
-简写：`{ "test": "is_target" }`
+（布尔）主体是否是当前实体的目标。
 
-[size=2]**is_temperature_type
+示例：
+```json
+{ "test": "is_target" }
+```
+在主体是当前实体的目标实体时，该滤器通过。
 
-当前温度类型。
+### is_temperature_type
 
+（布尔）当前区域的温度类型。
 
 - `cold`：冷。
 - `mild`：温和。
 - `ocean`：洋。
 - `warm`：暖。
 
-例子：
-
-完整写法：`{ "test": "is_temperature_type", "subject": "self", "operator": "equals", "value": "cold" }`
-
-简写：`{ "test": "is_temperature_type", "value": "cold" }`
-
-[size=2]**is_temperature_value
-
-温度值。最冷为 0.0，最热为 1.0。
-
-例子：
-
-完整写法：`{ "test": "is_temperature_value", "subject": "self", "operator": "equals", "value": "0.50" }`
-
-简写：`{ "test": "is_temperature_value", "value": "0.50" }`
-
-[size=2]**is_underground
-
-主体是否在地下。当实体头上有非固体方块时，被认为是在地下。
-
-例子：
-
-完整写法：`{ "test": "is_underground", "subject": "self", "operator": "equals", "value": "true" }`
-
-简写：`{ "test": "is_underground" }`
-
-[size=2]**is_underwater
-
-主体是否在水下。当实体完全泡在水中时，被认为是在水下。
-
-例子：
-
-完整写法：`{ "test": "is_underwater", "subject": "self", "operator": "equals", "value": "true" }`
-
-简写：`{ "test": "is_underwater" }`
-
-[size=2]**is_variant
-
-主体的变种 ID。
-
-例子：
-
-完整写法：`{ "test": "is_variant", "subject": "self", "operator": "equals", "value": "0" }`
-
-简写：`{ "test": "is_variant", "value": "0" }`
-
-[size=2]**moon_intensity
-
-月亮强度。取值应在 [0.00, 1.00] 之中。
-
-例子：
-
-完整写法：`{ "test": "moon_intensity", "subject": "self", "operator": "equals", "value": "0.00" }`
-
-简写：`{ "test": "moon_intensity", "value": "0.00" }`
-
-[size=2]**moon_phase
-
-月相。取值应在 [0, 7] 之中。
-
-例子：
-
-完整写法：`{ "test": "moon_phase", "subject": "self", "operator": "equals", "value": "0" }`
-
-简写：`{ "test": "moon_phase", "value": "0" }`
-
-[size=2]**on_ground
-
-主体是否在地面。
-
-例子：
-
-完整写法：`{ "test": "on_ground", "subject": "self", "operator": "equals", "value": "true" }`
-
-简写：`{ "test": "on_ground" }`
-
-[size=2]**on_ladder
-
-主体是否在梯子上。
-
-例子：
-
-完整写法：`{ "test": "on_ladder", "subject": "self", "operator": "equals", "value": "true" }`
-
-简写：`{ "test": "on_ladder" }`
-
-[/spoiler]
-
-## 测试主体
-
-**调用：即填写了该滤器的 JSON 文件所属的实体。**
-
-
-- `self`：调用此测试的实体。
-- `other`：除调用者以外的，参与交互的实体。
-- `parent`：调用者的父母。
-- `player`：参与交互的玩家。
-- `target`：调用者的目标实体。
-
-## 比较方式
-
-
-- `==`、`===`、`equals`：等于。当主体的项目与给定数据完全一致时，测试通过。
-- `!==`、`<>`、`not`：不等于。当主体的项目与给定数据不一致时，测试通过。
-- `<`：小于。当主体的项目小于给定数据时，测试通过。
-- `<==`：小于等于。当主体的项目小于或等于给定数据时，测试通过。
-- `>`：大于。当主体的项目大于给定数据时，测试通过。
-- `>==`：大于等于。当主体的项目大于或等于给定数据时，测试通过。
-
-注意：比较方式中永远不会出现单个的等号 `=`。建议在写滤器时，只要需要写等号就写成两个，即 `==`。
-
-## 组合
-
-
-- `any_of`：（数组）当其下的任何一个测试通过时，测试通过。
-- `all_of`：（数组）当其下的所有测试通过时，条件才能通过。
-- *（数组）*：当符合其下的所有条件时，条件才能通过（与 `all_of` 作用相同）。
-
-例如我们可以这么写：
-
+示例：
+```json
+{ "test": "is_temperature_type", "value": "cold" }
 ```
-{"any_of":[{"test":"has_biome_tag","operator":"==","value":"taiga"},{"test":"has_biome_tag","operator":"!=","value":"mega"}]}
-```
-当生态群系有 `taiga` 标签**或者**没有 `mega` 标签时，条件达成。
+在当前区域的温度类型为冷时，该滤器通过。
 
-如果我们把 `any_of` 改成 `all_of`：
+### is_temperature_value
 
-```
-{"all_of":[{"test":"has_biome_tag","operator":"==","value":"taiga"},{"test":"has_biome_tag","operator":"!=","value":"mega"}]}
-```
-就变成了当生态群系有 `taiga` 标签**并且**没有 `mega` 标签时，条件才能达成。
+（布尔）温度值。最冷为 0.0，最热为 1.0。
 
-写成 `all_of` 与直接写成一个数组是等价的：
+示例（`entities/snow_golem.json`）：
+```json
+{ "test": "is_temperature_value", "operator": "<", "value": 0.81 }
+```
+在当前温度小于 `0.81` 时，该滤器通过。
 
-```
-[{"test":"has_biome_tag","operator":"==","value":"taiga"},{"test":"has_biome_tag","operator":"!=","value":"mega"}]
-```
-`all_of`、`any_of` 以及数组之间可以自由组合和嵌套：
+### is_underground
 
+（布尔）主体是否在地下。当实体头上有非固体方块时，被认为是在地下。
+
+示例（`entities/cave_spider.json`）：
+```json
+{ "test" : "is_underground", "value" : false }
 ```
+在当前实体不在地下时，该滤器通过。
+
+### is_underwater
+
+（布尔）主体是否在水下。当实体完全泡在水中时，被认为是在水下。
+
+示例（`entities/stray.json`）：
+```json
+{ "test": "is_underwater", "subject": "self", "operator": "==", "value": true }
+```
+在当前实体在水下时，该滤器通过。
+
+### is_variant
+
+（布尔）主体的变种 ID。
+
+示例（`entities/mooshroom.json`）：
+```json
+{ "test": "is_variant", "subject": "self", "operator": "==", "value": 1}
+```
+在当前实体的变种 ID 为 `1` 时，该滤器通过。
+
+### is_visible
+
+（布尔）主体是否没有隐形状态效果。
+
+示例（`entities/wandering_trader.json`）：
+```json
+{ "test": "is_visible", "subject": "self", "value": true }
+```
+在当前实体没有隐身时，该滤器通过。
+
+### is_weather
+
+（字符串）当前天气。可选值：
+- `clear`：晴天。
+- `rain`：雨天。
+- `thunderstorm`：雷雨天。
+
+示例（`entities/fox.json`）：
+```json
+{ "test": "is_weather", "operator": "!=", "value": "thunderstorm" }
+```
+在当前天气不是雷雨天时，该滤器通过。
+
+### moon_intensity
+
+（布尔）月亮强度。取值应在 `[0.00, 1.00]` 之中。
+
+示例：
+```json
+{ "test": "moon_intensity", "value": 0.0 }
+```
+在当前月亮强度为 `0.0` 时，该滤器通过。
+
+### moon_phase
+
+（布尔）月相。取值应在 `[0, 7]` 之中。
+
+示例：
+```json
+{ "test": "moon_phase", "value": 0 }
+```
+在当前月相为 `0` 时，该滤器通过。
+
+### on_ground
+
+（布尔）主体是否在地面。
+
+示例（`entities/dolphin.json`）：
+```json
+{ "test": "on_ground", "operator": "==", "value": true },
+```
+在当前实体位于地面时，该滤器通过。
+
+### on_ladder
+
+（布尔）主体是否在梯子上。
+
+示例：
+```json
+{ "test": "on_ladder" }
+```
+在当前实体位于梯子上时，该滤器通过。
+
+### rider_count
+
+（数字）骑乘主体的实体的数量。
+
+示例（`entities/chicken.json`）：
+```json
+{ "test": "rider_count", "subject": "self", "operator": "==", "value": 0 }
+```
+在当前实体没有被骑乘时，该滤器通过。
+
+### trusts
+
+（布尔）当前实体是否信任主体。似乎只对狐狸有用。
+
+示例（`entities/fox.json`）：
+```json
+{ "test": "trusts", "subject": "other", "operator": "!=", "value": true }
+```
+在当前实体信任 `other` 实体时，该滤器通过。
+
+[page]
+
+# 附录：组件
+
+组件在 Wiki 的文档中被分为四类，一类是描述实体所固有**属性**（如碰撞箱等），一类描述实体的**行为**（即 **AI 目标**，例如能够跟随玩家、破坏方块等），一类是在指定情况下会被执行的**触发器**（能够用于触发事件，藉此启用或禁用组件组），还有一类**其他**。下面将分别介绍这四类下面都有哪些组件可以使用。在 `components` 以及每一个组件组下面，我们都可以直接使用下面提到的所有组件。用法为：
+
+```json
 {
-    "any_of": [
-        {
-            "all_of": [
-                {
-                    "test": "has_biome_tag",
-                    "operator": "==",
-                    "value": "taiga"
-                },
-                {
-                    "test": "has_biome_tag",
-                    "operator": "!=",
-                    "value": "mega"
-                }
-            ]
-        },
-        {
-            "test": "is_snow_covered",
-            "operator": "==",
-            "value": true
-        },
-        {
-            "test": "has_biome_tag",
-            "operator": "==",
-            "value": "desert"
-        }
-    ]
+    "组件名": {
+        "参数 1": 值, // 有些组件可以指定参数，但是你也可以不指定，依你的需求而定。
+        "参数 2": 值,
+        ...
+    },
+    "又一个组件名": {} // 如果某个组件没有参数，或者你不想指定任何参数，直接闭合大括号即可。
 }
 ```
 
@@ -2699,7 +2886,7 @@ Minecraft 为我们提供了几个内置的事件名，这些名称的事件不�
 
 当实体由于繁殖而出生时执行。
 
-示例（`entities/.json`）：
+示例（`entities/bee.json`）：
 ```json
 {
     "minecraft:entity_born": {
