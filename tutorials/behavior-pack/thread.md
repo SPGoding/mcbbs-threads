@@ -204,7 +204,7 @@ JSON 格式包含五种结构，分别是对象、字符串、布尔值、数字
 
 ![image.png](https://i.loli.net/2019/10/23/4b2a8QiIMvVWFx6.png)
 
-## 文件格式
+## JSON 格式
 
 - `pools`：（数组）随机池们。游戏会从每一个随机池中**逐个**抽取物品。
     - *（对象）一个随机池*
@@ -832,7 +832,7 @@ console.log(arr.sort().join('\n'))
 
 简单介绍一下村民交易的机制：村民的交易分为多个层级。首先只会解锁第一个层级的交易。当交易几次以后，会解锁下一个层级的交易。如此反复，直到所有层级的交易都解锁了为止。
 
-## 文件格式
+## JSON 格式
 
 - `tiers`：（数组）储存该交易表中的所有交易层级。从上到下层级逐渐增高。
     - *（对象）一层交易*
@@ -1114,7 +1114,7 @@ console.log(arr.sort().join('\n'))
 
 ![image.png](https://i.loli.net/2019/10/23/yKEd8uxQpl9ODXV.png)
 
-## 文件格式
+## JSON 格式
 
 - `format_version`：（字符串）文件格式版本。本帖一律写为 `1.14.0`。
 - `minecraft:spawn_rules`：（对象）表明该文件定义了生成规则。
@@ -1525,7 +1525,7 @@ console.log(arr.sort().join('\n'))
 
 实体涉及到的两大重要部分，也就是**组件**和**事件**，已经讲解完了。
 
-## 文件格式
+## JSON 格式
 
 - `format_version`：（字符串）格式版本。本教程介绍的是 1.14.0 的写法，因此本教程自己的示例中都将一律写为 `1.14.0`。不过，写为旧版本的格式也仍然能在最新版游戏中使用，例如原版的药水云的定义文件的格式版本在发帖时仍为 `1.8.0`。事实上，这个参数存在的意义就是为了能够保持向后兼容。
 - `minecraft:entity`：（对象）表明这个文件定义了实体。
@@ -1610,11 +1610,13 @@ console.log(arr.sort().join('\n'))
 }
 ```
 
-似乎很简单？确实很简单。现在唯一可能会难到你的就是：我怎么知道这些组件什么用呢？其实这个简单，你翻到帖子上面的目录，看实体下面的「附录 1：组件」就可以啦。那里面是所有你能够应用的实体组件，非常非常非常多，善用 Ctrl + F 进行搜索。
+似乎很简单？确实很简单。
 
-我们再找一个原版示例吧。这回把牛的定义文件拿出来好了。在「简述」章节举的例子正好就是牛，来个收尾呼应，争取能当个满分作文（笑
+当你阅读到这里以后，推荐你先**停止阅读**这一章节，把页面拉到上面目录，把「实体」章节的 3 个附录中的「文件结构」和「学习原版」部分都看一遍，相信你会对整个实体行为定义文件理解得更加深刻。
 
-这一回我可就一条注释都不写了哦！遇到不知道的，你可以翻回上面「简述」再看一遍，或者看上面的「文件格式」，或者看实体章节下面的那三个「附录」。加油！
+那么，当你的理解更进一步以后，我们再找一个原版示例吧。这回把牛的定义文件拿出来好了。在「简述」章节举的例子正好就是牛，来个收尾呼应，争取能当个满分作文（笑
+
+这一回我可就一条注释都不写了哦！遇到不知道的，你可以翻回上面「简述」再看一遍，或者看上面的「文件格式」，或者再看看那三个附录。加油！
 
 ```
 {
@@ -2478,70 +2480,257 @@ console.log(arr.sort().join('\n'))
 
 事件可以用于禁用/启用组件组。
 
-## 文件格式
+玩家可以随意定义事件的名称（只要是由小写英文字母、下划线、半角冒号等组成的即可），并在触发器或部分组件的参数中填写事件名，以在特定条件下触发该事件。
 
+事件按照 JSON 格式以及运作方式可以分为三种：普通事件、随机型事件、序列型事件。
 
-- `add`：（对象）要启用的所有组件组。
+## JSON 格式
 
-- `component_groups`：（数组）
+- `add`：（对象）启用组件组。
+    - `component_groups`：（数组）
+        - *（字符串）一个组件组的名称*
+- `remove`：（数组）禁用组件组。
+    - `component_groups`：（数组）
+        - *（字符串）一个组件组的名称*
+- `randomize`：（数组）若干套操作。将会从你定义的多套操作中随机执行一套操作。
+    - *（对象）一套操作*
+        - `weight`：（整数）执行这套操作的权重。
+        - *剩下的格式和事件 JSON 格式一样*
+- `sequence`：（数组）若干套操作。这些操作将会被按顺序依次执行。
+    - *（对象）一套操作*
+        - `filters`：（对象，格式同滤器）一个滤器。只有该滤器测试通过以后，下方的 `add` 与 `remove` 才会被执行。
+        - *剩下的格式和事件 JSON 格式一样*
 
-- *（字符串）一个组件组的名称*
+## 学习原版
 
-- `remove`：（数组）要禁用的所有组件组。
+### add 与 remove 示例
 
-- `component_groups`：（数组）
+这是牛（`entities/cow.json`）的一个事件：
 
-- *（字符串）一个组件组的名称*
+```json
+{
+    "minecraft:ageable_grow_up": {
+        "remove": {
+            "component_groups": [
+                "minecraft:cow_baby"
+            ]
+        },
+        "add": {
+            "component_groups": [
+                "minecraft:cow_adult"
+            ]
+        }
+    }
+}
+```
 
-- `randomize`：（数组）随机执行下面一组。
+该事件被触发以后，将会禁用掉 `minecraft:cow_baby` 组件组，并启用 `minecraft:cow_adult` 组件组。
 
-- *（对象）*
+### randomize 示例
 
-- `weight`：（整数）该组的权重。
-- `add`：（数组）要启用的所有组件组。
+游戏会从 `randomize` 下定义的多套操作中随机执行一套操作。
 
-- `component_groups`：（数组）
+这是牛（`entities/cow.json`）的一个事件：
 
-- *（字符串）一个组件组的名称*
+```json
+{
+    "minecraft:entity_spawned": {
+        "randomize": [
+            {
+                "weight": 95,
+                "add": {
+                    "component_groups": [
+                        "minecraft:cow_adult"
+                    ]
+                }
+            },
+            {
+                "weight": 5,
+                "add": {
+                    "component_groups": [
+                        "minecraft:cow_baby"
+                    ]
+                }
+            }
+        ]
+    }
+}
+```
 
-- `remove`：（数组）要禁用的所有组件组。
+该事件被触发以后，会有 `95 / (95 + 5)` 也就是 95% 的几率启用 `minecraft:cow_adult` 组件组，有 `5 / (95 + 5)` 也就是 5% 的几率启用 `minecraft:cow_baby` 组件组。
 
-- `component_groups`：（数组）
+### sequence 示例
 
-- *（字符串）一个组件组的名称*
+游戏会顺序执行 `sequence` 下定义的每一套操作。
 
+这是箭（`entities/arrow.json`）的一个事件：
 
+```json
+{
+    "minecraft:entity_spawned": {
+        "sequence": [
+            {
+                "filters": { "test": "is_difficulty", "value": "hard" },
+                "add": {
+                    "component_groups": [
+                        "minecraft:hard_arrow"
+                    ]
+                }
+            },
+            {
+                "filters": { "test": "is_family", "subject": "other", "value": "player" },
+                "add": {
+                    "component_groups" : [ 
+                        "minecraft:player_arrow"
+                    ]
+                }
+            },
+            {
+                "filters": { "test": "is_family", "subject": "other", "value": "pillager" },
+                "add": {
+                    "component_groups": [
+                        "minecraft:pillager_arrow"
+                    ]
+                }
+            }
+        ]
+    }
+}
+```
 
-- `sequence`：（数组）顺序执行下面每一组。
+该事件被触发以后，将会顺序执行里面定义的这三套操作。第一套将在难度为困难时执行，会添加 `minecraft:hard_arrow` 组件组；第二套会在射出箭的实体为玩家时执行，添加组件组 `minecraft:player_arrow`；第三套会在射出箭的实体为掠夺者时执行，添加组件组 `minecraft:pillager_arrow`
 
-- *（对象）*
+### 嵌套示例
 
-- `filters`：（对象，格式同滤器）执行该组的滤器。
-- `add`：（数组）要启用的所有组件组。
+事实上，`add`、`remove`、`randomize` 和 `sequence` 能够各种嵌套，实现一些复杂的操作。
 
-- `component_groups`：（数组）
-- *（字符   串）一个组件组的名称*
-- `remove`：（数组）要禁用的所有组件组。
+这是这个世界上最复杂的实体（没有之一）—— 新版村民（`entities/villager_v2.json`）的**一个**事件：
 
-- `component_groups`：（数组）
+```json
+{
+    "minecraft:entity_transformed": {
+        "sequence": [
+            // ... 此处省略 2 套操作
+            {
+                // 从僵尸村民转换为具有正确皮肤的村民
+                "filters": { "test": "is_family", "subject": "other", "operator": "==", "value": "zombie_villager" }, 
+                "sequence" : [
+                    {
+                        "filters": { "test": "is_skin_id", "subject": "other", "value": 0 },
+                        "add": { "component_groups": [ "villager_skin_0" ] }
+                    },
+                    {
+                        "filters": { "test": "is_skin_id", "subject": "other", "value": 1 },
+                        "add": { "component_groups": [ "villager_skin_1" ] }
+                    },
+                    // ... 此处省略 13 套操作
+                ]
+            },
+            {
+                // 从旧版村民转换为具有正确皮肤的新版村民
+                "filters": { "test": "is_family", "subject": "other", "operator": "==", "value": "villager" }, 
+                "sequence" : [
+                    {
+                        "randomize": [
+                            {
+                                "weight": 1,
+                                "add": { "component_groups": [ "villager_skin_0" ] }
+                            },
+                            {
+                                "weight": 1,
+                                "add": { "component_groups": [ "villager_skin_1" ] }
+                            },
+                            // ... 此处省略 4 套操作
+                        ]
+                    },
+                    // ... 此处省略 6 套操作
+                ]
+            }
+        ]
+    }
+}
+```
 
-- *（字符串）一个组件组的名称*
+该事件被触发以后……饶了我吧……
 
+## 附录的附录：内置事件名
 
+Minecraft 为我们提供了几个内置的事件名，这些名称的事件不需要我们手动调用，它们会在某些条件下自动触发。
 
+### minecraft:entity_spawned
 
+当实体生成后立刻执行。
 
-玩家可以随意定义事件的名称，并在触发器或部分组件的参数中填写事件名，以在特定条件下执行事件。
+示例（`entities/arrow.json`）：
+```json
+{
+    "minecraft:entity_spawned": {
+        "sequence": [
+            {
+                "filters": { "test": "is_difficulty", "value": "hard" },
+                "add": {
+                    "component_groups": [
+                        "minecraft:hard_arrow"
+                    ]
+                }
+            },
+            {
+                "filters": { "test": "is_family", "subject": "other", "value": "player" },
+                "add": {
+                    "component_groups" : [ 
+                        "minecraft:player_arrow"
+                    ]
+                }
+            },
+            {
+                "filters": { "test": "is_family", "subject": "other", "value": "pillager" },
+                "add": {
+                    "component_groups": [
+                        "minecraft:pillager_arrow"
+                    ]
+                }
+            }
+        ]
+    }
+}
+```
 
-### 内置事件
+### minecraft:entity_born
 
-Minecraft 为我们提供了几个内置的事件，这些事件不需要我们调用，它们会在某些条件下自动执行。
+当实体由于繁殖而出生时执行。
 
+示例（`entities/.json`）：
+```json
+{
+    "minecraft:entity_born": {
+        "add": {
+            "component_groups": [
+                "bee_baby",
+                "shelter_detection",
+                "look_for_food"
+            ]
+        }
+    }
+}
+```
 
-- `minecraft:entity_spawned`：当实体被生成到世界中时执行。
-- `minecraft:entity_born`：当实体由于繁殖而出生时执行。
-- `minecraft:entity_transformed`：当实体从一个实体转变为另一个实体时执行。
-- `minecraft:on_prime`：当实体被点燃并将要爆炸时执行。
+### minecraft:entity_transformed
+
+当该实体发生转变时执行。
+
+示例（`entities/cow.json`）：
+```json
+{
+    "minecraft:entity_transformed": {
+        "remove": {},
+        "add": {
+            "component_groups": [
+                "minecraft:cow_adult"
+            ]
+        }
+    }
+}
+```
 
 [page]
 
@@ -2555,7 +2744,7 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 
 没有，当你理解了实体以后理解物品没有什么障碍。物品的行为同样是由组件构成的。
 
-## 文件格式
+## JSON 格式
 
 - `format_version`：（字符串）文件格式版本。本帖一律写为 `1.14.0`。
 - `minecraft:item`：（对象）表明该文件定义了物品行为。
@@ -2845,7 +3034,7 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 
 有序合成，指的是材料必须在工作台内按照一定顺序摆放才能获得输出物品的合成方式。
 
-## 文件结构
+## JSON 格式
 
 - `format_version`：（字符串）文件格式版本。本帖一律写为 `1.14.0`。
 - `minecraft:recipe_shaped`：（对象）表明该文件是一个有序合成配方。
@@ -3042,7 +3231,7 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 
 无序合成，指的是只要材料的种类、数目够了，就可以获得输出物品的配方。
 
-## 文件结构
+## JSON 格式
 
 - `format_version`：（字符串）文件格式版本。本帖一律写为 `1.14.0`。
 - `minecraft:recipe_shapeless`：（对象）表明该文件是一个无序合成配方。
@@ -3177,7 +3366,7 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 
 熔炼配方，指的是放到炉子（广义，包含熔炉、高炉、烟熏炉、营火）里面能得到物品的配方。
 
-## 文件结构
+## JSON 格式
 
 - `format_version`：（字符串）文件格式版本。本帖一律写为 `1.14.0`。
 - `minecraft:recipe_furnace`：（对象）表明该文件是一个熔炼配方。
@@ -3240,7 +3429,7 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 
 混合酿造配方，指的是将一个具有某种状态效果的药水放入酿造台后，再加入某个物品，可以酿造出具有另一种状态效果的药水的配方。
 
-## 文件结构
+## JSON 格式
 
 - `format_version`：（字符串）文件格式版本。本帖一律写为 `1.14.0`。
 - `minecraft:recipe_brewing_mix`：（对象）表明该文件是一个混合酿造配方。
@@ -3300,7 +3489,7 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 
 换容酿造配方，指的是一瓶药水被酿造后将会改变容器的配方。例如从普通玻璃瓶转换为喷溅型玻璃瓶或滞留型玻璃瓶等。
 
-## 文件结构
+## JSON 格式
 
 - `format_version`：（字符串）文件格式版本。本帖一律写为 `1.14.0`。
 - `minecraft:recipe_brewing_container`：（对象）表明该文件是一个换容酿造配方。
@@ -3389,7 +3578,7 @@ Minecraft 为我们提供了几个内置的事件，这些事件不需要我们�
 - 能够生成的生物
 - 气候（下雨还是下雪，或者是永远干旱）
 
-## 文件结构
+## JSON 格式
 
 - `format_version`：（字符串）文件格式版本。本帖一律写为 `1.14.0`。
 - `minecraft:biome`：（对象）表明该文件定义了生物群系。
@@ -3424,7 +3613,7 @@ say World!
 
 恭喜你，在基岩版中写出了第一个命令函数。
 
-## 文件格式
+## JSON 格式
 
 `mcfunction` 文件的格式很简单，每行写一条命令，可以有空行，可以有 `#` 开头的行。`#` 开头的行会被认为是注释，游戏会直接跳过这一行的内容。使用注释可以给自己留一些备注，方便后续更改。或者是在调试时临时把一条命令注释掉，使这条命令不执行。
 
