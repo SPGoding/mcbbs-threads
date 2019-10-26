@@ -12,27 +12,27 @@
 [#11]实体  
 *[#12]附录：滤器  
 *[#13]附录：组件  
-**[#829760,13506665]触发器  
-**[#829760,15760754]属性  
-**[#829760,13536864]行为  
-**[#829760,13501483]其他  
-*[#14]附录：事件  
-[#15]物品  
-*[#16]附录：组件  
-[#17]配方  
-*[#18]有序合成配方  
-*[#19]无序合成配方  
-*[#20]熔炼配方  
-*[#21]混合酿造配方  
-*[#22]换容酿造配方  
-[#23]方块  
-[#24]结构  
-[#25]生物群系  
-[#26]函数  
-[#27]脚本（WIP）  
-[#28]发布  
-[#29]参考资料  
-[#30]后语  
+**[#14]触发器  
+**[#829760,13506665]属性  
+**[#829760,13501483]行为  
+**[#829760,13536864]其他  
+*[#15]附录：事件  
+[#16]物品  
+*[#17]附录：组件  
+[#18]配方  
+*[#19]有序合成配方  
+*[#20]无序合成配方  
+*[#21]熔炼配方  
+*[#22]混合酿造配方  
+*[#23]换容酿造配方  
+[#24]方块  
+[#25]结构  
+[#26]生物群系  
+[#27]函数  
+[#28]脚本（WIP）  
+[#29]发布  
+[#30]参考资料  
+[#31]后语  
 友情提示：点击论坛页面右侧偏下的粉红小书签能快速回到本目录  
 [/index]
 
@@ -1938,10 +1938,10 @@ console.log(arr.sort().join('\n'))
 ## 测试主体
 
 - `self`：调用此测试的实体（即使用了该滤器的实体）。
-- `other`：除调用者以外的，参与交互的实体。该实体具体是哪个，由调用该滤器的组件或事件决定。
-- `parent`：调用者的父母。
-- `player`：参与交互的玩家。该玩家具体是哪个，由调用该滤器的组件或事件决定。
-- `target`：调用者的目标实体。通常是该实体正在追杀的目标。
+- `other`：除调用者以外的，参与交互的实体。该实体具体是哪个，由调用该滤器的组件或事件决定。可能没有这个实体。
+- `parent`：调用者的父母。可能没有这个实体。
+- `player`：参与交互的玩家。该玩家具体是哪个，由调用该滤器的组件或事件决定。可能没有这个实体。
+- `target`：调用者的目标实体。通常是该实体正在追杀的目标。可能没有这个实体。
 
 ## 比较方式
 
@@ -2675,6 +2675,170 @@ console.log(arr.sort().join('\n'))
     "又一个组件名": {} // 如果某个组件没有参数，或者你不想指定任何参数，直接闭合大括号即可。
 }
 ```
+
+[page]
+
+# 触发器
+
+首先讲解触发器，是因为在后面有些组件的参数中，使用到了与触发器完全相同的 JSON 格式。
+
+触发器，是一种能够根据指定滤器来执行事件的东西（有关滤器、事件的详细内容，可以通过上方目录切换到相关附录查看）。它的工作流程如下所示：
+
+![触发器.png](https://i.loli.net/2019/10/25/GVYvFQqrd2ih3I4.png)
+
+## JSON 格式
+
+- `event`：（字符串）该触发器被触发后要执行的事件的名称。
+- `filters`：（对象）可选。一个滤器。如果指定了，则只有在该滤器通过的情况下才会执行 `event` 中指定的事件。
+- `target`：（字符串）可选。执行该事件的目标。默认为 `self`，代表该实体自身。可选值推测与滤器中的 `subject` 一致，即：
+    - `self`：调用此测试的实体（即使用了该触发器的实体）。
+    - `other`：除调用者以外的，参与交互的实体。该实体具体是哪个，由该触发器的种类决定。可能没有这个实体。
+    - `parent`：调用者的父母。可能没有这个实体。
+    - `player`：参与交互的玩家。该玩家具体是哪个，由该触发器的种类决定。可能没有这个实体。
+    - `target`：调用者的目标实体。通常是该实体正在追杀的目标。可能没有这个实体。
+
+再次强调，触发器属于组件的一种，所以要定义在 `components` 或是 `component_groups` 中的一个组件组之下。
+
+## minecraft:on_death
+
+触发时机：该实体死亡时。**只能被末影龙使用**。
+
+示例（末影龙 `entities/ender_dragon.json`）：
+```json
+{
+    "minecraft:on_death": {
+        "event": "minecraft:start_death",
+        "target": "self"
+    }
+}
+```
+在该实体死亡时，会触发该实体的 `minecraft:start_death`（开始死亡）事件。
+
+## minecraft:on_friendly_anger
+
+触发时机：该实体附近有其他相同种类的实体愤怒时。
+
+示例（羊驼 `entities/llama.json`）：
+```json
+{
+    "minecraft:on_friendly_anger": {
+        "event": "minecraft:defend_wandering_trader",
+        "target": "self"
+    }
+}
+```
+在该实体附近有其他相同种类的实体（此例中为 `llama` 的变种 `1`，即行商骆驼）愤怒时，会触发该实体的 `minecraft:defend_wandering_trader`（保护流浪商人）事件。
+
+## minecraft:on_hurt
+
+触发时机：该实体受到伤害时。
+
+示例（末影水晶 `entities/ender_crystal.json`）：
+```json
+{
+    "minecraft:on_hurt": {
+        "event": "minecraft:crystal_explode",
+        "target": "self"
+    }
+}
+```
+在该实体受到伤害时，会触发该实体的 `minecraft:crystal_explode`（末影水晶爆炸）事件。
+
+## minecraft:on_hurt_by_player
+
+触发时机：该实体被玩家攻击时。
+
+示例（掠夺者 `entities/pillager.json`）：
+```json
+{
+    "minecraft:on_hurt_by_player": {
+        "event": "minecraft:synchronized_ranged_mode",
+        "target": "self"
+    }
+}
+```
+在该实体受到玩家攻击时，会触发该实体的 `minecraft:synchronized_ranged_mode`（和其他掠夺者同步攻击范围）事件。
+
+## minecraft:on_ignite
+
+触发时机：该实体着火时。
+
+无原版示例。
+
+## minecraft:on_start_landing
+
+触发时机：该实体开始着陆时。**只能被末影龙使用**。
+
+示例（末影龙 `entities/ender_dragon.json`）：
+```json
+{
+    "minecraft:on_start_landing": {
+        "event": "minecraft:start_land",
+        "target": "self"
+    }
+}
+```
+在该实体开始着陆时，会触发该实体的 `minecraft:start_land`（着陆）事件。
+
+## minecraft:on_start_takeoff
+
+触发时机：该实体开始起飞时。**只能被末影龙使用**。
+
+示例（末影龙 `entities/ender_dragon.json`）：
+```json
+{
+    "minecraft:on_start_takeoff": {
+        "event": "minecraft:start_fly",
+        "target": "self"
+    }
+}
+```
+在该实体开始起飞时，会触发该实体的 `minecraft:start_fly`（起飞）事件。
+
+## minecraft:on_target_acquired
+
+触发时机：该实体找到攻击目标时。通常是该生物在视距内看到了敌对生物，或该生物受到了其他生物的攻击等。
+
+示例（蜜蜂 `entities/bee.json`）：
+```json
+{
+    "minecraft:on_target_acquired": {
+        "event": "attacked",
+        "target": "self"
+    }
+}
+```
+在该实体找到攻击目标时，会触发该实体的 `attacked`（受到攻击）事件。
+
+## minecraft:on_target_escape
+
+触发时机：该实体失去攻击目标时（目标已死亡，或逃出了该实体的视距等）。
+
+示例（苦力怕 `entities/creeper.json`）：
+```json
+{
+    "minecraft:on_target_escape": {
+        "event": "minecraft:stop_exploding",
+        "target": "self"
+    }
+}
+```
+在该实体失去目标时，会触发该实体的 `minecraft:stop_exploding`（停止爆炸）事件。
+
+## minecraft:on_wake_with_owner
+
+触发时机：该实体的主人在与该实体一起睡觉后醒来时。似乎只对宠物（猫）有用。
+
+示例（猫 `entities/cat.json`）：
+```json
+{
+    "minecraft:on_wake_with_owner": {
+        "event": "minecraft:pet_slept_with_owner",
+        "target": "self"
+    }
+}
+```
+在该实体和主人一起醒来时，会触发该实体的 `minecraft:pet_slept_with_owner`（和主人一起睡过觉）事件（该事件会启用给主人礼物的组件组 `minecraft:cat_gift_for_owner`）。
 
 [page]
 
