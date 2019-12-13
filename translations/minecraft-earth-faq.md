@@ -332,6 +332,8 @@ Minecraft Earth 追踪正在被交互的可收集物和/或冒险的位置以及
 
 [点击这里](https://www.bilibili.com/video/av71601680) 获取更多安全提示！
 
+**Minecraft Earth 现已在全球有 Apple Store 与 Google Play 应用市场的国家和地区上线。Minecraft Earth 不在朝鲜、古巴、伊朗、缅甸、苏丹、伊拉克、阿联酋和其他国家可用。**
+
 ---
 
 # 译文信息
