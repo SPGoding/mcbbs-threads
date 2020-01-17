@@ -1,0 +1,321 @@
+浅谈 Mojang 官方漏洞追踪器 —— Mojira
+
+[align=center][table=80%]
+[tr=#F7D6C1][td][b][size=4px]
+[/size][b]前言[/b][size=4px]
+
+[/size][/b][/td][/tr]
+[tr=#FFFFCE][td][size=4px]
+[/size]现在是 0202 年，泥潭却没有一个讲解 Mojang 官方漏洞追踪器 [url=https://bugs.mojang.com][b]Mojira[/b][/url] 的帖子。我 来 了！[size=4px]
+
+[/size][/td][/tr]
+[/table][/align]
+[align=center][table=80%]
+[tr=#F7D6C1][td][b][size=4px]
+[/size][b]项目介绍[/b][size=4px]
+
+[/size][/b][/td][/tr]
+[tr=#FFFFCE][td][size=4px]
+[/size]Mojira 上共设有 9 个项目（project），每个项目负责追踪不同软件/平台的漏洞。每一个项目都有着自己的一个英文简称。下面我们来分别介绍这 9 个项目：
+[list]
+[*][b]== Java版阵营 ==[/b]
+[*][b][color=#FF5722]MC[/color][/b]：有关 [url=https://minecraft-zh.gamepedia.com/Java%E7%89%88][b][color=#FF5722][u]Minecraft Java版[/u][/color][/b][/url] 的项目。所谓的 Java版，也就是我们通常在 Windows、Mac、Linux 平台上玩的以 Java 为语言编写的版本。
+[*][b][color=#FF5722]MCL[/color][/b]：有关 [url=https://minecraft-zh.gamepedia.com/Java%E7%89%88%E5%90%AF%E5%8A%A8%E5%99%A8][b][color=#FF5722][u]Java版官方启动器（Minecraft Launcher）[/u][/color][/b][/url]的项目。
+[*][b]== 基岩版阵营 ==[/b]
+[*][b][color=#FF5722]MCPE[/color][/b]：有关 [url=https://minecraft-zh.gamepedia.com/%E5%9F%BA%E5%B2%A9%E7%89%88][b][color=#FF5722][u]Minecraft 基岩版[/u][/color][/b][/url] 的项目。在 Gear VR、iOS、Android、Windows 10（从应用商店购买的）、Xbox One、Windows 10 Mobile、Fire TV、Nintendo Switch 平台上的 Minecraft 均为基岩版，所有相关漏洞均在该项目追踪。
+[*][b][color=#FF5722]BDS[/color][/b]：有关[url=https://minecraft-zh.gamepedia.com/%E5%9F%BA%E5%B2%A9%E7%89%88%E4%B8%93%E7%94%A8%E6%9C%8D%E5%8A%A1%E5%99%A8][b][color=#FF5722][u]基岩版官方专用服务器（Bedrock Dedicated Server）[/u][/color][/b][/url]的项目。
+[*][b][color=#FF5722]MCE[/color][/b]：有关[url=https://minecraft-zh.gamepedia.com/Minecraft_Earth][b][color=#FF5722][u]我的世界：地球（Minecraft Earth）[/u][/color][/b][/url]的项目。
+[*][b]== 其他项目 ==[/b]
+[*][b][color=#FF5722]REALMS[/color][/b]：有关[url=https://minecraft-zh.gamepedia.com/Realms][b][color=#FF5722][u]领域（Realms）[/u][/color][/b][/url]的项目。
+[*][b][color=#FF5722]WEB[/color][/b]：有关[b][color=#FF5722]网络服务（Web Service）[/color][/b]的项目。该项目用于追踪 Minecraft 官网（minecraft.net）的漏洞。尽管可能并不是该项目本意，Mojira 用户可以在该项目发布报告申请注销自己的 Mojira 帐号。
+[*][b][color=#FF5722]MCAPI[/color][/b]：有关 [b][color=#FF5722]MCAPI[/color][/b] 的项目。该项目是整个 Mojira 上唯一一个接受且只接受特性请求（feature request）的项目。该项目中只有 4 个报告被标注为修复（Fixed），游戏开发者对该项目重视程度很低：[url=https://bugs.mojang.com/browse/MCAPI-23]MCAPI-23[/url]（支持自定义物品名）、[url=https://bugs.mojang.com/browse/MCAPI-95]MCAPI-95[/url]（支持自定义箱子内战利品）、[url=https://bugs.mojang.com/browse/MCAPI-122]MCAPI-122[/url]（废止数字 ID）、[url=https://bugs.mojang.com/browse/MCAPI-329]MCAPI-329[/url]（支持音效包）。
+[*][b][color=#FF5722]MCCE[/color][/b]：有关[url=https://minecraft-zh.gamepedia.com/%E5%8E%9F%E4%B8%BB%E6%9C%BA%E7%89%88][b][color=#FF5722][u]原主机版（Legacy Console Edition）[/u][/color][/b][/url]的项目。由于基岩版已经上线各大主机平台，通常认为，[b]MCCE[/b] 项目已经[b]不再被维护[/b]。如果你在主机平台的基岩版上遇到了漏洞，请反馈到 MCPE 项目。
+[/list][size=4px]
+
+[/size][/td][/tr]
+[/table][/align]
+[align=center][table=80%]
+[tr=#F7D6C1][td][b][size=4px]
+[/size][b]合格报告的品质[/b][size=4px]
+
+[/size][/b][/td][/tr]
+[tr=#FFFFCE][td][size=4px]
+[/size]写出优秀的漏洞报告是一件很需要水平的事情。优秀的报告更容易得到重视甚至修复。遗憾的是，Mojira 上绝大多数报告不仅论不上优秀，甚至连合格都达不到。我这就在这里扯一扯，合格的漏洞报告都具有怎样的品质。[size=4px]
+
+[/size][/td][/tr]
+[/table][/align]
+[align=center][table=65%]
+[tr=#C1F7D6][td][b][size=4px]
+[/size]基本要求[size=4px]
+
+[/size][/b][/td][/tr]
+[tr=#CEFFFF][td][size=4px]
+[/size][list=1]
+[*]该报告位于[b][color=#FF5722]正确的项目[/color][/b]。请查看上方的「项目介绍」来确定各个项目的作用；
+[*]该报告中[b][color=#FF5722]只含有一个漏洞[/color][/b]。多个漏洞需要放置在多个报告当中，方便开发者与玩家追踪相关进展；
+[*]你所使用的是[b][color=#FF5722]最新正式版[/color][/b]或[b][color=#FF5722]最新预览版[/color][/b]的 Minecraft。如果你在[b]旧版本[/b]或 [b]Java版的战斗更新测试（Combat Test）[/b]遇到了一个漏洞，请首先更换到最新版本，确保该漏洞在最新版本仍然存在，再考虑汇报漏洞；
+[*]你所使用的是[b][color=#FF5722]原版[/color][/b]的 Minecraft。如果你的游戏里装了任何 Mod（包括 OptiFine），请首先更换到原版，确保该漏洞是游戏自身存在的，而非 Mod 引入的。此外，如果你在服务器里遇到了漏洞，请首先确保该漏洞不是由第三方服务端或第三方服务端上装的第三方插件导致的；
+[*]你所使用的是[b][color=#FF5722]正版[/color][/b] Minecraft。嗯，至少请装作是这样；
+[*]你所要汇报的确实是[b][color=#FF5722]漏洞（bug）[/color][/b]。以下内容[b]不属于[/b]漏洞：
+[list]
+[*][b]特性请求（feature request）[/b]。如：为什么我造的飞机不会飞（[url=https://bugs.mojang.com/browse/MCPE-31176]MCPE-31176[/url]）。此类问题请发布至[url=http://feedback.minecraft.net/][b]反馈站点[/b][/url]；
+[*][b]正版帐号问题（account issue）[/b]。如：购买了正版帐号却无法登录。在中国大陆境内此类问题通常和你的网络状况有关，请自行寻找信息，或到[url=https://www.mcbbs.net/forum-qanda-1.html][b]原版问答[/b][/url]版提问。此外，如果你确信是 Mojang 的原因导致的帐号问题，请用英文联系 Mojang 的[url=https://help.minecraft.net/hc/en-us/requests/new][b]客户服务（Custom Service）[/b][/url]；
+[*][b]同步问题（parity issue）[/b]。如：基岩版里可以xxx，为什么在 Java版 就不能。此类问题请发布至[url=http://feedback.minecraft.net/][b]反馈站点[/b][/url]；
+[*][b]技术支持（technical support）[/b]。如：一启动就崩溃/白屏/黑屏/彩虹屏。此类问题请发布至论坛的[url=https://www.mcbbs.net/forum-qanda-1.html][b]原版问答[/b][/url]提问，记得附带你的崩溃报告，记得折叠日志文本。不过如果能够正常启动，却[b][color=#FF5722]在做了某一特定操作后会导致游戏崩溃，且每次这么做都能复现[/color][/b]的，[b][color=#FF5722]属于[/color][/b]漏洞，请考虑汇报该漏洞。
+[/list]
+[*]确保自己具备一定的[b][color=#FF5722]英语水平[/color][/b]，并使用英语汇报漏洞。只要能组成句子、拼对词儿，简洁地表达出自己的意思就行了。如果具有能体现该漏洞的截图或视频，不写字也是可以的。
+[/list]在下文中，我们将假设你所使用的游戏版本为最新正式版/最新预览版、正版、原版。[size=4px]
+
+[/size][/td][/tr]
+[/table][/align]
+[align=center][table=65%]
+[tr=#C1F7D6][td][b][size=4px]
+[/size][b][color=#FF5722]MC[/color][/b] 与 [b][color=#FF5722]MCL[/color][/b] 项目需要额外满足的条件[size=4px]
+
+[/size][/b][/td][/tr]
+[tr=#CEFFFF][td][size=4px]
+[/size][list=1]
+[*]确保该报告不是[b]翻译问题（translation issue）[/b]。Java版以及启动器的翻译由社区维护，如果你有任何建议可以到 Crowdin 上的 [url=https://crowdin.com/project/minecraft][b]Java版[/b][/url]、[url=https://crowdin.com/project/minecraft-launcher][b]Java版启动器[/b][/url]或[b]简体中文译名讨论群[/b]提出；
+[*]确保自己的电脑[b][color=#FF5722]满足[url=https://minecraft-zh.gamepedia.com/Java%E7%89%88%E7%A1%AC%E4%BB%B6%E9%9C%80%E6%B1%82][b][color=#FF5722][u]最低硬件需求[/u][/color][/b][/url][/color][/b]。
+[/list][size=4px]
+
+[/size][/td][/tr]
+[/table][/align]
+[align=center][table=65%]
+[tr=#C1F7D6][td][b][size=4px]
+[/size][b][color=#FF5722]MCPE[/color][/b] 项目需要额外满足的条件[size=4px]
+
+[/size][/b][/td][/tr]
+[tr=#CEFFFF][td][size=4px]
+[/size][list=1]
+[*]确保该报告不是[b]崩溃问题（crash）[/b]。基岩版的崩溃会被自动记录，并且会被开发者进一步查看，无需汇报。
+[/list][size=4px]
+
+[/size][/td][/tr]
+[/table][/align]
+[align=center][table=65%]
+[tr=#C1F7D6][td][b][size=4px]
+[/size][b][color=#FF5722]MCE[/color][/b] 项目需要额外满足的条件[size=4px]
+
+[/size][/b][/td][/tr]
+[tr=#CEFFFF][td][size=4px]
+[/size][list=1]
+[*]确保该报告不是[b]崩溃问题（crash）[/b]。我的世界：地球的崩溃会被自动记录，并且会被开发者进一步查看，无需汇报；
+[*]确保你的设备[b][color=#FF5722]兼容[/color][/b]该游戏。嗯，至少请装作是这样；
+[*]确保你[b][color=#FF5722]处于地球上[/color][/b]（即不位于中国大陆、古巴、伊朗、缅甸、苏丹、伊拉克、阿联酋等国家或地区）。嗯，至少请装作是这样。
+[/list][size=4px]
+
+[/size][/td][/tr]
+[/table][/align]
+[align=center][table=80%]
+[tr=#F7D6C1][td][b][size=4px]
+[/size][b]参与一个现有报告的方法[/b][size=4px]
+
+[/size][/b][/td][/tr]
+[tr=#FFFFCE][td][size=4px]
+[/size]在 Mojira 上，你遇到的漏洞早已被他人汇报是十分常见的事情。因此，本帖中我先谈及如何参与现有的报告，而不是教你如何开新的报告。
+下面我们以 MC 项目为例进行说明。其他项目中可能会缺少一些字段，也可能会多出一些特有的字段，但大体内容是一样的。[size=4px]
+
+[/size][/td][/tr]
+[/table][/align]
+[align=center][table=65%]
+[tr=#C1F7D6][td][b][size=4px]
+[/size]熟悉基本界面[size=4px]
+
+[/size][/b][/td][/tr]
+[tr=#CEFFFF][td][size=4px]
+[/size]首先，我们强烈不推荐使用 Mojira 自带的简体中文，因为全部都是机翻。
+接下来，我们以世界著名漏洞 [url=https://bugs.mojang.com/browse/MC-4]MC-4[/url] 的界面为例：
+[img=2132,1434]https://i.loli.net/2020/01/17/yIq15oOgwbHuvBX.png[/img]
+
+黄色部分的 “Minecraft: Java Edition” 表明了该报告所处的项目（Java版）；绿色部分的 “MC-4” 是该报告的唯一标识符（又称 ID）；蓝色部分的文字为摘要（summary），是由报告的提交者填写的。
+在当前例子中，摘要 “Item drops sometimes appear at the wrong location” 还算比较简单，意为「掉落物有时会出现在错误的位置」。
+
+粉色部分以及下面的各个内容即为该报告的细节（detail），有时我们也称它们为字段（field）。这一部分信息量较大，我们会在下文逐个讲解。
+紫色部分的 “description” 是描述，该部分同样是由报告的提交者填写的。描述部分通常对摘要进行了一定的补充，并且给出了复现步骤（reproduce steps）等。我会在后文对如何编写一个优秀的描述进行讲解。
+右侧的橙色内容是一些有关处理者（assignee）、报告者（reporter）、投票（vote）、关注（watcher）的内容。下文也会有一定的讲解。
+[size=4px]
+
+[/size][/td][/tr]
+[/table][/align]
+[align=center][table=65%]
+[tr=#C1F7D6][td][b][size=4px]
+[/size]阅读基本字段[size=4px]
+
+[/size][/b][/td][/tr]
+[tr=#CEFFFF][td][size=4px]
+[/size][size=4][b]Type[/b][/size]
+当前报告的[b][color=#FF5722]类型[/color][/b]。除了 MCAPI 项目以外，只有 Bug（漏洞）这一个类型。通常我们可以直接忽略这一字段。
+
+[hr]
+[size=4][b]Status[/b][/size]
+当前报告的[b][color=#FF5722]状态[/color][/b]。状态表明该漏洞被 Mojang 解决到哪个地步了。
+[list]
+[*][b][color=#FF5722]OPEN[/color][/b]：该报告处于[b][color=#FF5722]开启[/color][/b]状态，还没有被处理。
+[*][b][color=#FF5722]RESOLVED[/color][/b]：该报告处于[b][color=#FF5722]已解决[/color][/b]状态。根据后文介绍的 Resolution（解决方案）的不同，我们可以进一步知道该漏洞是以什么为由解决的。
+[*][b][color=#FF5722]IN PROGRESS[/color][/b]：该报告处于[b][color=#FF5722]正在处理[/color][/b]状态。相关漏洞可能会在下一个快照版本，或下周的快照版本，或下一个大版本的快照版本中修复。需要注意的是，由于状态的修改是需要手动设置的，比较麻烦，很多漏洞在修复过程中并不会进入该状态，而是会在修复完成后直接标记为 [b]RESOLVED[/b]。
+[*][b][color=#FF5722]REOPENED[/color][/b]：该报告处于[b][color=#FF5722]重新开启[/color][/b]状态。具有该状态的报告表明曾经因为某种原因被 [b]RESOLVED[/b]，但后来又重新开启了。这些原因可能是：漏洞报告者回答了开发者或志愿者提出的问题、漏洞报告者或其他用户补充了足以重新开启该报告的关键信息、开发者以为修了但其实没修好等。
+[*][b][color=#FF5722]CLOSED[/color][/b]：该报告处于[b][color=#FF5722]关闭[/color][/b]状态。该状态与 [b]RESOLVED[/b] 的区别在于，[b]关闭[/b]了的报告不再接受评论。Mojang 已经很久没有使用过该状态了，现在漏洞一般只会中止在 [b]RESOLVED[/b] 状态。
+[/list]
+
+[hr]
+[size=4][b]Resolution[/b][/size]
+当前报告的[b][color=#FF5722]解决方案[/color][/b]。只有 [b][color=#FF5722]Status[/color][/b] 为 [b][color=#FF5722]RESOLVED[/color][/b] 或 [b][color=#FF5722]CLOSED[/color][/b] 的报告中该字段的值才[b][color=#FF5722]有意义[/color][/b]；其他报告中该字段的值均为 [b]Unresolved（未解决）[/b]。
+[list]
+[*][b][color=#FF5722]Unresolved[/color][/b]：[b][color=#FF5722]未解决[/color][/b]。
+[*][b][color=#FF5722]Awaiting Response[/color][/b]：[b][color=#FF5722]等待回复[/color][/b]。该解决方案表明有用户、志愿者或开发者向漏洞的报告者提了一个问题，并且报告者还没有回答该问题。当报告者回答了该问题以后，报告会自动重新开启，并自动变为 [b][color=#FF5722]REOPENED[/color][/b] 状态。
+[*][b][color=#FF5722]Cannot Reproduce[/color][/b]：[b][color=#FF5722]无法复现[/color][/b]。该解决方案表明没有玩家能够复现该漏洞。此外，长时间（以年为单位）没有更新的报告也有可能会被以方案批量解决。
+[*][b][color=#FF5722]Duplicate[/color][/b]：[b][color=#FF5722]重复[/color][/b]。该解决方案表明该报告和另一个（或多个）报告的内容重复了。你可以在此类报告的下方找到 [b]Issue Links[/b] 之下的 [b]dupliates[/b] 部分，该部分中即为被重复的报告。
+[img=1367,177]https://i.loli.net/2020/01/17/nCSTxO3aEFXRPmZ.png[/img]
+通常称被重复的报告为[b][color=#FF5722]主报告（main ticket 或 parent ticket）[/color][/b]。
+[*][b][color=#FF5722]Fixed[/color][/b]：[b][color=#FF5722]已修复[/color][/b]。
+[*][b][color=#FF5722]Incomplete[/color][/b]：[b][color=#FF5722]不完整[/color][/b]。该解决方案表明该报告[b][color=#FF5722]缺失关键信息[/color][/b]，没人能读懂是关于什么的。
+[*][b][color=#FF5722]Won't Fix[/color][/b]：[b][color=#FF5722]不会修[/color][/b]。该解决方案表明开发者认可该报告[b][color=#FF5722]确实是一个漏洞[/color][/b]，但出于各种原因[b][color=#FF5722]不会进行修复[/color][/b]。这些原因可能是：该漏洞影响不大、该漏洞不好修复、如果修复了该漏洞会导致更严重的漏洞、开发者计划在将来引入新功能/重构已有代码并且可能会在那时顺带修复该漏洞等。
+[*][b][color=#FF5722]Work As Intended[/color][/b]：简称 [b][color=#FF5722]WAI[/color][/b]，意为该报告[b][color=#FF5722]根本不是漏洞[/color][/b]，而是开发者[b][color=#FF5722]刻意为之的特性[/color][/b]。一个很经典的正面例子是 [url=https://bugs.mojang.com/browse/MCPE-28723]MCPE-28723[/url]（床在下界会爆炸）。然而，有时开发者会以莫名其妙的原因把一个漏洞强行解决为 WAI，饱受玩家诟病；一个典型的例子是 [url=https://bugs.mojang.com/browse/MC-165403]MC-165403[/url]（盾牌材质不再支持透明度），开发者给出的理由是「盾牌遮挡视野是盾牌的固有缺陷，是游戏平衡的一部分」，然而事实上玩家有很多种隐藏掉盾牌的方法（如修改模型缩放等），这一理由根本站不住脚。此外，开发者在很长的一段时间里把 [b][color=#FF5722]Won't Fix（不会修）[/color][/b]和 [b][color=#FF5722]Work As Intended（不是漏洞）[/color][/b]混着用，因此在查看旧的报告的解决方案时需要多加理解。最近这一滥用解决方案的情况有很大的改善。
+[/list]
+
+TODO: MOVE
+当一个报告被解决以后，我[b][color=#FF5722]强烈不建议对该报告进行评论[/color][/b]。不过有以下几个例外：
+[list]
+[*]该报告以 [b][color=#FF5722]Awaiting Response[/color][/b] 为由解决，并且你[b][color=#FF5722]就是报告者[/color][/b]；
+[*]该报告以 [b][color=#FF5722]Duplicate[/color][/b] 为由解决，并且你认为这两个报告其实并[b][color=#FF5722]不是关于同一个[/color][/b]漏洞的；
+[*]该报告以 [b][color=#FF5722]Fixed[/color][/b] 为由解决，并且在 [b]Fix Version/s[/b] 中的版本[b][color=#FF5722]并没有修复[/color][/b]该漏洞；
+[*]该报告以 [b][color=#FF5722]Won't Fix[/color][/b] 或 [b][color=#FF5722]Work As Intended[/color][/b] 为由解决，并且你具备先前没有人提到过的[b][color=#FF5722]极其关键[/color][/b]的、能够说服开发者重新开启该报告的理由。
+[/list]
+
+在包括但不限于以下的情况下，我强烈建议你[b][color=#FF5722]新开一个报告[/color][/b]，复制粘贴旧报告的[b][color=#FF5722]有效内容[/color][/b]，并在报告描述开头写明 “Clones <旧报告的 ID>.”，而不是在旧报告下评论：
+[list]
+[*]该报告以 [b][color=#FF5722]Awaiting Response[/color][/b] 为由解决，但你并[b][color=#FF5722]不是报告者[/color][/b]；
+[*]该报告以 [b][color=#FF5722]Cannot Reproduce[/color][/b] 为由解决，但你[b][color=#FF5722]仍然可以复现[/color][/b]；
+[*]该报告以 [b][color=#FF5722]Fixed[/color][/b] 为由解决，并且在 [b]Fix Version/s[/b] 中的版本[b][color=#FF5722]确实修复[/color][/b]，但在几个版本之后又[b][color=#FF5722]重新出现[/color][/b]了；
+[/list]
+END TODO
+
+[hr]
+[size=4][b]Fix Version/s[/b][/size]
+当前报告的[b][color=#FF5722]修复版本[/color][/b]。只有 [b][color=#FF5722]Resolution[/color][/b] 为 [b][color=#FF5722]Fixed[/color][/b] 的报告中该字段的值才[b][color=#FF5722]有意义[/color][/b]；其他报告中该字段的值均为 [b]None（无）[/b]。
+
+一个报告可能会有多个修复版本，表明该漏洞出于各种原因被多次修复过。这些原因可能是：没有修复成功、只修复了一部分、在修复后几个版本又重新出现了等。
+
+[hr]
+[size=4][b]Affects Version/s[/b][/size]
+该报告的[b][color=#FF5722]影响版本[/color][/b]。该字段后面可能会有三个小点（...），如下图所示。你可以点击那三个点来显示/隐藏所有的影响版本。
+[img=635,80]https://i.loli.net/2020/01/17/uEcKFbNAHdvMQlO.png[/img]
+当一个游戏版本被添加到该字段以后，表明有玩家能够在该版本中复现这个漏洞，即该漏洞存在于这个版本当中。
+
+TODO: MOVE
+如果你能够在当前[b][color=#FF5722]最新正式版[/color][/b]/[b][color=#FF5722]最新预览版[/color][/b]中复现这个漏洞，却发现该版本还没有被添加到该字段中时，你可以[b][color=#FF5722]评论（comment）[/color][/b]来补充信息。以下几种句式都可用于表示「添加 [b]XXX[/b] 为影响版本」：
+[list]
+[*]Affects XXX
+[*]Confirmed for XXX
+[*]Still not fixed in XXX
+[/list]
+END TODO
+
+[hr]
+[size=4][b]Labels[/b][/size]
+该报告的[b][color=#FF5722]标签[/color][/b]。该字段后面可能会有三个小点（...），你可以点击那三个点来显示/隐藏所有的标签。
+
+标签一般是开发者、志愿者使用的，普通玩家通常不用太管这个。
+
+[hr]
+[size=4][b]Confirmation Status[/b][/size]
+该报告的[b][color=#FF5722]验证状态[/color][/b]。该字段只能由志愿者或开发者设置。
+
+一个报告有以下几种验证状态：
+[list]
+[*][b][color=#FF5722]Unconfirmed[/color][/b]：[b][color=#FF5722]未验证[/color][/b]。还没有玩家、志愿者、开发者表明自己能够复现该漏洞。
+[*][b][color=#FF5722]Plausible[/color][/b]：[b][color=#FF5722]有道理[/color][/b]。该漏洞很难复现或不能复现，但是报告者写的东西有理有据，令人信服。该状态很少使用，最常见的应用是报告者通过游戏代码发现了某个漏洞，但是该漏洞在正常游戏中并没有影响。
+[*][b][color=#FF5722]Community Consensus[/color][/b]：简称 [b][color=#FF5722]CC[/color][/b]，意为[b][color=#FF5722]社区共识[/color][/b]，即有多名玩家评论表明自己可以复现该漏洞。此外，如果该报告被其他玩家开的报告重复（duplicate）了，该报告也可以被标记为 [b][color=#FF5722]CC[/color][/b]。
+[*][b][color=#FF5722]Confirmed[/color][/b]：[b][color=#FF5722]已验证[/color][/b]。一名志愿者或开发者能够复现该漏洞。
+[/list]
+
+可以肯定的是，开发者[b]不会[/b]查看验证状态为 [b]Unconfirmed[/b] 的报告，但没有任何证据表明剩下的三种验证状态有先后之分。不过志愿者会以 [b]Confirmed[/b]、[b]CC[/b]、[b]Plausible[/b] 的顺序设置验证状态。
+
+[hr]
+[size=4][b]Category[/b][/size]
+该报告的[b][color=#FF5722]分类[/color][/b]。
+
+和标签（Labels）一样，分类是由开发者、志愿者使用的，普通玩家通常不用太管这个。
+
+[hr]
+[size=4][b]Environment[/b][/size]
+该报告的[b][color=#FF5722]环境信息[/color][/b]。通常可以在这里写你的显卡型号、显卡驱动版本号、Java 版本号等。
+
+在绝大多数情况下，这个字段并没有什么用。但是在极少数因设备而异的漏洞中，这个字段就非常有用了。
+
+[hr]
+[size=4][b]Mojang Priority[/b][/size]
+该报告的[b][color=#FF5722]优先级[/color][/b]。该字段由开发者手动设置。优先级越高的漏洞，表明开发者越重视，但通常也越难修复。报告的优先级低并不意味着该漏洞不会被修复，正相反，能够获得到优先级已经说明该漏洞[b][color=#FF5722]离修复不远了[/color][/b]。
+
+以 MC 项目为例，在编写该帖时，具备 [b]Mojang Priority[/b] 的报告共有 1179 个，其中 543 个被修复，修复率 46.06%。相比之下，MC 项目总共有 147038 个报告，其中 9215 个被修复，修复率仅为 6.27%。只要能够熬到获得 [b]Mojang Priority[/b] 的那一天，道路就会不断延伸。
+[size=4px]
+
+[/size][/td][/tr]
+[/table][/align]
+
+
+
+
+
+
+[align=center][table=80%]
+[tr=#F7D6C1][td][b][size=4px]
+[/size]汇报漏洞[size=4px]
+
+[/size][/b][/td][/tr]
+[tr=#FFFFCE][td][size=4px]
+[/size]这里我们将以 Java版 为例，讲解如何汇报漏洞。其他版本大同小异，在细节上可能有些出入，请以实物为准。[size=4px]
+
+[/size][align=center][table=98%]
+[tr=#C1F7D6][td][b][size=4px]
+[/size][b]前提条件[/b][size=4px]
+
+[/size][/b][/td][/tr]
+[tr=#CEFFFF][td][size=4px]
+[/size]在 Mojira 上汇报漏洞前，请首先确保以下几点：
+[list=1]
+[*]你所使用的是[b][color=#FF5722]最新正式版[/color][/b]或[b][color=#FF5722]最新预览版[/color][/b]的 Minecraft。如果你在[b]旧版本[/b]或[b]战斗更新测试（Combat Test）[/b]遇到了一个漏洞，请首先更换到最新版本，确保该漏洞在最新版本仍然存在，再考虑汇报漏洞；
+[*]你所使用的是[b][color=#FF5722]原版[/color][/b]的 Minecraft。如果你的游戏里装了任何 Mod（包括 OptiFine），请首先更换到纯净版，确保该漏洞是游戏自身存在的，而非 Mod 引入的。此外，如果你在服务器里遇到了漏洞，请首先确保该漏洞不是由服务端装的奇形怪状的插件导致的；
+[*]你所使用的是[b][color=#FF5722]正版[/color][/b] Minecraft。嗯，至少请装作是这样；
+[*]你所要汇报的确实是[b][color=#FF5722]漏洞（bug）[/color][/b]。以下内容[b]不属于[/b]漏洞：
+[list]
+[*][b]特性请求（feature request）[/b]。如：为什么我造的飞机不会飞（[url=https://bugs.mojang.com/browse/MCPE-31176]MCPE-31176[/url]）。此类问题请发布至[url=http://feedback.minecraft.net/][b]反馈站点[/b][/url]；
+[*][b]正版帐号问题（account issue）[/b]。如：购买了正版帐号却无法登录。在中国大陆境内此类问题通常和你的网络状况有关，请自行寻找信息，或到[url=https://www.mcbbs.net/forum-qanda-1.html][b]原版问答[/b][/url]版提问。此外，如果你确信是 Mojang 的原因导致的帐号问题，请用英文联系 Mojang 的[url=https://help.minecraft.net/hc/en-us/requests/new][b]客户服务（custom service）[/b][/url]；
+[*][b]同步问题（parity issue）[/b]。如：基岩版里可以xxx，为什么在 Java版 就不能。此类问题请发布至[url=http://feedback.minecraft.net/][b]反馈站点[/b][/url]；
+[*][b]技术支持（technical support）[/b]。如：一启动就崩溃/白屏/黑屏/彩虹屏。此类问题请发布至论坛的[url=https://www.mcbbs.net/forum-qanda-1.html][b]原版问答[/b][/url]提问，记得附带你的崩溃报告，记得折叠日志文本。不过如果能够正常启动，却[b][color=#FF5722]在做了某一特定操作后会导致游戏崩溃，且每次这么做都能复现[/color][/b]的，[b][color=#FF5722]属于[/color][/b]漏洞，请考虑汇报该漏洞。
+[*][b]翻译问题（translation issue）[/b]。如：「掠夺者」这个翻译真烂。Java版 的翻译由社区维护，如果你有任何建议可以到 [url=https://crowdin.com/project/minecraft][b]Crowdin[/b][/url] 或[b]译名讨论群[/b]提出。不过顺带提一句，[b][color=#FF5722]基岩版[/color][/b]、[b][color=#FF5722]地球[/color][/b]等项目[b][color=#FF5722]接受[/color][/b]此类报告。
+[/list][*]确保自己的电脑[b][color=#FF5722]满足[url=https://minecraft-zh.gamepedia.com/Java%E7%89%88%E7%A1%AC%E4%BB%B6%E9%9C%80%E6%B1%82][b][color=#FF5722][u]最低硬件需求[/u][/color][/b][/url][/color][/b]；
+[*]确保自己具备一定的[b][color=#FF5722]英语水平[/color][/b]，并使用英语汇报漏洞。只要能组成句子、拼对词儿，大概表达出自己的意思就行了。Mojira 上的志愿者已经具备了读懂各国友人英语的无敌水平。此外，如果有清楚简明的截图或视频，你就算不写字都可以。
+[/list]
+如果你想汇报的东西不满足以上任一条件，那就不要往 Mojira 发了，发了也是被以 [b]Invalid（无效）[/b]为由解决的宿命。当前 Mojira 上 Java版 共有 [b]21372[/b] 个已知无效报告，占全部报告的 [b]14%[/b]。[size=4px]
+
+[/size][/td][/tr]
+[/table][/align]
+[align=center][table=98%]
+[tr=#C1F7D6][td][b][size=4px]
+[/size][b]开始汇报[/b][size=4px]
+
+[/size][/b][/td][/tr]
+[tr=#CEFFFF][td][size=4px]
+[/size]终于，我们可以开始准备汇报漏洞了！[size=4px]
+
+[/size][align=center][table=98%]
+[tr=#F7D6C1][td][b][size=4px]
+[/size][b]一、搜索[/b][size=4px]
+
+[/size][/b][/td][/tr]
+[tr=#FFFFCE][td][size=4px]
+[/size]汇报漏洞的第一步永远是[b][color=#FF5722]搜索[/color][/b]，有非常大的可能性你所发现的内容已经被他人汇报过了。以 Java版 为例，Mojira 上共有 [b]78988[/b] 个报告以 [b]Duplicate（重复）[/b]为由解决，占全部报告的 [b]53%[/b]！
+
+[b]基础篇[/b]：
+假设我们发现了一个漏洞：[size=4px]
+
+[/size][/td][/tr]
+[/table][/align][size=4px]
+
+[/size][/td][/tr]
+[/table][/align] [size=4px]
+
+[/size][/td][/tr]
+[/table][/align] 
