@@ -133,7 +133,7 @@
 
 粉色部分以及下面的各个内容即为该报告的细节（detail），有时我们也称它们为字段（field）。这一部分信息量较大，我们会在下文逐个讲解。
 紫色部分的 “description” 是描述，该部分同样是由报告的提交者填写的。描述部分通常对摘要进行了一定的补充，并且给出了复现步骤（reproduce steps）等。我会在后文对如何编写一个优秀的描述进行讲解。
-右侧的橙色内容是一些有关处理者（assignee）、报告者（reporter）、投票（vote）、关注（watcher）的内容。下文也会有一定的讲解。
+右侧的橙色内容是一些有关负责人（assignee）、报告者（reporter）、投票（vote）、关注（watcher）的内容。下文也会有一定的讲解。
 [size=4px]
 
 [/size][/td][/tr]
@@ -162,16 +162,18 @@
 [size=4][b]Resolution[/b][/size]
 当前报告的[b][color=#FF5722]解决方案[/color][/b]。只有 [b][color=#FF5722]Status[/color][/b] 为 [b][color=#FF5722]RESOLVED[/color][/b] 或 [b][color=#FF5722]CLOSED[/color][/b] 的报告中该字段的值才[b][color=#FF5722]有意义[/color][/b]；其他报告中该字段的值均为 [b]Unresolved（未解决）[/b]。
 [list]
-[*][b][color=#FF5722]Unresolved[/color][/b]：[b][color=#FF5722]未解决[/color][/b]。
-[*][b][color=#FF5722]Awaiting Response[/color][/b]：[b][color=#FF5722]等待回复[/color][/b]。该解决方案表明有用户、志愿者或开发者向漏洞的报告者提了一个问题，并且报告者还没有回答该问题。当报告者回答了该问题以后，报告会自动重新开启，并自动变为 [b][color=#FF5722]REOPENED[/color][/b] 状态。
-[*][b][color=#FF5722]Cannot Reproduce[/color][/b]：[b][color=#FF5722]无法复现[/color][/b]。该解决方案表明没有玩家能够复现该漏洞。此外，长时间（以年为单位）没有更新的报告也有可能会被以方案批量解决。
-[*][b][color=#FF5722]Duplicate[/color][/b]：[b][color=#FF5722]重复[/color][/b]。该解决方案表明该报告和另一个（或多个）报告的内容重复了。你可以在此类报告的下方找到 [b]Issue Links[/b] 之下的 [b]dupliates[/b] 部分，该部分中即为被重复的报告。
+[*][b][color=#FF5722]Unresolved[/color][/b]：该报告仍[b][color=#FF5722]未解决[/color][/b]。
+[*][b][color=#FF5722]Awaiting Response[/color][/b]：该报告被以[b][color=#FF5722]等待回复[/color][/b]为由解决。该解决方案表明有用户、志愿者或开发者向漏洞的报告者提了一个问题，并且报告者还没有回答该问题。当报告者回答了该问题以后，报告会自动重新开启，并自动变为 [b][color=#FF5722]REOPENED[/color][/b] 状态。
+[*][b][color=#FF5722]Cannot Reproduce[/color][/b]：该报告被以[b][color=#FF5722]无法复现[/color][/b]为由解决。该解决方案表明没有玩家能够复现该漏洞。此外，长时间（以年为单位）没有更新的报告也有可能会被以方案批量解决。
+[*][b][color=#FF5722]Duplicate[/color][/b]：该报告被以[b][color=#FF5722]重复[/color][/b]为由解决。该解决方案表明该报告和另一个（或多个）报告的内容重复了。你可以在此类报告的下方找到 [b]Issue Links[/b] 之下的 [b]dupliates[/b] 部分，该部分中即为被重复的报告。
 [img=1367,177]https://i.loli.net/2020/01/17/nCSTxO3aEFXRPmZ.png[/img]
 通常称被重复的报告为[b][color=#FF5722]主报告（main ticket 或 parent ticket）[/color][/b]。
-[*][b][color=#FF5722]Fixed[/color][/b]：[b][color=#FF5722]已修复[/color][/b]。
-[*][b][color=#FF5722]Incomplete[/color][/b]：[b][color=#FF5722]不完整[/color][/b]。该解决方案表明该报告[b][color=#FF5722]缺失关键信息[/color][/b]，没人能读懂是关于什么的。
-[*][b][color=#FF5722]Won't Fix[/color][/b]：[b][color=#FF5722]不会修[/color][/b]。该解决方案表明开发者认可该报告[b][color=#FF5722]确实是一个漏洞[/color][/b]，但出于各种原因[b][color=#FF5722]不会进行修复[/color][/b]。这些原因可能是：该漏洞影响不大、该漏洞不好修复、如果修复了该漏洞会导致更严重的漏洞、开发者计划在将来引入新功能/重构已有代码并且可能会在那时顺带修复该漏洞等。
-[*][b][color=#FF5722]Work As Intended[/color][/b]：简称 [b][color=#FF5722]WAI[/color][/b]，意为该报告[b][color=#FF5722]根本不是漏洞[/color][/b]，而是开发者[b][color=#FF5722]刻意为之的特性[/color][/b]。一个很经典的正面例子是 [url=https://bugs.mojang.com/browse/MCPE-28723]MCPE-28723[/url]（床在下界会爆炸）。然而，有时开发者会以莫名其妙的原因把一个漏洞强行解决为 WAI，饱受玩家诟病；一个典型的例子是 [url=https://bugs.mojang.com/browse/MC-165403]MC-165403[/url]（盾牌材质不再支持透明度），开发者给出的理由是「盾牌遮挡视野是盾牌的固有缺陷，是游戏平衡的一部分」，然而事实上玩家有很多种隐藏掉盾牌的方法（如修改模型缩放等），这一理由根本站不住脚。此外，开发者在很长的一段时间里把 [b][color=#FF5722]Won't Fix（不会修）[/color][/b]和 [b][color=#FF5722]Work As Intended（不是漏洞）[/color][/b]混着用，因此在查看旧的报告的解决方案时需要多加理解。最近这一滥用解决方案的情况有很大的改善。
+[*][b][color=#FF5722]Fixed[/color][/b]：该报告被以[b][color=#FF5722]已修复[/color][/b]为由解决。
+[*][b][color=#FF5722]Incomplete[/color][/b]：该报告被以[b][color=#FF5722]不完整[/color][/b]为由解决。该解决方案表明该报告[b][color=#FF5722]缺失关键信息[/color][/b]，没人能读懂是关于什么的。
+[*][b][color=#FF5722]Won't Fix[/color][/b]：该报告被以[b][color=#FF5722]不会修[/color][/b]为由解决。该解决方案表明开发者认可该报告[b][color=#FF5722]确实是一个漏洞[/color][/b]，但出于各种原因[b][color=#FF5722]不会进行修复[/color][/b]。这些原因可能是：该漏洞影响不大、该漏洞不好修复、如果修复了该漏洞会导致更严重的漏洞、开发者计划在将来引入新功能/重构已有代码并且可能会在那时顺带修复该漏洞等。
+[*][b][color=#FF5722]Work As Intended[/color][/b]：简称 [b][color=#FF5722]WAI[/color][/b]，意为该报告[b][color=#FF5722]根本不是漏洞[/color][/b]，而是开发者[b][color=#FF5722]刻意为之的特性[/color][/b]。一个很经典的正面例子是 [url=https://bugs.mojang.com/browse/MCPE-28723]MCPE-28723[/url]（床在下界会爆炸）。
+然而，有时开发者会以莫名其妙的原因把一个漏洞强行解决为 WAI，饱受玩家诟病；一个典型的例子是 [url=https://bugs.mojang.com/browse/MC-165403]MC-165403[/url]（盾牌材质不再支持透明度），开发者给出的理由是「盾牌遮挡视野是盾牌的固有缺陷，是游戏平衡的一部分」，然而事实上玩家有很多种隐藏掉盾牌的方法（如修改模型缩放等），这一理由根本站不住脚。
+此外，开发者在很长的一段时间里把 [b][color=#FF5722]Won't Fix（不会修）[/color][/b]和 [b][color=#FF5722]Work As Intended（不是漏洞）[/color][/b]混着用，因此在查看旧的报告的解决方案时需要多加理解。最近这一滥用解决方案的情况有很大的改善。
 [/list]
 
 TODO: MOVE
@@ -253,8 +255,42 @@ END TODO
 
 [/size][/td][/tr]
 [/table][/align]
+[align=center][table=65%]
+[tr=#C1F7D6][td][b][size=4px]
+[/size]投票给该报告[size=4px]
 
+[/size][/b][/td][/tr]
+[tr=#CEFFFF][td][size=4px]
+[/size]如果你特别希望[b][color=#FF5722]某个漏洞被修复[/color][/b]，你可以选择使用右侧 “People” 下的 [b][color=#FF5722]“Vote for this issue”（给该报告投票）[/color][/b]功能。
+[img=2132,1434]https://i.loli.net/2020/01/17/yIq15oOgwbHuvBX.png[/img]
 
+虽然近几年来没有任何证据表明开发者修复漏洞的优先级和投票的数量是否有关，但还是投个票吧。开发者是否修复某个漏洞是由很多个复杂因素决定的，能多一个因素就多一个因素，万一真修了呢。[size=4px]
+
+[/size][/td][/tr]
+[/table][/align]
+[align=center][table=65%]
+[tr=#C1F7D6][td][b][size=4px]
+[/size]关注报告进展[size=4px]
+
+[/size][/b][/td][/tr]
+[tr=#CEFFFF][td][size=4px]
+[/size]想要这辈子就耗在某个报告上？你可以选择使用右侧 “People” 下的 [b][color=#FF5722]“Start watching this issue”（开始关注该报告）[/color][/b]功能。
+当你关注了一个报告以后，[b][color=#FF5722]任何[/color][/b]有关该报告的变动都会被[b][color=#FF5722]邮件告知[/color][/b]。例如：
+[list]
+[*]有人修改了报告的摘要、描述、各字段等；
+[*]有人修改了该报告的状态、解决方案等；
+[*]开发者修改了该报告的负责人（assignee）；
+[*]有人在下方进行了评论；
+[*]有人编辑了自己的评论；
+[/list]
+如果关注的报告过多的话，你的邮箱会非常乱，不建议大量关注报告。
+
+当你已经关注了一个报告以后，该选项会变为 “”。如果你不再想关注了，可以点击该选项取消关注。
+
+在[url=https://bugs.mojang.com/secure/ViewProfile.jspa][b][color=#FF5722][u]设置[/u][/color][/b][/url]界面中，你可以修改自己的一些[b][color=#FF5722]偏好（Preferences）[/color][/b]。其中，[b][color=#FF5722]自动关注（Autowatch）[/color][/b]功能可以让你在评论或新建了一个报告后，自动关注该报告。可以根据个人偏好决定是否开启这个选项。
+
+[/size][/td][/tr]
+[/table][/align]
 
 
 
